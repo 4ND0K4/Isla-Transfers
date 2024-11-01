@@ -18,13 +18,14 @@ class RegisterTravelerController {
         $emailReturned = $this->travelerModel->addTraveler($id_viajero, $nombre, $apellido1, $apellido2, $direccion, $codigoPostal, $ciudad, $pais, $email, $password);
 
         if ($emailReturned === $email) {
-            header('Location: /index.php');
+            header('Location: /views/login-traveler.php?success=registro_exitoso');
             exit;
         } else {
             header('Location: /views/register-traveler.php?error=registro_fallido');
             exit;
         }
     }
+
 }
 
 $controller = new RegisterTravelerController();

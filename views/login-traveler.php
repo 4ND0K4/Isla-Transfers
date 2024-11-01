@@ -1,4 +1,6 @@
-<?php include 'modal.php'; ?>
+<?php
+session_start();
+?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -20,6 +22,7 @@
     <link rel="stylesheet" href="../assets/css/traveler.css">
 </head>
 <body>
+<!-- NAV -->
 <nav class="navbar navbar-expand-xl bg-light px-3">
     <div class="container-fluid">
         <a class="navbar-brand fs-4" href="#" id="logo">
@@ -41,11 +44,11 @@
             <form action="/index.php?user_type=traveler&action=login" method="POST">
                 <div class="mb-3">
                     <label for="email" class="form-label text-warning fw-bold">Correo electrónico</label>
-                    <input type="email" class="form-control w-75" id="email" name="email" placeholder="Introduce el email" required>
+                    <input type="email" class="form-control w-75" name="email" id="email"  placeholder="Introduce el email" required>
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label text-warning fw-bold">Contraseña</label>
-                    <input type="password" class="form-control w-75" id="password" name="password" placeholder="Introduce el password" required>
+                    <input type="password" class="form-control w-75" name="password" id="password" placeholder="Introduce el password" required>
                 </div>
 
                 <div class="d-grid gap-2 w-75">
@@ -63,9 +66,43 @@
                     </div>
                 <?php endif; ?>
             </form>
+            <!-- Mensaje de éxito si se ha creado un cliente particular-->
+            <?php if (isset($_GET['success'])): ?>
+                <div class="alert alert-success" role="alert">
+                    Registro exitoso. Por favor, inicie sesión.
+                </div>
+            <?php endif; ?>
         </div>
+
         <div class="col-xl-6">
             <img src="../assets/img/login-traveler.jpg" alt="Imagen de login" class="logo img-fluid mb-4 mb-md-0 w-75">
+        </div>
+    </div>
+</div>
+
+<!-- MODAL INICIO SESIÓN-->
+<div class="modal fade" id="logpanels" tabindex="-1" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header bg-light-subtle">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!-- Modal Body -->
+            <div class="modal-body bg-light-subtle">
+                <div class="container-fluid">
+                    <div class="row justify-content-around">
+                        <div class="col-xl-5  bg-success-subtle vh-50 vw-50 p-5">
+                            <a href="login-hotel.php" class="fs-2 text-decoration-none text-secondary">Inicia sesión para hoteles</a>
+                        </div>
+                        <div class="col-xl-5 bg-info-subtle vh-50 vw-50 p-5">
+                            <a href="login-admin.php" class="fs-2 text-decoration-none text-secondary">Inicia sesión para admins</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer bg-light-subtle"></div>
         </div>
     </div>
 </div>
