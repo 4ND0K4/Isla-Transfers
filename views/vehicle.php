@@ -57,7 +57,7 @@ include '../controllers/vehicles/update.php';
                             <td><?php echo $vehicle['description']; ?></td>
                             <td><?php echo $vehicle['email_rider']; ?></td>
                             <td><?php echo $vehicle['pass']; ?></td>
-
+                            
                             <td>
                                 <div class="btn-group" role="group">
                                     <button onclick="abrirModalActualizar(<?php echo htmlspecialchars(json_encode($vehicle)); ?>)" class="btn btn-sm btn-outline-secondary">Modificar</button>
@@ -122,7 +122,7 @@ include '../controllers/vehicles/update.php';
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">Modificar Reserva</h2>
+                <h2 class="modal-title">Modificar Vehículo</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -186,7 +186,7 @@ include '../controllers/vehicles/update.php';
         document.querySelector('#updateIdVehicleInput').value = vehicle.id_vehicle || '';
         document.querySelector('#updateDescriptionInput').value = vehicle.description || '';
         document.querySelector('#updateEmailRiderInput').value = vehicle.email_rider || '';
-        document.querySelector('#updatePasswordInput').value = vehicle.pass || '';
+        document.querySelector('#updatePasswordInput').value = '';
 
         var modal = new bootstrap.Modal(document.getElementById('updateVehicleModal'));
         modal.show();
