@@ -27,5 +27,3 @@ if(count($resultados)> 0){
 }
 
 ?>
-
-

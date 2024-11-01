@@ -4,10 +4,17 @@ session_start();
 require_once __DIR__ . '/../../models/db.php';
 require_once __DIR__ . '/../../models/hotel.php';
 
-if (isset($_GET['action']) && $_GET['action'] == 'logout') {
-    session_destroy();
-    header('Location: http://localhost:3000');
-    exit;
+$hotelController = new HotelController();
+
+if (isset($_GET['action']) && $_GET['action'] === 'logout') {
+    $hotelController->logout();
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $usuario = $_POST['username'] ?? '';
+    $password = $_POST['pass'] ?? '';
+    $hotelController->loginByUsername($usuario, $password);
 }
 
 class HotelController
@@ -37,13 +44,17 @@ class HotelController
             exit;
         }
     }
-}
 
-$hotelController = new HotelController();
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $usuario = $_POST['username'] ?? '';
-    $password = $_POST['pass'] ?? '';
-    $hotelController->loginByUsername($usuario, $password);
+    public function logout()
+    {
+        // Verifica si la sesión ya está activa
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        session_unset();
+        session_destroy();
+        header("Location: /views/login-hotel.php");
+        exit();
+    }
 }
 

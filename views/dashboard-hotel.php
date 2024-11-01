@@ -21,6 +21,24 @@ session_start();
     <link rel="stylesheet" href="../assets/css/hotel.css">
 </head>
 <body>
+<nav class="navbar navbar-expand-xl bg-transparent">
+    <div class="container-fluid">
+        <a class="navbar-brand fs-4 ps-5" href="dashboard-hotel.php" id="logo">
+            <img src="../assets/img/logo.png" alt="" width="30" height="24" class="d-inline-block align-text-top">
+            Isla Transfer
+        </a>
+        <ul class="nav nav-pills justify-content-end">
+            <li class="nav-item">
+                <!-- BOTÓN ACTUALIZAR -->
+                <button class="btn btn-primary bg-transparent border-0 fs-5 fw-bold text-secondary"><i class="bi bi-person-gear px-2 text-secondary"></i>Perfil</button>
+            </li>
+            <li class="pt-2">
+                <!--  -->
+                <a href="../controllers/hotels/login.php?action=logout" class="fs-5 pt-3 text-decoration-none text-danger"><i class="bi bi-plug"></i>Cerrar sesión</a>
+            </li>
+        </ul>
+    </div>
+</nav>
 <div class="container">
     <div class="justify-content-center align-items-center">
         <div class="col-xl">
@@ -33,3 +51,4 @@ session_start();
 </div>
 </body>
 </html>
+

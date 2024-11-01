@@ -23,7 +23,7 @@ class  Hotel {
     }
     public function verifyPasswordUsername($usuario, $password) {
         $user = $this->findByUsername($usuario);
-        if ($user && password_verify($password, $user['Password'])) {
+        if ($user && password_verify($password, $user['password'])) {
             return true;
         } else {
             return false;
@@ -49,7 +49,7 @@ class  Hotel {
             $stmt->bindValue(':id_zona', $id_zona);
             $stmt->bindValue(':Comision', $comision);
             $stmt->bindValue(':usuario', $usuario);
-            $stmt->bindValue(':password', password_hash($password, PASSWORD_DEFAULT));
+            $stmt->bindValue(':password', password_hash($password, PASSWORD_BCRYPT)); // o PASSWORD_DEFAULT
             $stmt->execute();
             /*$id_hotel = $this->db->lastInsertId();*/
 
@@ -83,4 +83,6 @@ class  Hotel {
         $query = 'DELETE FROM ' . $this->table . ' WHERE Id_hotel = :id_hotel';
         return db_query_execute($query, [':id_hotel' => $id_hotel]);
     }
+
 }
+

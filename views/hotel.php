@@ -45,8 +45,8 @@ include '../controllers/hotels/read.php';
                 <table class="table table-light table-striped table-hover w-100 h-100">
                     <thead>
                     <tr>
-                        <th scope="col">ID Hotel</th>
-                        <th scope="col">ID Zona</th>
+                        <th scope="col">Hotel</th>
+                        <th scope="col">Zona</th>
                         <th scope="col">Comisión</th>
                         <th scope="col">Usuario</th>
                         <th scope="col">Password</th>
@@ -86,7 +86,7 @@ include '../controllers/hotels/read.php';
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title text-center">Nuevo Hotel</h2>
+                <h2 class="modal-title text-center">Nuevo Cliente Corporativo</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -98,8 +98,8 @@ include '../controllers/hotels/read.php';
                         </div>
                         <!-- ID ZONA -->
                         <div class="form-floating mb-3">
-                            <input type="number" class="form-control" name="idZone" id="idZoneInput" placeholder="ID Zona">
-                            <label for="idZoneInput">ID Zona</label>
+                            <input type="number" class="form-control" name="idZone" id="idZoneInput" placeholder="Zona">
+                            <label for="idZoneInput">Zona</label>
                         </div>
                         <!-- Comisión -->
                         <div class="form-floating mb-3">
@@ -133,7 +133,7 @@ include '../controllers/hotels/read.php';
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">Modificar Reserva</h2>
+                <h2 class="modal-title">Modificar Cliente Corporativo</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -145,8 +145,8 @@ include '../controllers/hotels/read.php';
                         </div>
                         <!-- ID Zona -->
                         <div class="form-floating mb-3">
-                            <input type="number" class="form-control" name="idZone" id="updateIdZoneInput"  placeholder="Id zona"
-                            <label for="updateIdZoneInput">Id zona</label>
+                            <input type="number" class="form-control" name="idZone" id="updateIdZoneInput"  placeholder="Id zona">
+                            <label for="updateIdZoneInput">Zona</label>
                         </div>
                         <!-- Comision -->
                         <div class="form-floating mb-3">
@@ -203,7 +203,7 @@ include '../controllers/hotels/read.php';
         document.querySelector('#updateIdZoneInput').value = hotel.idZone || '';
         document.querySelector('#updateCommissionInput').value = hotel.commission || '';
         document.querySelector('#updateUserInput').value = hotel.user || '';
-        document.querySelector('#updatePassInput').value = hotel.pass || '';
+        document.querySelector('#updatePassInput').value = '';
 
 
         var modal = new bootstrap.Modal(document.getElementById('updateHotelModal'));

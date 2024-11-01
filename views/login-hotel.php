@@ -1,4 +1,6 @@
-<?php include 'modal.php'; ?>
+<?php
+session_start();
+?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -65,6 +67,33 @@
             <hr>
             <div class="d-grid gap-2 w-75">
                 <button type="button" class="btn btn-warning text-white" data-bs-toggle="modal" data-bs-target="#">Formulario de Inscripción</button></div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL INICIO SESIÓN-->
+<div class="modal fade" id="logpanels" tabindex="-1" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header bg-light-subtle">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!-- Modal Body -->
+            <div class="modal-body bg-light-subtle">
+                <div class="container-fluid">
+                    <div class="row justify-content-around">
+                        <div class="col-xl-5  bg-warning-subtle vh-50 vw-50 p-5">
+                            <a href="login-traveler.php" class="fs-2 text-decoration-none text-secondary">Inicia sesión para viajeros</a>
+                        </div>
+                        <div class="col-xl-5 bg-info-subtle vh-50 vw-50 p-5">
+                            <a href="login-admin.php" class="fs-2 text-decoration-none text-secondary">Inicia sesión para admins</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer bg-light-subtle"></div>
         </div>
     </div>
 </div>

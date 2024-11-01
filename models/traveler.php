@@ -36,12 +36,14 @@ class Traveler
     public function verifyPasswordEmail($email, $password)
     {
         $user = $this->findByEmail($email);
-        if ($user && $password === $user['password']) {
+        // Usar password_verify para comparar la contraseña ingresada con la hasheada en la base de datos
+        if ($user && password_verify($password, $user['password'])) {
             return true;
         } else {
             return false;
         }
     }
+
 
     /////////////////////////////CRUD///////////////////////////////////77
 
@@ -68,13 +70,10 @@ class Traveler
             $stmt->bindValue(':ciudad', $ciudad);
             $stmt->bindValue(':pais', $pais);
             $stmt->bindValue(':email', $email);
-            $stmt->bindValue(':password', $password);
+            $stmt->bindValue(':password', password_hash($password, PASSWORD_BCRYPT)); // o PASSWORD_DEFAULT
 
             $stmt->execute();
-            /*$id_viajero = $this->db->lastInsertId();*/
-
             $this->db->commit();
-
             return $email;
         } catch (Exception $e) {
             $this->db->rollBack();
@@ -82,11 +81,18 @@ class Traveler
             return null;
         }
     }
-    public function updateTraveler()
-    {
-        $query = 'UPDATE ' . $this->table . ' SET Nombre=:nombre, Apellido1=:apellido1, Apellido2=:apellido2, Direccion=:direccion, CodigoPostal=:codigoPostal, Ciudad=:ciudad, Pais=:pais, Email=:email, Password=:password WHERE Id_viajero=:id_viajero';
+    public function updateTraveler() {
+        $query = 'UPDATE ' . $this->table . ' SET Nombre=:nombre, Apellido1=:apellido1, Apellido2=:apellido2, Direccion=:direccion, CodigoPostal=:codigoPostal, Ciudad=:ciudad, Pais=:pais, Email=:email';
+
+        // Solo incluir la contraseña en el SQL si se ha proporcionado una nueva
+        if (!empty($this->Password)) {
+            $query .= ', Password=:password';
+        }
+        $query .= ' WHERE Id_viajero=:id_viajero';
 
         $stmt = $this->db->prepare($query);
+
+        // Bind de parámetros
         $stmt->bindParam(":id_viajero", $this->Id_viajero);
         $stmt->bindParam(":nombre", $this->Nombre);
         $stmt->bindParam(":apellido1", $this->Apellido1);
@@ -96,20 +102,11 @@ class Traveler
         $stmt->bindParam(":ciudad", $this->Ciudad);
         $stmt->bindParam(":pais", $this->Pais);
         $stmt->bindParam(":email", $this->Email);
-        $stmt->bindParam(":password", $this->Password);
 
-        if ($stmt->execute()) {
-            $_SESSION['user'] = $this->Email;
-            return true;
+        // Solo bindear la contraseña si es nueva y hasheada
+        if (!empty($this->Password)) {
+            $stmt->bindParam(":password", $this->Password);
         }
-        return false;
-    }
-    ////¿Se borran viajeros?
-    /*
-    public function deleteTraveler($id_viajero) {
-        $query = 'DELETE FROM transfer_viajeros WHERE Id_viajero = :id_viajero';
-        return db_query_execute($query, [':id_viajero' => $id_viajero]);
-    }
-    */
-}
 
+        return $stmt->execute();
+    }

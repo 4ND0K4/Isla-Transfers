@@ -10,7 +10,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $hotel->Id_zona = $_POST['idZone'];
     $hotel->Comision = $_POST['commission'];
     $hotel->Usuario = $_POST['user'];
-    $hotel->Password = $_POST['pass'];
+    //$hotel->Password = $_POST['pass'];
+    // Actualizar solo si se proporciona una nueva contraseña y hashearla
+    if (!empty($_POST['pass'])) {
+        $hotel->Password = password_hash($_POST['pass'], PASSWORD_BCRYPT);
+    }
 
     if ($hotel->updateHotel()) {
         header('Location: /views/hotel.php');
