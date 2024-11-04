@@ -1,9 +1,31 @@
 <?php
+session_start();
+if (!isset($_SESSION['admin'])) {
+    header("Location: /views/login-admin.php");
+    exit();
+}
 include '../controllers/bookings/read.php';
 include '../controllers/bookings/delete.php';
 include '../controllers/bookings/update.php';
+require_once __DIR__ . '/../models/db.php';
+//
+$db = db_connect();
+$hotelsStmt = $db->prepare("SELECT Id_hotel FROM tranfer_hotel");
+$hotelsStmt->execute();
+$hotels = $hotelsStmt->fetchAll(PDO::FETCH_COLUMN);
+// Array de nombres de hoteles asignados manualmente
+$hotelNames = [
+    1 => 'Hotel Norte',
+    2 => 'Hotel Sur',
+    3 => 'Hotel Este',
+    4 => 'Hotel Oeste',
+    5 => 'Hotel Norte2',
+    6 => 'Hotel Sur2',
+    7 => 'Hotel Este2',
+    8 => 'Hotel Oeste2',
+    9 => 'Hotel Centro'
+];
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -51,7 +73,6 @@ include '../controllers/bookings/update.php';
             <button type="submit">Filtrar</button>
         </form>
     </div>
-
     <!-- Tabla -->
     <div class="row">
         <div class="col">
@@ -67,10 +88,10 @@ include '../controllers/bookings/update.php';
                         <th>Fecha de Reserva</th>
                         <th>Número de Viajeros</th>
                         <?php if ($Id_tipo_reserva == 1 || !$Id_tipo_reserva): ?>
-                            <th>Fecha de Entrada</th>
-                            <th>Hora de Entrada</th>
-                            <th>Número de Vuelo Entrada</th>
-                            <th>Origen Vuelo Entrada</th>
+                            <th>Fecha Llegada</th>
+                            <th>Hora Llegada</th>
+                            <th>Número Vuelo Llegada</th>
+                            <th>Origen Vuelo</th>
                         <?php endif; ?>
                         <?php if ($Id_tipo_reserva == 2 || !$Id_tipo_reserva): ?>
                             <th>Hora Vuelo Salida</th>
@@ -118,7 +139,6 @@ include '../controllers/bookings/update.php';
         </div>
     </div>
 
-
     <!--Modal creacion Reservas-->
 <div class="modal fade" id="addBookingModal" tabindex="-1" aria-labelledby="addBookingModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -143,23 +163,23 @@ include '../controllers/bookings/update.php';
                         <!-- Fecha Entrada -->
                         <div class="form-floating mb-3">
                             <input type="date" class="form-control" name="fecha_entrada" id="dateInInput" aria-describedby="helpDateIn" placeholder="Fecha_entrada">
-                            <label for="dateInInput">Fecha de entrada</label>
+                            <label for="dateInInput">Día de llegada</label>
                         </div>
                         <!-- Hora Entrada -->
                         <div class="form-floating mb-3">
                             <input type="time" class="form-control" name="hora_entrada" id="hourInInput" aria-describedby="helpHourIn" placeholder="Hora de entrada">
-                            <label for="hourInInput">Hora de entrada</label>
+                            <label for="hourInInput">Hora de llegada</label>
                         </div>
 
                         <!-- Numero Vuelo Entrada -->
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" name="numero_vuelo_entrada" id="numFlightInInput" aria-describedby="helpNumFlightIn" placeholder="Numero vuelo de entrada">
-                            <label for="numFlightInInput">Numero vuelo de entrada</label>
+                            <label for="numFlightInInput">Numero vuelo</label>
                         </div>
                         <!-- Origen Vuelo Entrada -->
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" name="origen_vuelo_entrada" id="originFlightInInput" aria-describedby="helpOriginFlightIn" placeholder="Origen vuelo de entrada">
-                            <label for="originFlightInInput">Origen vuelo de entrada</label>
+                            <label for="originFlightInInput">Aeropuerto de origen</label>
                         </div>
                     </div>
 
@@ -179,14 +199,22 @@ include '../controllers/bookings/update.php';
 
                     <!-- Campos comunes para ambos trayectos -->
                     <div>
-                        <!-- Id Hotel -->
+                        <!-- Id Hotel
                         <div class="form-floating mb-3">
                             <input type="number" class="form-control" name="id_hotel" id="idHotelInput" aria-describedby="helpIdHotel" placeholder="ID hotel" required>
                             <label for="idHotelInput">Id de hotel</label>
-                        </div>
-                        <!-- Id Destino -->
+                        </div>-->
+                        <!-- Id Destino-->
                         <div class="form-floating mb-3">
-                            <input type="number" class="form-control" name="id_destino" id="idDestinationInput"  aria-describedby="helpIdDestination" placeholder="Id de destino" required>
+                            <!--<input type="number" class="form-control" name="id_destino" id="idDestinationInput"  aria-describedby="helpIdDestination" placeholder="Id de destino" required>-->
+                            <select name="id_destino" id="idDestinationInput" class="form-select" required>
+                                <option value="">Selecciona un Id de Destino</option>
+                                <?php foreach ($hotels as $hotelId): ?>
+                                    <option value="<?php echo $hotelId; ?>">
+                                        <?php echo isset($hotelNames[$hotelId]) ? $hotelNames[$hotelId] : "Hotel Desconocido ($hotelId)"; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
                             <label for="idDestinationInput">Id de destino</label>
                         </div>
                         <!-- Número Viajeros -->
@@ -202,9 +230,18 @@ include '../controllers/bookings/update.php';
                         <!-- Id Vehículo -->
                         <div class="form-floating mb-3">
                             <input type="number" class="form-control" name="id_vehiculo" id="idVehicleInput" aria-describedby="helpIdVehicle"  placeholder="Id vehiculo">
-                            <label for="idVehicleInput">Id vehiculo</label>
+                            <label for="idVehicleInput">Vehículo</label>
                         </div>
                     </div>
+                    <!-- <div>
+                          Sección donde se mostrarán los datos del viajero
+                        <div id="travelerData" style="display: none;">
+                            <p><strong>Nombre:</strong> <span id="travelerName"></span></p>
+                            <p><strong>Apellido:</strong> <span id="travelerSurname1"></span></p>
+                            <p><strong>Pais:</strong> <span id="travelerCountry"></span></p>
+                             Agrega más campos si es necesario
+                        </div>
+                    </div>-->
 
                 <!-- Botones de envio y cierre -->
                 <div class="modal-footer">
@@ -217,7 +254,7 @@ include '../controllers/bookings/update.php';
     </div>
 </div>
 
-    <!--Modal creacion Reservas-->
+    <!--Modal modificación Reservas-->
 <div class="modal fade" id="updateBookingModal" tabindex="-1" aria-labelledby="updateBookingModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -233,27 +270,27 @@ include '../controllers/bookings/update.php';
 
                         <!-- Id Tipo Reserva -->
                         <div class="form-floating mb-3">
-                            <input type="number" class="form-control" name="id_tipo_reserva" id="updateIdTypeBookingInput" placeholder="Tipo de reserva">
+                            <input type="number" class="form-control" name="id_tipo_reserva" id="updateIdTypeBookingInput" placeholder="Tipo de reserva" readonly>
                             <label for="updateIdTypeBookingInput">Tipo de reserva (1: Aeropuerto-Hotel, 2: Hotel-Aeropuerto)</label>
                         </div>
 
                         <!-- Localizador -->
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="localizador" id="updateLocatorInput" placeholder="Localizador">
+                            <input type="text" class="form-control" name="localizador" id="updateLocatorInput" placeholder="Localizador" readonly>
                             <label for="updateLocatorInput">Localizador</label>
                         </div>
 
                         <!-- Email Cliente -->
                         <div class="form-floating mb-3">
-                            <input type="email" class="form-control" name="email_cliente" id="updateEmailClientInput" placeholder="Email" required>
+                            <input type="text" class="form-control" name="email_cliente" id="updateEmailClientInput" placeholder="Email" readonly>
                             <label for="updateEmailClientInput">Email del Cliente</label>
                         </div>
 
-                        <!-- Id Hotel -->
+                        <!-- Id Hotel
                         <div class="form-floating mb-3">
                             <input type="number" class="form-control" name="id_hotel" id="updateIdHotelInput" placeholder="ID del hotel">
-                            <label for="updateIdHotelInput">ID del Hotel</label>
-                        </div>
+                            <label for="updateIdHotelInput">Hotel</label>
+                        </div>-->
 
                         <!-- Número de Viajeros -->
                         <div class="form-floating mb-3">
@@ -264,13 +301,13 @@ include '../controllers/bookings/update.php';
                         <!-- Id Destino -->
                         <div class="form-floating mb-3">
                             <input type="number" class="form-control" name="id_destino" id="updateIdDestinationInput" placeholder="ID del destino">
-                            <label for="updateIdDestinationInput">ID del Destino</label>
+                            <label for="updateIdDestinationInput">Destino</label>
                         </div>
 
                         <!-- Id Vehículo -->
                         <div class="form-floating mb-3">
                             <input type="number" class="form-control" name="id_vehiculo" id="updateIdVehicleInput" placeholder="ID del vehículo">
-                            <label for="updateIdVehicleInput">ID del Vehículo</label>
+                            <label for="updateIdVehicleInput">Vehículo</label>
                         </div>
 
                         <!-- Campos específicos para Aeropuerto - Hotel (id_tipo_reserva = 1) -->
@@ -278,25 +315,25 @@ include '../controllers/bookings/update.php';
                             <!-- Fecha Entrada -->
                             <div class="form-floating mb-3">
                                 <input type="date" class="form-control" name="fecha_entrada" id="updateDateInInput" placeholder="Fecha de entrada">
-                                <label for="updateDateInInput">Fecha de Entrada</label>
+                                <label for="updateDateInInput">Fecha Llegada</label>
                             </div>
 
                             <!-- Hora Entrada -->
                             <div class="form-floating mb-3">
                                 <input type="time" class="form-control" name="hora_entrada" id="updateHourInInput" placeholder="Hora de entrada">
-                                <label for="updateHourInInput">Hora de Entrada</label>
+                                <label for="updateHourInInput">Hora Llegada</label>
                             </div>
 
                             <!-- Número de Vuelo Entrada -->
                             <div class="form-floating mb-3">
                                 <input type="text" class="form-control" name="numero_vuelo_entrada" id="updateNumFlightInInput" placeholder="Número de vuelo de entrada">
-                                <label for="updateNumFlightInInput">Número de Vuelo de Entrada</label>
+                                <label for="updateNumFlightInInput">Número Vuelo Llegada</label>
                             </div>
 
                             <!-- Origen Vuelo Entrada -->
                             <div class="form-floating mb-3">
                                 <input type="text" class="form-control" name="origen_vuelo_entrada" id="updateOriginFlightInInput" placeholder="Origen del vuelo de entrada">
-                                <label for="updateOriginFlightInInput">Origen del Vuelo de Entrada</label>
+                                <label for="updateOriginFlightInInput">Origen Vuelo</label>
                             </div>
                         </div>
 
@@ -305,13 +342,13 @@ include '../controllers/bookings/update.php';
                             <!-- Fecha Vuelo Salida -->
                             <div class="form-floating mb-3">
                                 <input type="date" class="form-control" name="fecha_vuelo_salida" id="updateDateFlightOutInput" placeholder="Fecha del vuelo de salida">
-                                <label for="updateDateFlightOutInput">Fecha del Vuelo de Salida</label>
+                                <label for="updateDateFlightOutInput">Fecha Vuelo Salida</label>
                             </div>
 
                             <!-- Hora Vuelo Salida -->
                             <div class="form-floating mb-3">
                                 <input type="time" class="form-control" name="hora_vuelo_salida" id="updateHourFlightOutInput" placeholder="Hora del vuelo de salida">
-                                <label for="updateHourFlightOutInput">Hora del Vuelo de Salida</label>
+                                <label for="updateHourFlightOutInput">Hora Vuelo Salida</label>
                             </div>
                         </div>
                     </div>
@@ -345,9 +382,6 @@ include '../controllers/bookings/update.php';
             </div>
         </div>
     </div>
-
-
-
 <script>
     <!-- Función que crea las reservas según el tipo de reserva -->
     function mostrarCampos() {
@@ -360,7 +394,7 @@ include '../controllers/bookings/update.php';
     function abrirModalActualizar(booking) {
         document.querySelector('#updateIdBookingInput').value = booking.id_reserva || '';
         document.querySelector('#updateLocatorInput').value = booking.localizador || '';
-        document.querySelector('#updateIdHotelInput').value = booking.id_hotel || '';
+        //document.querySelector('#updateIdHotelInput').value = booking.id_hotel || '';
         document.querySelector('#updateIdTypeBookingInput').value = booking.id_tipo_reserva || '';
         document.querySelector('#updateEmailClientInput').value = booking.email_cliente || '';
         document.querySelector('#updateIdDestinationInput').value = booking.id_destino || '';
@@ -390,7 +424,6 @@ include '../controllers/bookings/update.php';
         modal.show();
     }
 
-
     <!-- Función para la confirmación de la eliminación como modal en Delete -->
     function confirmarEliminacion(url) {
         // Asigna la URL al atributo data-url del botón de confirmación de eliminación
@@ -409,8 +442,6 @@ include '../controllers/bookings/update.php';
         const modal = new bootstrap.Modal(document.getElementById('confirmarEliminacionModal'));
         modal.show();
     }
-
-
 </script>
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

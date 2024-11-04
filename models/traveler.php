@@ -19,8 +19,7 @@ class Traveler
     {
         $this->db = $db;
     }
-
-
+    
     ///////////////////////////////////LOGIN/////////////////////////////////
 
     // Login para Viajeros/Travelers (por email)
@@ -35,16 +34,15 @@ class Traveler
     //Chequea el email//
     public function verifyPasswordEmail($email, $password)
     {
-        $user = $this->findByEmail($email);
+        $travelerUser = $this->findByEmail($email);
         // Usar password_verify para comparar la contraseña ingresada con la hasheada en la base de datos
-        if ($user && password_verify($password, $user['password'])) {
+        if ($travelerUser && password_verify($password, $travelerUser['password'])) {
             return true;
         } else {
             return false;
         }
     }
-
-
+    
     /////////////////////////////CRUD///////////////////////////////////77
 
     public function readTraveler() {
@@ -81,6 +79,7 @@ class Traveler
             return null;
         }
     }
+
     public function updateTraveler() {
         $query = 'UPDATE ' . $this->table . ' SET Nombre=:nombre, Apellido1=:apellido1, Apellido2=:apellido2, Direccion=:direccion, CodigoPostal=:codigoPostal, Ciudad=:ciudad, Pais=:pais, Email=:email';
 
@@ -110,3 +109,6 @@ class Traveler
 
         return $stmt->execute();
     }
+
+    ////¿Se borran viajeros?
+}

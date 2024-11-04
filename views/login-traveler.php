@@ -1,7 +1,6 @@
 <?php
 session_start();
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -41,7 +40,7 @@ session_start();
         <div class="col-xl-6">
             <h1 class="fw-bold display-5 pb-5 w-75">Reserva tu trayecto con Isla Transfers</h1>
             <p class="fs-5">¡Introduce tus credenciales para comenzar el viaje!</p>
-            <form action="/index.php?user_type=traveler&action=login" method="POST">
+            <form action="/index.php?user_type=travelerUser&action=login" method="POST">
                 <div class="mb-3">
                     <label for="email" class="form-label text-warning fw-bold">Correo electrónico</label>
                     <input type="email" class="form-control w-75" name="email" id="email"  placeholder="Introduce el email" required>

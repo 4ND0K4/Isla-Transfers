@@ -1,5 +1,6 @@
-<?php include 'modal.php'; ?>
-
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -38,7 +39,7 @@
     <div class="row justify-content-center align-items-center min-vh-100">
         <div class="col-xl-6">
             <h1 class="ps-4 text-secondary fw-bold display-5 pb-5">Login de Administrador</h1>
-                <form method="POST" action="/index.php?user_type=admin&action=login">
+                <form action="../index.php?user_type=admin&action=login" method="POST">
                     <div class="mb-3">
                         <label for="id" class="form-label text-info fw-bold">ID</label>
                         <input type="text" class="form-control w-75" name="id" id="id" placeholder="Introduce el ID" required>
@@ -60,7 +61,34 @@
         </div>
     </div>
 </div>
+<!-- MODAL INICIO SESIÓN-->
+<div class="modal fade" id="logpanels" tabindex="-1" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header bg-light-subtle">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!-- Modal Body -->
+            <div class="modal-body bg-light-subtle">
+                <div class="container-fluid">
+                    <div class="row justify-content-around">
+                        <div class="col-xl-5  bg-warning-subtle vh-50 vw-50 p-5">
+                            <a href="login-traveler.php" class="fs-2 text-decoration-none text-secondary">Inicia sesión para viajeros</a>
+                        </div>
+                        <div class="col-xl-5  bg-success-subtle vh-50 vw-50 p-5">
+                            <a href="login-hotel.php" class="fs-2 text-decoration-none text-secondary">Inicia sesión para hoteles</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer bg-light-subtle"></div>
+        </div>
+    </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
+

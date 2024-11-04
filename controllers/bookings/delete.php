@@ -1,26 +1,29 @@
 <?php
+// Conexión a los archivos DB y Modelo
 require_once __DIR__ . '/../../models/db.php';
 require_once __DIR__ . '/../../models/booking.php';
 
+// Verificar que la solicitud sea GET y que se haya pasado un ID de reserva
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id_booking'])) {
-    $id_booking = $_GET['id_booking'];
+    $id_booking = $_GET['id_booking']; // Capturar el ID de la reserva desde los parámetros de la URL
+
+    // Conectar a la base de datos
     $db = db_connect();
+    if (!$db) {
+        die("Error al conectar con la base de datos."); // Detener ejecución si falla la conexión
+    }
+
+    // Crear instancia del modelo Booking
     $booking = new Booking($db);
 
-    // Log para verificar si el ID de la reserva es el correcto
-    error_log("Intentando eliminar reserva con ID: " . $id_booking);
-
+    // Intentar eliminar la reserva con el ID proporcionado
     if ($booking->deleteBooking($id_booking)) {
-        // Log de éxito en eliminación
-        error_log("Reserva con ID " . $id_booking . " eliminada correctamente.");
+        // Si la eliminación es exitosa, redirigir al dashboard
         header('Location: /views/dashboard-admin.php?page=reserva');
         exit;
     } else {
-        // Log de error en caso de fallo
-        error_log("Error al borrar la reserva con ID " . $id_booking);
+        // Mostrar un mensaje en caso de error al eliminar la reserva
         echo "Error al borrar la reserva";
     }
-} else {
-    error_log("ID de reserva no especificado o método de solicitud incorrecto.");
 }
 ?>

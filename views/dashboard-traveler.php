@@ -1,11 +1,11 @@
 <?php
 session_start();
-if (!isset($_SESSION['user'])):
-    header("Location: /views/login-traveler.php");
-exit();
-endif; ?>
-
+$isTraveler = isset($_SESSION['travelerUser']);
+$emailCliente = $isTraveler ? $_SESSION['travelerUser'] : ''; // Usa el email de la sesión si es un traveler
+?>
 <?php include '../controllers/travelers/getSession.php' ?>
+<?php include '../controllers/travelers/update.php' ?>
+<?php include '../views/modal.php' ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -26,6 +26,60 @@ endif; ?>
     <!-- Enlaces Hojas Estilo-->
     <link rel="stylesheet" href="../assets/css/general.css">
     <link rel="stylesheet" href="../assets/css/traveler.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- FullCalendar.io -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: "es",
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                events: '../controllers/bookings/getCalendar.php',
+                eventDidMount: function(info) {
+                    console.log(info.event.extendedProps);
+                        // Verifica el creador de la reserva y cambia el color del evento
+                        if (info.event.extendedProps.creado_por === 'admin') {
+                            info.el.style.backgroundColor = '#343a40'; // Color para reservas creadas por el admin (por ejemplo, gris oscuro)
+                        } else if (info.event.extendedProps.creado_por === 'traveler') {
+                            info.el.style.backgroundColor = '#6c757d'; // Color para reservas creadas por el traveler (por ejemplo, gris claro)
+                        }
+                },
+                eventClick: function(info) {
+                    Swal.fire({
+                        title: 'Detalles de la Reserva',
+                        html: `
+                    <strong>Tipo de Reserva:</strong> ${info.event.extendedProps.id_tipo_reserva == 1 ? 'Aeropuerto-Hotel' : 'Hotel-Aeropuerto'}<br>
+                    <strong>Dia llegada:</strong> ${info.event.start} <br>
+                    <strong>Hora</strong> ${info.event.extendedProps.hora_entrada} <br>
+                    <strong>Hora</strong> ${info.event.extendedProps.hora_vuelo_salida} <br>
+                    <strong>Hotel</strong> ${info.event.title} <br>
+                    <strong>Cliente:</strong> ${info.event.extendedProps.email_cliente} <br>
+                    <strong>Origen vuelo</strong> ${info.event.extendedProps.origen_vuelo_entrada} <br>
+                    <strong>Nº viajeros</strong> ${info.event.extendedProps.num_viajeros} <br>
+                    <strong>Vehículo</strong> ${info.event.extendedProps.id_vehiculo} <br>
+                    <strong>Localizador</strong> ${info.event.extendedProps.localizador} <br>
+                    <strong>Reserva ID:</strong> ${info.event.id} <br>
+                `,
+                        icon: 'info',
+                        confirmButtonText: 'Cerrar',
+                        customClass: {
+                            confirmButton: 'my-confirm-button'
+                        }
+                    });
+                }
+            });
+            calendar.render();
+        });
+    </script>
 </head>
 <body>
 <nav class="navbar navbar-expand-xl bg-transparent">
@@ -37,7 +91,7 @@ endif; ?>
         <ul class="nav nav-pills justify-content-end">
             <li class="nav-item">
                 <!-- BOTÓN ACTUALIZAR -->
-                <button onclick="abrirModalActualizar(<?php echo htmlspecialchars(json_encode($traveler)); ?>)" class="btn btn-primary bg-transparent border-0 fs-5 fw-bold text-secondary" data-bs-toggle="modal" data-bs-target="#updateTravelerModal"><i class="bi bi-person-gear px-2 text-secondary"></i>Perfil</button>
+                <button onclick="abrirModalActualizar(<?php echo htmlspecialchars(json_encode($travelerData)); ?>)" class="btn btn-primary bg-transparent border-0 fs-5 fw-bold text-secondary" data-bs-toggle="modal" data-bs-target="#updateTravelerModal"><i class="bi bi-person-gear px-2 text-secondary"></i>Perfil</button>
             </li>
             <li class="pt-2">
                 <!-- En tu archivo dashboard-traveler.php -->
@@ -48,6 +102,14 @@ endif; ?>
 </nav>
 <div class="container">
     <h1 class="text-center pt-3">Panel de Usuario</h1>
+    <div class="container-fluid">
+        <div class="col text-start  py-1">
+            <button type="button" class="btn btn-warning text-white" data-bs-toggle="modal" data-bs-target="#addBookingModal">
+                Nueva reserva
+            </button>
+        </div>
+    </div>
+
     <?php if (isset($_GET['success']) && $_GET['success'] === 'update_exitoso'): ?>
         <div class="alert alert-success" role="alert">
             Perfil actualizado correctamente.
@@ -59,6 +121,11 @@ endif; ?>
     <?php endif; ?>
 </div>
 
+<div class="container">
+    <div class="col-xl">
+        <div id="calendar"></div>
+    </div>
+</div>
 <!-- Modal de actualizar Perfil viajero -->
 <div class="modal fade" id="updateTravelerModal" tabindex="-1" aria-labelledby="updateTravelerModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -128,28 +195,37 @@ endif; ?>
         </div>
     </div>
 </div>
-</div>
 <script>
-    const travelerData = <?php echo json_encode($travelerData); ?>;
+    //
+    <!-- Función que crea las reservas según el tipo de reserva -->
+    function mostrarCampos() {
+        var tipoReserva = document.getElementById("tipo_reserva").value;
+        document.getElementById("aeropuerto-hotel-fields").style.display = (tipoReserva == "1" || tipoReserva == "idayvuelta") ? "block" : "none";
+        document.getElementById("hotel-aeropuerto-fields").style.display = (tipoReserva == "2" || tipoReserva == "idayvuelta") ? "block" : "none";
+    }
 </script>
 <script>
-    function abrirModalActualizar() {
-        document.querySelector('#updateIdTravelerInput').value = travelerData.id_traveler || '';
-        document.querySelector('#updateNameInput').value = travelerData.name || '';
-        document.querySelector('#updateSurname1Input').value = travelerData.surname1 || '';
-        document.querySelector('#updateSurname2Input').value = travelerData.surname2 || '';
-        document.querySelector('#updateEmailInput').value = travelerData.email || '';
-        document.querySelector('#updateAddressInput').value = travelerData.address || '';
-        document.querySelector('#updateZipCodeInput').value = travelerData.zipCode || '';
-        document.querySelector('#updateCityInput').value = travelerData.city || '';
-        document.querySelector('#updateCountryInput').value = travelerData.country || '';
-        // No se establece un valor para el campo de contraseña, manteniéndolo en blanco
-        document.querySelector('#updatePasswordInput').value = '';
+        const travelerData = <?php echo isset($travelerData) ? json_encode($travelerData) : 'null'; ?>;
+</script>
+<script>
+//
+function abrirModalActualizar() {
+    console.log('Se ejecuta la función abrirModalActualizar');
+    console.log('Datos de travelerData:', travelerData);
+    document.querySelector('#updateIdTravelerInput').value = travelerData.id_traveler || '';
+    document.querySelector('#updateNameInput').value = travelerData.name || '';
+    document.querySelector('#updateSurname1Input').value = travelerData.surname1 || '';
+    document.querySelector('#updateSurname2Input').value = travelerData.surname2 || '';
+    document.querySelector('#updateEmailInput').value = travelerData.email || '';
+    document.querySelector('#updateAddressInput').value = travelerData.address || '';
+    document.querySelector('#updateZipCodeInput').value = travelerData.zipCode || '';
+    document.querySelector('#updateCityInput').value = travelerData.city || '';
+    document.querySelector('#updateCountryInput').value = travelerData.country || '';
+    document.querySelector('#updatePasswordInput').value = ''; // Deja la contraseña en blanco
 
-        var modal = new bootstrap.Modal(document.getElementById('updateTravelerModal'));
-        modal.show();
-    }
-
+    var modal = new bootstrap.Modal(document.getElementById('updateTravelerModal'));
+    modal.show();
+}
 </script>
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

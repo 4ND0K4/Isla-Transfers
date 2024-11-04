@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="../assets/css/traveler.css">
 </head>
 <body>
-<nav class="navbar navbar-expand-xl bg-transparent">
+<nav class="navbar navbar-expand-xl bg-light">
     <div class="container-fluid">
         <a class="navbar-brand fs-4 ps-5" href="login-traveler.php" id="logo">
             <img src="../assets/img/logo.png" alt="" width="30" height="24" class="d-inline-block align-text-top">
@@ -28,7 +28,7 @@
         </a>
         <ul class="nav nav-pills justify-content-end">
             <li class="nav-item">
-                <button type="button" class="btn btn-primary bg-transparent border-0 fs-5 fw-bold text-secondary" data-bs-toggle="modal" data-bs-target="#logpanels">Iniciar sesión</button>
+                <a href="login-traveler.php" class="text-decoration-none fs-5 fw-bold text-warning">Iniciar sesión</a>
             </li>
         </ul>
     </div>
@@ -60,12 +60,12 @@
 
             <div class="mb-3">
                 <label class="form-label text-warning">Email</label>
-                <input class="form-control" type="text" name="email" placeholder="Introduce tu email" required>
+                <input class="form-control" type="email" name="email" placeholder="Introduce tu email" required>
             </div>
 
             <div class="mb-3">
                 <label class="form-label text-warning">Password</label>
-                <input class="form-control" type="Password" name="password" placeholder="Introduce tu contraseña" required>
+                <input class="form-control" type="password" name="password" placeholder="Introduce tu contraseña" required>
             </div>
 
             <!-- CAMPOS PARA LA ACTUALIZACIÓN
@@ -98,10 +98,17 @@
             </div>
         </form>
         <?php if (isset($_GET['error'])): ?>
-        <div class="alert alert-danger" role="alert">
-            Error al registrarse. Por favor, complete los campos.
-        </div>
+            <div class="alert alert-danger" role="alert">
+                Error al registrarse. Por favor, complete los campos.
+            </div>
         <?php endif; ?>
+
+        <?php if (isset($_GET['success'])): ?>
+            <div class="alert alert-success" role="alert">
+                Registro exitoso. Por favor, inicie sesión.
+            </div>
+        <?php endif; ?>
+
     </div>
 </div>
 <!-- ARCHIVOS FINALES PARA QUE FUNCIONEN MODALES -->

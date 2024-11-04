@@ -33,6 +33,15 @@ class Booking
         return db_query_fetchall('SELECT * FROM ' . $this->table);
     }
 
+    public function getBookingsByEmail($email)
+    {
+        $query = 'SELECT * FROM ' . $this->table . ' WHERE email_cliente = :email';
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     public function getBookingsByType($Id_tipo_reserva = null) { //Diferencia en la tabla las reservas según id_tipo_reserva
         $query = "SELECT * FROM transfer_reservas";
@@ -145,8 +154,5 @@ class Booking
         $stmt->bindParam(':id_reserva', $id_booking, PDO::PARAM_INT);
         return $stmt->execute();
     }
-
-
-
 }
-
+?>

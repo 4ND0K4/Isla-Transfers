@@ -22,7 +22,7 @@ switch ($userType) {
         }
         break;
 
-    case 'traveler':
+    case 'travelerUser':
         require_once 'controllers/travelers/login.php';
         $controller = new TravelerController();
 
@@ -65,5 +65,4 @@ switch ($userType) {
         exit();
 }
 ?>
-
 
