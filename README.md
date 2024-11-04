@@ -1,30 +1,33 @@
-# PHPower - Isla_Transfers
-App Web sobre gestión de transfers.
-1. Introduction
-This project details the development of a web application for managing a tranfers company in a island. It uses PHP for the back-end and HTML, CSS (Bootstrap) and JS for the frontend. The primary goal of this project is to apply to create a Static Page Application that includes 3 differents types of users and components for each one.
+# Isla Transfers
+App Web sobre gestión de transfers desarrollada por PHPower(UOCX4).
+1. Introducción
+   Este proyecto consiste en el desarrollo de una aplicación Web de la compañía Isla Transfer, que gestiona transfers en una isla. El desarrollo del Back-End se hará en PHP puro y para el Front-End se usará HTML, CSS (Bootstrap 5) y JavaScript.
+   
+  Este proyecto se crea con páginas estáticas. La aplicación maneja 3 diferentes paneles según el usuario: administradores, viajeros y hoteles. 
+    - Los administradores gestionan toda la gestión de transfers: reservas, vehículos, hoteles y viajeros.
+    - Los viajeros puede ver sus reservas en el calendario, crear reservas y modificar los datos de su perfil.
+    - Los hoteles no tendrán funciones aún, pero tendrá en un posterior desarrollo.
+    
+  Este proyecto se desarrolla  en un entorno de trabajo colaborativo, utilizando Trello para la organización de las tareas y GitHub para el control de versiones.
 
-The application allows users to manage their transfers from the airport to the hotel and from the hotel to the airport. 
+2. Ambiente de desarrollo y configuración
+  2.1 Herramientas 
+    Docker: Empleado para contruir el servidor Apache, la base de datos MySql y PhPMyAdmin. 
+    Git: Empelado para el control de versiones, se crea un repositorio remoto almacenado en GitHub para la codificación colaborativa. 
+    Visual Studio Code (VS Code): The Integrated Development Environment (IDE) used for development, chosen for its extensive support for Angular-related extensions.
 
-This project was carried out in a collaborative development environment, utilizing tools like Trello for planning and GitHub for version control. The report outlines the project's structure, the components developed, communication techniques between components, and the main features implemented.
+   2.2 Planificación 
+    Project planning was conducted using Trello, where tasks were divided into clear stages with responsibilities assigned to different team members. Key milestones were marked, ensuring an organized and     efficient development process.
 
-2. Development Environment and Setup
-2.1 Tools Used
-Docker: Employed for
-Git: Employed for version control, with a remote repository hosted on GitHub for collaboration and code tracking.
-Visual Studio Code (VS Code): The Integrated Development Environment (IDE) used for development, chosen for its extensive support for Angular-related extensions.
-2.2 Project Planning
-Project planning was conducted using Trello, where tasks were divided into clear stages with responsibilities assigned to different team members. Key milestones were marked, ensuring an organized and efficient development process.
+  2.3 Repositorio
+    El repositorio del proyecto está alojado en GitHub, con código subido en diferentes ramas de desarrollo correspondiente a las funcionalidades que se van desarrollando. Al final del proyecto se unificará en una rama principal que contendrá las funcionalidades definitivas.
 
-2.3 Repository Setup
-The project repository was hosted on GitHub, with code uploaded in different branches corresponding to the functionalities being developed. Tagged commits were made at the end of each stage to allow easy code reviews and testing.
+  2.4 Entorno de desarrollo PHP
+    Se instalan las siguientes extensiones de PHP en VSC:
 
-2.4 PHP Environment Setup
+3. Estructura del proyecto
 
+  3.1 Estructura de carpetas
 
-3. Project Structure
-
-
-3.1 Folder Structure
-
-3.2 DDBB
+  3.2 DDBB
 
