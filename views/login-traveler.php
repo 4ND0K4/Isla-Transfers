@@ -24,10 +24,12 @@ session_start();
 <!-- NAV -->
 <nav class="navbar navbar-expand-xl bg-light px-3">
     <div class="container-fluid">
+        <!-- LOGO -->
         <a class="navbar-brand fs-4" href="#" id="logo">
             <img src="../assets/img/logo.png" alt="" width="30" height="24" class="d-inline-block align-text-top">
             Isla Transfer
         </a>
+        <!-- Botón iniciar sesión -->
         <ul class="nav nav-pills justify-content-end">
             <li class="nav-item">
                 <button type="button" class="btn btn-primary bg-transparent border-0 fs-5 fw-bold text-warning" data-bs-toggle="modal" data-bs-target="#logpanels">Iniciar sesión</button>
@@ -35,11 +37,14 @@ session_start();
         </ul>
     </div>
 </nav>
+<!-- BLOQUE PRINCIPAL -->
 <div class="container">
     <div class="row justify-content-center align-items-center min-vh-100">
         <div class="col-xl-6">
+            <!-- Título -->
             <h1 class="fw-bold display-5 pb-5 w-75">Reserva tu trayecto con Isla Transfers</h1>
-            <p class="fs-5">¡Introduce tus credenciales para comenzar el viaje!</p>
+            <!-- Subtítulo -->
+            <h2 class="fs-5 pb-3">¡Introduce tus credenciales para comenzar el viaje!</h2>
             <form action="/index.php?user_type=travelerUser&action=login" method="POST">
                 <div class="mb-3">
                     <label for="email" class="form-label text-warning fw-bold">Correo electrónico</label>
@@ -54,23 +59,30 @@ session_start();
                     <button type="submit" class="btn btn-warning">Acceder</button>
                 </div>
 
-                <hr>
+                <div class="d-grid gap-2 w-75">
+                    <hr>
+                </div>
+
                 <div class="d-grid gap-2 w-75 bg-success">
                     <a href="register-traveler.php" class="btn btn-link text-white text-decoration-none bg-opacity-50">Registrarse</a>
                 </div>
-                <?php if (isset($_SESSION['login_error'])) : ?>
-                    <div class="alert alert-danger w-75" role="alert">
-                        <?php echo $_SESSION['login_error']; ?>
-                        <?php unset($_SESSION['login_error']); ?>
-                    </div>
-                <?php endif; ?>
+                <div class="d-grid gap-2 w-75">
+                    <?php if (isset($_SESSION['login_error'])) : ?>
+                        <div class="alert alert-danger" role="alert" id="loginError">
+                            <?php echo $_SESSION['login_error']; ?>
+                            <?php unset($_SESSION['login_error']); ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </form>
             <!-- Mensaje de éxito si se ha creado un cliente particular-->
-            <?php if (isset($_GET['success'])): ?>
-                <div class="alert alert-success" role="alert">
-                    Registro exitoso. Por favor, inicie sesión.
-                </div>
-            <?php endif; ?>
+            <div class="d-grid gap-2 w-75">
+                <?php if (isset($_GET['success'])): ?>
+                    <div class="alert alert-success" role="alert" id="registerSuccess">
+                        Registro exitoso. Por favor, inicie sesión.
+                    </div>
+                <?php endif; ?>
+            </div>
         </div>
 
         <div class="col-xl-6">
@@ -78,6 +90,10 @@ session_start();
         </div>
     </div>
 </div>
+
+<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////// MODALS //////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
 <!-- MODAL INICIO SESIÓN-->
 <div class="modal fade" id="logpanels" tabindex="-1" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
@@ -105,7 +121,40 @@ session_start();
         </div>
     </div>
 </div>
-<!-- ARCHIVOS FINALES PARA QUE FUNCIONEN MODALES -->
+
+<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////// EVENTS //////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+<script>
+    // Configura un temporizador para ocultar el mensaje después de 3 segundos
+    setTimeout(function() {
+        var errorDiv = document.getElementById("loginError");
+        if (errorDiv) {
+            // Animación desvanecimiento mensaje
+            errorDiv.style.transition = "opacity 0.5s";
+            errorDiv.style.opacity = "0";
+            setTimeout(function() {
+                errorDiv.style.display = "none";
+            }, 500); // Tiempo transición en ocultar
+        }
+    }, 3000); // Tiempo de duración
+</script>
+<script>
+    // Configura un temporizador para ocultar el mensaje después de 3 segundos
+    setTimeout(function() {
+        var successDiv = document.getElementById("registerSuccess");
+        if (successDiv) {
+            // Animación desvanecimiento mensaje
+            successDiv.style.transition = "opacity 0.5s";
+            successDiv.style.opacity = "0";
+            setTimeout(function() {
+                successDiv.style.display = "none";
+            }, 500); // Tiempo transición en ocultar
+        }
+    }, 3000); // Tiempo de duración
+</script>
+<!-- Archivos para accionar los modales -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
 </body>

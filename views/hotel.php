@@ -1,7 +1,18 @@
 <?php
 include '../controllers/hotels/read.php';
+require_once __DIR__ . '/../models/db.php';
+//Cambia los id_zona por descriptores
+$db = db_connect();
+$zonesStmt = $db->prepare("SELECT Id_zona FROM transfer_zona");
+$zonesStmt->execute();
+$zones= $zonesStmt->fetchAll(PDO::FETCH_COLUMN);
+// Array de nombres de hoteles asignados manualmente
+$zoneNames = [
+    1 => 'Norte',
+    2 => 'Sur',
+    3 => 'Metropolitana',
+];
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -23,26 +34,25 @@ include '../controllers/hotels/read.php';
 </head>
 <body>
 <div class="container-fluid mt-4">
-    <!-- NAV -->
+    <!-- Icono de flecha de vuelta -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a href="dashboard-admin.php" class=" text-secondary text-decoration-none fw-bold fs-3"><i class="bi bi-arrow-return-left"></i></a>
     </nav>
+    <!-- Título -->
     <div class="container-fluid">
-        <!-- TÍTULO -->
-        <h1 class="text-center">Gestión de Clientes corporativos (Hoteles)</h1>
+        <h1 class="text-center fw-bold text-secondary">Gestión de Hoteles</h1>
     </div>
     <div class="row">
-        <div class="col text-start">
-            <!-- BOTÓN CREACIÓN CLIENTE CORPORATIVO -->
-            <button type="button" class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#addHotelModal">
-                Nuevo Cliente Corporativo
-            </button>
+        <!-- Botón creación de hotel -->
+        <div class="col text-start pt-4 pb-2">
+            <button type="button" class="btn btn-outline-success fw-bold" data-bs-toggle="modal" data-bs-target="#addHotelModal">Nuevo Hotel</button>
         </div>
     </div>
+    <!-- Tabla -->
     <div class="row">
         <div class="col">
             <div class="table-responsive">
-                <table class="table table-light table-striped table-hover w-100 h-100">
+                <table class="table table-success table-striped table-hover w-100 h-100">
                     <thead>
                     <tr>
                         <th scope="col">Hotel</th>
@@ -81,12 +91,16 @@ include '../controllers/hotels/read.php';
     </div>
 </div>
 
+<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////// MODALS //////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
 <!-- Modal de creacion Hotel -->
 <div class="modal fade" id="addHotelModal" tabindex="-1" aria-labelledby="addHotelModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title text-center">Nuevo Cliente Corporativo</h2>
+            <div class="modal-header bg-success-subtle">
+                <h2 class="modal-title text-center">Añade un nuevo hotel</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -97,31 +111,36 @@ include '../controllers/hotels/read.php';
                             <input type="hidden" name="idHotel" id="idHotelInput">
                         </div>
                         <!-- ID ZONA -->
-                        <div class="form-floating mb-3">
-                            <input type="number" class="form-control" name="idZone" id="idZoneInput" placeholder="Zona">
-                            <label for="idZoneInput">Zona</label>
-                        </div>
+                        <select name="idZone" id="idZoneInput" class="form-select" required>
+                            <option value="">Selecciona la zona del hotel</option>
+                            <?php foreach ($zones as $zoneId): ?>
+                                <option value="<?php echo $zoneId; ?>">
+                                    <?php echo isset($zoneNames[$zoneId]) ? $zoneNames[$zoneId] : "Zona Desconocida ($zoneId)"; ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                         <!-- Comisión -->
                         <div class="form-floating mb-3">
-                            <input type="number" class="form-control" name="commission" id="commissionInput" placeholder="Comisión">
+                            <input type="number" class="form-control" name="commission" id="commissionInput" placeholder="Comisión" required>
                             <label for="commissionInput">Comisión</label>
                         </div>
+
                         <!-- Usuario -->
                         <div class="form-floating mb-3">
-                            <input type="number" class="form-control" name="user" id="userInput" placeholder="Usuario">
-                            <label for="hotelUserInput">Usuario</label>
+                            <input type="hidden" name="user" id="userInput">
                         </div>
+
                         <!-- Password -->
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="pass" id="passInput" placeholder="Password">
+                            <input type="text" class="form-control" name="pass" id="passInput" placeholder="Password" required>
                             <label for="hotelPassInput">Password</label>
                         </div>
                     </div>
                     <!-- Botones de envio y cierre -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        <button type="submit" class="btn btn-primary" name="addHotel">Crear</button>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success border-info-success fw-bold text-white" name="addHotel">Crear</button>
                     </div>
+                    <div class="modal-footer"></div>
                 </form>
             </div>
         </div>
@@ -132,8 +151,8 @@ include '../controllers/hotels/read.php';
 <div class="modal fade" id="updateHotelModal" tabindex="-1" aria-labelledby="updateHotelModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Modificar Cliente Corporativo</h2>
+            <div class="modal-header bg-success-subtle">
+                <h2 class="modal-title">Actualiza el hotel</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -145,7 +164,7 @@ include '../controllers/hotels/read.php';
                         </div>
                         <!-- ID Zona -->
                         <div class="form-floating mb-3">
-                            <input type="number" class="form-control" name="idZone" id="updateIdZoneInput"  placeholder="Id zona">
+                            <input type="number" class="form-control" name="idZone" id="updateIdZoneInput"  placeholder="Id zona" readonly>
                             <label for="updateIdZoneInput">Zona</label>
                         </div>
                         <!-- Comision -->
@@ -155,7 +174,7 @@ include '../controllers/hotels/read.php';
                         </div>
                         <!-- Usuario -->
                         <div class="form-floating mb-3">
-                            <input type="number" class="form-control" name="user" id="updateUserInput"  placeholder="Usuario">
+                            <input type="number" class="form-control" name="user" id="updateUserInput"  placeholder="Usuario" readonly>
                             <label for="updateUserInput">Usuario</label>
                         </div>
                         <!-- Password -->
@@ -165,10 +184,10 @@ include '../controllers/hotels/read.php';
                         </div>
                     </div>
                     <!-- Botones de envio y cierre -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        <button type="submit" class="btn btn-primary" name="updateHotel">Modificar</button>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success border-info-success fw-bold text-white" name="updateHotel">Modificar</button>
                     </div>
+                    <div class="modal-footer"></div>
                 </form>
             </div>
         </div>
@@ -179,8 +198,8 @@ include '../controllers/hotels/read.php';
 <div class="modal fade" id="confirmarEliminacionModal" tabindex="-1" aria-labelledby="confirmarEliminacionModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmarEliminacionModalLabel">Confirmar eliminación</h5>
+            <div class="modal-header bg-success-subtle">
+                <h2 class="modal-title" id="confirmarEliminacionModalLabel">Confirmar eliminación</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -194,9 +213,9 @@ include '../controllers/hotels/read.php';
     </div>
 </div>
 
-
-
-
+<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////// EVENTS //////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <script>
     function abrirModalActualizar(hotel) {
         document.querySelector('#updateIdHotelInput').value = hotel.idHotel || '';
@@ -204,7 +223,6 @@ include '../controllers/hotels/read.php';
         document.querySelector('#updateCommissionInput').value = hotel.commission || '';
         document.querySelector('#updateUserInput').value = hotel.user || '';
         document.querySelector('#updatePassInput').value = '';
-
 
         var modal = new bootstrap.Modal(document.getElementById('updateHotelModal'));
         modal.show();
@@ -230,7 +248,7 @@ include '../controllers/hotels/read.php';
     }
 
 </script>
-<!-- Bootstrap JS -->
+<!-- Archivos para accionar los modales -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
 </body>

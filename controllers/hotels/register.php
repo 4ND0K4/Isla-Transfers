@@ -13,6 +13,7 @@ class RegisterHotelController {
         }
         $this->hotelModel = new Hotel($pdo);
     }
+
     public function registerHotel($id_hotel, $id_zona, $comision, $usuario, $password) {
         $usernameReturned = $this->hotelModel->addHotel($id_hotel, $id_zona, $comision, $usuario, $password);
 
@@ -28,14 +29,17 @@ class RegisterHotelController {
 
 $controller = new RegisterHotelController();
 
+function generateHotelUser($length = 6) {
+    return substr(str_shuffle("0123456789"), 0, $length);
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_hotel = $_POST['idHotel'] ?? '';
     $id_zona = $_POST['idZone'] ?? '';
     $comision = $_POST['commission'] ?? '';
-    $usuario = $_POST['user'] ?? '';
+    $usuario = generateHotelUser(); //El localizador será el código generado por la función
     $password = $_POST['pass'] ?? '';
 
     $controller->registerHotel($id_hotel, $id_zona, $comision, $usuario, $password);
 }
 ?>
-

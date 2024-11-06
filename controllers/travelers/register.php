@@ -31,16 +31,16 @@ class RegisterTravelerController {
 $controller = new RegisterTravelerController();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $id_viajero = $_POST['id_traveler'] ?? '';
-    $nombre = $_POST['name'] ?? '';
-    $apellido1 = $_POST['surname1'] ?? '';
-    $apellido2 = $_POST['surname2'] ?? '';
-    $direccion= $_POST['adress'] ?? '';
-    $codigoPostal= $_POST['zipCode'] ?? '';
-    $ciudad= $_POST['city'] ?? '';
-    $pais= $_POST['country'] ?? '';
-    $email= $_POST['email'] ?? '';
-    $password = $_POST['password'] ?? '';
+    $id_viajero = $_POST['id_traveler'] ?? ''; //Se genera current
+    $nombre = $_POST['name'] ?? ''; //Obligatorio
+    $apellido1 = $_POST['surname1'] ?? ''; //Obligatorio
+    $apellido2 = $_POST['surname2'] ?? ''; //opcional
+    $direccion= $_POST['adress'] ?? ''; // Solo al actualizar el perfil
+    $codigoPostal= $_POST['zipCode'] ?? ''; // Solo al actualizar el perfil
+    $ciudad= $_POST['city'] ?? ''; // Solo al actualizar el perfil
+    $pais= $_POST['country'] ?? ''; // Solo al actualizar el perfil
+    $email= $_POST['email'] ?? ''; //Obligatorio
+    $password = $_POST['password'] ?? ''; //Obligatorio, Hasheado
 
     $controller->registerTraveler($id_viajero, $nombre, $apellido1, $apellido2, $direccion, $codigoPostal, $ciudad, $pais, $email, $password);
 }

@@ -1,8 +1,9 @@
 <?php
+session_start();
+
+// Declaraciones de inclusión
 require_once(__DIR__ . '/../../models/db.php');
 require_once(__DIR__ . '/../../models/booking.php');
-
-session_start();
 
 // Conectar con la base de datos
 $db = db_connect();
@@ -19,7 +20,7 @@ if (isset($_SESSION['admin'])) {
     $bookings = $booking->getAllBookings();
 } elseif (isset($_SESSION['travelerUser'])) {
     // El traveler solo ve sus reservas
-    $email_cliente = $_SESSION['travelerUser']; // Se asume que el email del traveler está en la sesión
+    $email_cliente = $_SESSION['travelerUser'];
     $bookings = $booking->getBookingsByEmail($email_cliente);
 } else {
     // Si no está identificado, no devolver nada
@@ -27,23 +28,18 @@ if (isset($_SESSION['admin'])) {
     exit;
 }
 
-// Formatear los datos para FullCalendar
+// Formatear los datos del array events para FullCalendar
 $events = [];
 foreach ($bookings as $row) {
-
-    $creado_por = (isset($_SESSION['admin']) && $_SESSION['admin'] === $row['id_reserva']) ? 'admin' : 'traveler';
     // Validar las fechas y usar la fecha alternativa si una es "0000-00-00 00:00:00"
     $id_tipo_reserva = $row['id_tipo_reserva'];
     $fechaEntrada = $row['fecha_entrada'];
     $fechaVueloSalida = $row['fecha_vuelo_salida'];
 
-    // Verificar si la fecha es "0000-00-00 00:00:00" y usar la alternativa
-    if ($id_tipo_reserva == 1) {
-        $startDate = $fechaEntrada;
-    } else {
-        $startDate = $fechaVueloSalida;
-    }
+    // Verificar si la fecha es de id_tipo_reserva 1. Si es 1 usa fecha_entrada. Si es 2 usa fecha_vuelo_salida
+    $startDate = ($id_tipo_reserva == 1) ? $fechaEntrada : $fechaVueloSalida;
 
+    //Array de events
     $events[] = [
         'id' => $row['id_reserva'],
         'title' => 'Hotel ' . $row['id_hotel'],
@@ -61,7 +57,7 @@ foreach ($bookings as $row) {
             'hora_vuelo_salida' => $row['hora_vuelo_salida'],
             'num_viajeros' => $row['num_viajeros'],
             'id_vehiculo' => $row['id_vehiculo'],
-            'creado_por' => $creado_por //
+            'tipo_creador_reserva' => $row['tipo_creador_reserva'] // Usar el campo directamente
         ]
     ];
 }

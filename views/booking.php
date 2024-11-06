@@ -15,15 +15,15 @@ $hotelsStmt->execute();
 $hotels = $hotelsStmt->fetchAll(PDO::FETCH_COLUMN);
 // Array de nombres de hoteles asignados manualmente
 $hotelNames = [
-    1 => 'Hotel Norte',
-    2 => 'Hotel Sur',
-    3 => 'Hotel Este',
-    4 => 'Hotel Oeste',
-    5 => 'Hotel Norte2',
-    6 => 'Hotel Sur2',
-    7 => 'Hotel Este2',
-    8 => 'Hotel Oeste2',
-    9 => 'Hotel Centro'
+    1 => 'Hotel 1',
+    2 => 'Hotel 2',
+    3 => 'Hotel 3',
+    4 => 'Hotel 4',
+    5 => 'Hotel 5',
+    6 => 'Hotel 6',
+    7 => 'Hotel 7',
+    8 => 'Hotel 8',
+    9 => 'Hotel 9'
 ];
 ?>
 <!DOCTYPE html>
@@ -47,37 +47,37 @@ $hotelNames = [
 </head>
 <body>
 <div class="container-fluid mt-4">
+    <!-- Icono de flecha de vuelta -->
     <nav class="navbar navbar-expand-xl bg-transparent">
         <a href="dashboard-admin.php" class=" text-secondary text-decoration-none fw-bold fs-3"><i class="bi bi-arrow-return-left"></i></a>
     </nav>
+    <!-- Título -->
     <div class="container-fluid">
-        <h1 class="text-center">Gestión de Reservas</h1>
+        <h1 class="text-center fw-bold text-secondary">Gestión de Reservas</h1>
     </div>
-    <!-- Botón para abrir el modal creación de reservas -->
     <div class="row">
-        <div class="col text-start  py-1">
-            <button type="button" class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#addBookingModal">
-                Nueva reserva
-            </button>
+        <!-- Botón creación de reservas -->
+        <div class="col text-start pt-4 pb-2">
+            <button type="button" class="btn btn-outline-dark fw-bold" data-bs-toggle="modal" data-bs-target="#addBookingModal">Nueva reserva</button>
         </div>
-    </div>
-    <!-- Filtro por tipo de reserva -->
-    <div class="text-end">
-        <form method="GET" action="">
-            <label for="id_tipo_reserva">Filtrar por Tipo de Reserva:</label>
-            <select name="id_tipo_reserva" id="id_tipo_reserva">
-                <option value="">Todos</option>
-                <option value="1" <?php if ($Id_tipo_reserva == 1) echo 'selected'; ?>>Aeropuerto - Hotel</option>
-                <option value="2" <?php if ($Id_tipo_reserva == 2) echo 'selected'; ?>>Hotel - Aeropuerto</option>
-            </select>
-            <button type="submit">Filtrar</button>
-        </form>
+        <!-- Filtro por tipo de reserva -->
+        <div class="col text-end pt-4 pb-2">
+            <form method="GET" action="">
+                <label for="id_tipo_reserva">Filtrar:</label>
+                <select name="id_tipo_reserva" id="id_tipo_reserva">
+                    <option value="">Todos</option>
+                    <option value="1" <?php if ($Id_tipo_reserva == 1) echo 'selected'; ?>>Aeropuerto - Hotel</option>
+                    <option value="2" <?php if ($Id_tipo_reserva == 2) echo 'selected'; ?>>Hotel - Aeropuerto</option>
+                </select>
+                <button type="submit">Filtrar</button>
+            </form>
+        </div>
     </div>
     <!-- Tabla -->
     <div class="row">
         <div class="col">
             <div class="table-responsive">
-                <table class="table table-light table-striped table-hover w-100 h-100">
+                <table class="table table-secondary table-striped table-hover w-100 h-100">
                     <thead>
                     <tr>
                         <th>Id reserva</th>
@@ -138,20 +138,24 @@ $hotelNames = [
             </div>
         </div>
     </div>
+</div>
 
-    <!--Modal creacion Reservas-->
+<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////// MODALS //////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+<!--Modal creacion Reservas-->
 <div class="modal fade" id="addBookingModal" tabindex="-1" aria-labelledby="addBookingModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header bg-info">
-                <h2 class="modal-title text-center">Nueva Reserva</h2>
+            <div class="modal-header bg-secondary-subtle">
+                <h2 class="modal-title text-center">Añade una nueva reserva</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <!-- Se elige entre las 3 opciones para abrir unos campos u otros -->
                 <form action="../controllers/bookings/create.php" method="POST">
-                    <label for="tipo_reserva"></label>
-                    <select name="id_tipo_reserva" id="tipo_reserva" onchange="mostrarCampos()">
+                    <select name="id_tipo_reserva" id="tipo_reserva" class="form-select form-select-sm" aria-label="multiple select" onchange="mostrarCampos()">
                         <option value="1">Aeropuerto-Hotel</option>
                         <option value="2">Hotel-Aeropuerto</option>
                         <option value="idayvuelta">Ida/Vuelta</option>
@@ -199,11 +203,6 @@ $hotelNames = [
 
                     <!-- Campos comunes para ambos trayectos -->
                     <div>
-                        <!-- Id Hotel
-                        <div class="form-floating mb-3">
-                            <input type="number" class="form-control" name="id_hotel" id="idHotelInput" aria-describedby="helpIdHotel" placeholder="ID hotel" required>
-                            <label for="idHotelInput">Id de hotel</label>
-                        </div>-->
                         <!-- Id Destino-->
                         <div class="form-floating mb-3">
                             <!--<input type="number" class="form-control" name="id_destino" id="idDestinationInput"  aria-describedby="helpIdDestination" placeholder="Id de destino" required>-->
@@ -227,39 +226,24 @@ $hotelNames = [
                             <input type="email" class="form-control" name="email_cliente" id="emailClientInput" aria-describedby="helpEmailClient" placeholder="Email del cliente" required>
                             <label for="emailClientInput">Email del cliente</label>
                         </div>
-                        <!-- Id Vehículo -->
-                        <div class="form-floating mb-3">
-                            <input type="number" class="form-control" name="id_vehiculo" id="idVehicleInput" aria-describedby="helpIdVehicle"  placeholder="Id vehiculo">
-                            <label for="idVehicleInput">Vehículo</label>
-                        </div>
                     </div>
-                    <!-- <div>
-                          Sección donde se mostrarán los datos del viajero
-                        <div id="travelerData" style="display: none;">
-                            <p><strong>Nombre:</strong> <span id="travelerName"></span></p>
-                            <p><strong>Apellido:</strong> <span id="travelerSurname1"></span></p>
-                            <p><strong>Pais:</strong> <span id="travelerCountry"></span></p>
-                             Agrega más campos si es necesario
-                        </div>
-                    </div>-->
-
-                <!-- Botones de envio y cierre -->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-info" name="addBooking">Crear</button>
-                </div>
+                    <!-- Botones de envio y cierre -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-dark border-dark-subtle fw-bold text-white" name="addBooking">Crear</button>
+                    </div>
+                    <div class="modal-footer"></div>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
-    <!--Modal modificación Reservas-->
+<!--Modal modificación Reservas-->
 <div class="modal fade" id="updateBookingModal" tabindex="-1" aria-labelledby="updateBookingModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Modificar Reserva</h2>
+            <div class="modal-header bg-secondary-subtle">
+                <h2 class="modal-title">Actualice la reserva</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -270,7 +254,7 @@ $hotelNames = [
 
                         <!-- Id Tipo Reserva -->
                         <div class="form-floating mb-3">
-                            <input type="number" class="form-control" name="id_tipo_reserva" id="updateIdTypeBookingInput" placeholder="Tipo de reserva" readonly>
+                            <input type="number" class="form-control" name="id_tipo_reserva" id="updateIdTypeBookingInput" placeholder="Tipo de reserva">
                             <label for="updateIdTypeBookingInput">Tipo de reserva (1: Aeropuerto-Hotel, 2: Hotel-Aeropuerto)</label>
                         </div>
 
@@ -285,12 +269,6 @@ $hotelNames = [
                             <input type="text" class="form-control" name="email_cliente" id="updateEmailClientInput" placeholder="Email" readonly>
                             <label for="updateEmailClientInput">Email del Cliente</label>
                         </div>
-
-                        <!-- Id Hotel
-                        <div class="form-floating mb-3">
-                            <input type="number" class="form-control" name="id_hotel" id="updateIdHotelInput" placeholder="ID del hotel">
-                            <label for="updateIdHotelInput">Hotel</label>
-                        </div>-->
 
                         <!-- Número de Viajeros -->
                         <div class="form-floating mb-3">
@@ -353,37 +331,56 @@ $hotelNames = [
                         </div>
                     </div>
 
-                    <!-- Botones de envío y cierre -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        <button type="submit" class="btn btn-primary" name="updateBooking">Modificar</button>
+                    <!-- Botones de envio y cierre -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-dark border-dark-subtle fw-bold text-white" name="updateBooking">Modificar</button>
                     </div>
+                    <div class="modal-footer"></div>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
-    <!-- Modal de Confirmación de Eliminación -->
-    <div class="modal fade" id="confirmarEliminacionModal" tabindex="-1" aria-labelledby="confirmarEliminacionLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmarEliminacionLabel">Confirmar Eliminación</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    ¿Estás seguro de que deseas eliminar esta reserva?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" id="btnEliminar" class="btn btn-danger" data-url="">Eliminar</button>
-                </div>
+<!-- Modal de Confirmación de Eliminación -->
+<div class="modal fade" id="confirmarEliminacionModal" tabindex="-1" aria-labelledby="confirmarEliminacionLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-secondary-subtle">
+                <h2 class="modal-title" id="confirmarEliminacionLabel">Confirmar Eliminación</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de que deseas eliminar esta reserva?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" id="btnEliminar" class="btn btn-danger" data-url="">Eliminar</button>
             </div>
         </div>
     </div>
+</div>
+
+<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////// EVENTS //////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <script>
-    <!-- Función que crea las reservas según el tipo de reserva -->
+    document.addEventListener('DOMContentLoaded', function() {
+        // Muestra los campos por defecto al abrir el modal
+        document.getElementById("tipo_reserva").value = "idayvuelta";
+        mostrarCampos();
+
+        // Muestra u oculta los campos según el valor seleccionado
+        document.getElementById("tipo_reserva").addEventListener('change', mostrarCampos);
+
+        // Evento para mantener los campos de ida y vuelta al abrir el modal
+        var addBookingModal = document.getElementById('addBookingModal');
+        addBookingModal.addEventListener('shown.bs.modal', function() {
+            document.getElementById("tipo_reserva").value = "idayvuelta"; // Configura el valor predeterminado
+            mostrarCampos(); // Muestra los campos al abrir
+        });
+    });
+
     function mostrarCampos() {
         var tipoReserva = document.getElementById("tipo_reserva").value;
         document.getElementById("aeropuerto-hotel-fields").style.display = (tipoReserva == "1" || tipoReserva == "idayvuelta") ? "block" : "none";
@@ -392,6 +389,7 @@ $hotelNames = [
 
     <!-- Función para el modal Updater -->
     function abrirModalActualizar(booking) {
+        console.log('Booking data:', booking);
         document.querySelector('#updateIdBookingInput').value = booking.id_reserva || '';
         document.querySelector('#updateLocatorInput').value = booking.localizador || '';
         //document.querySelector('#updateIdHotelInput').value = booking.id_hotel || '';
@@ -404,6 +402,10 @@ $hotelNames = [
         // Solo mostrar los campos correspondientes al tipo de reserva
         if (booking.id_tipo_reserva == 1) { // Aeropuerto - Hotel
             document.querySelector('#updateDateInInput').value = booking.fecha_entrada || '';
+            console.log(document.querySelector('#updateDateInInput')); // Debería mostrar el elemento input de fecha
+            console.log(document.querySelector('#updateDateInInput').value); // Debería mostrar el valor asignado
+
+
             document.querySelector('#updateHourInInput').value = booking.hora_entrada || '';
             document.querySelector('#updateNumFlightInInput').value = booking.numero_vuelo_entrada || '';
             document.querySelector('#updateOriginFlightInInput').value = booking.origen_vuelo_entrada || '';
@@ -443,7 +445,7 @@ $hotelNames = [
         modal.show();
     }
 </script>
-<!-- Bootstrap JS -->
+<!-- Archivos para accionar los modales -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
 </body>

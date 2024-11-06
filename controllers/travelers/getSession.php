@@ -1,9 +1,6 @@
 <?php
-if (!isset($_SESSION)) {
-    session_start();
-}
-
-if (!isset($_SESSION['user'])) {
+// Verificación de la sesión para la protección de acceso
+if (!isset($_SESSION['travelerUser'])) {
     header("Location: /index.php");
     exit();
 }
@@ -12,16 +9,39 @@ require_once(__DIR__ . '/../../models/db.php');
 require_once(__DIR__ . '/../../models/traveler.php');
 
 $db = db_connect();
-$travelers = [];
-
 if (!$db) {
     die("Error al conectar con la base de datos");
 }
 
-$traveler = new Traveler($db);
+$travelerModel = new Traveler($db);
 
-// Solo devuelve el usuario de la sesión actual
-$resultado = $traveler->findByEmail($_SESSION['user']);
+// Código existente que devuelve el usuario de la sesión actual
+$resultado = $travelerModel->findByEmail($_SESSION['travelerUser']);
+
+// Verificar si es una solicitud AJAX para obtener datos del viajero por email
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
+    $email = $_POST['email'];
+    $traveler = $travelerModel->findByEmail($email);
+
+    if ($traveler) {
+        // Devolver los datos del viajero en formato JSON
+        echo json_encode([
+            'id_viajero' => $traveler['id_viajero'],
+            'nombre' => $traveler['nombre'],
+            'apellido1' => $traveler['apellido1'],
+            'apellido2' => $traveler['apellido2'],
+            'direccion' => $traveler['direccion'],
+            'codigoPostal' => $traveler['codigoPostal'],
+            'ciudad' => $traveler['ciudad'],
+            'pais' => $traveler['pais'],
+            'email' => $traveler['email']
+        ]);
+    } else {
+        // Devolver un error si no se encuentra el viajero
+        echo json_encode(['error' => 'No se encontró ningún viajero con ese email']);
+    }
+    exit();
+}
 
 if ($resultado) {
     $travelerData = array(
@@ -39,3 +59,4 @@ if ($resultado) {
 } else {
     die("Error: No se encontró el usuario en la base de datos.");
 }
+

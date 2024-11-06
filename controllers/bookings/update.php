@@ -1,5 +1,5 @@
 <?php
-// Conexión a la BBDD y al Modelo
+// Declaraciones de inclusión
 require_once(__DIR__ . '/../../models/db.php');
 require_once(__DIR__ . '/../../models/booking.php');
 
@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Redirigir a la página de reservas si la actualización es exitosa
     if ($result) {
-        header("Location: /views/booking.php?status=updated");
+        header("Location: " . $_SERVER['HTTP_REFERER']);
         exit; // Finalizar el script tras la redirección
     } else {
         // Mostrar un mensaje en caso de fallo en la actualización
@@ -66,4 +66,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-

@@ -36,7 +36,7 @@ class adminController {
             include __DIR__ . '/../views/login-admin.php';
         }
     }
-    
+
     public function logout() {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
@@ -47,3 +47,4 @@ class adminController {
         exit();
     }
 }
+

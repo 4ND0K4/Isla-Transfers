@@ -34,7 +34,7 @@ class TravelerController
     {
         // Usar verifyPasswordEmail para autenticar al usuario
         if ($this->travelerModel->verifyPasswordEmail($email, $password)) {
-            $_SESSION['user'] = $email;
+            $_SESSION['travelerUser'] = $email;
             header("Location: /views/dashboard-traveler.php");
             exit();
         } else {

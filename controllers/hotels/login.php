@@ -57,4 +57,3 @@ class HotelController
         exit();
     }
 }
-

@@ -5,7 +5,7 @@ session_start();
 <html lang="es">
 <head>
     <meta charset="utf-8">
-    <title>Login de Viajeros</title>
+    <title>Login - Administrador</title>
     <meta name="author" content="PHPOWER" />
     <meta name="description" content="La página de login de los administradores de Isla Transfer.
     Hay un formulario con los campos necesarios para loguearte." />
@@ -30,37 +30,49 @@ session_start();
         </a>
         <ul class="nav nav-pills justify-content-end">
             <li>
-                <button type="button" class="btn btn-primary border-0 bg-transparent fs-5 fw-bold text-info" data-bs-toggle="modal" data-bs-target="#logpanels">Iniciar sesión</button>
+                <button type="button" class="btn btn-primary border-0 bg-transparent fs-5 fw-bold text-secondary" data-bs-toggle="modal" data-bs-target="#logpanels">Iniciar sesión</button>
             </li>
         </ul>
     </div>
 </nav>
+<!-- BLOQUE PRINCIPAL -->
 <div class="container">
-    <div class="row justify-content-center align-items-center min-vh-100">
+    <div class="d-flex flex-column justify-content-center align-items-center align-content-center min-vh-100">
+            <!-- Título -->
+        <div class="col-xl-6 text-center">
+            <h2 class="text-secondary fs-2 fw-bold pb-5 w-75">Logueate con las credenciales de administrador</h2>
+        </div>
         <div class="col-xl-6">
-            <h1 class="ps-4 text-secondary fw-bold display-5 pb-5">Login de Administrador</h1>
-                <form action="../index.php?user_type=admin&action=login" method="POST">
-                    <div class="mb-3">
-                        <label for="id" class="form-label text-info fw-bold">ID</label>
-                        <input type="text" class="form-control w-75" name="id" id="id" placeholder="Introduce el ID" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="key" class="form-label text-info fw-bold">Clave</label>
-                        <input type="password" class="form-control w-75" id="key" name="key" placeholder="Introduce la clave" required>
-                    </div>
-                    <div class="d-grid gap-2 w-75">
-                        <button type="submit" class="btn btn-info text-white">Acceder</button>
-                    </div>
+            <form action="../index.php?user_type=admin&action=login" method="POST">
+                <div class="mb-3">
+                    <label for="id" class="form-label text-dark fw-bold">ID</label>
+                    <input type="text" class="form-control w-75" name="id" id="id" placeholder="Introduce el ID" required>
+                </div>
+                <div class="mb-3">
+                    <label for="key" class="form-label text-dark fw-bold">Clave</label>
+                    <input type="password" class="form-control w-75" id="key" name="key" placeholder="Introduce la clave" required>
+                </div>
+                <div class="d-grid gap-2 w-75">
+                    <button type="submit" class="btn btn-dark text-white">Acceder</button>
+                </div>
+                <div class="d-grid gap-2 w-75">
                     <?php if (isset($_SESSION['login_error'])) : ?>
-                        <div class="alert alert-danger w-75" role="alert">
+                        <div class="alert alert-danger" role="alert" id="loginError">
                             <?php echo $_SESSION['login_error']; ?>
                             <?php unset($_SESSION['login_error']); ?>
                         </div>
                     <?php endif; ?>
-                </form>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+
+
+<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////// MODALS //////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
 <!-- MODAL INICIO SESIÓN-->
 <div class="modal fade" id="logpanels" tabindex="-1" role="dialog" aria-labelledby="modalTitleId" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
@@ -87,8 +99,26 @@ session_start();
         </div>
     </div>
 </div>
+
+<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////// EVENTS //////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+<script>
+    // Configura un temporizador para ocultar el mensaje después de 3 segundos
+    setTimeout(function() {
+        var errorDiv = document.getElementById("loginError");
+        if (errorDiv) {
+            // Animación desvanecimiento mensaje
+            errorDiv.style.transition = "opacity 0.5s";
+            errorDiv.style.opacity = "0";
+            setTimeout(function() {
+                errorDiv.style.display = "none";
+            }, 500); // Tiempo transición en ocultar
+        }
+    }, 3000); // Tiempo de duración
+</script>
+<!-- Archivos para accionar los modales -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
-

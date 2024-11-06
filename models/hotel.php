@@ -33,9 +33,7 @@ class  Hotel {
     public function readAllHotels() {
         return db_query_fetchall('SELECT * FROM ' . $this->table);
     }
-
-
-
+    
     public function addHotel($id_hotel, $id_zona, $comision, $usuario, $password) {
         $this->db->beginTransaction();
 
@@ -85,4 +83,3 @@ class  Hotel {
     }
 
 }
-

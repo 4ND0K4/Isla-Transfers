@@ -63,8 +63,8 @@ class Booking
     public function addBooking($data)
     {
         try {
-            $query = 'INSERT INTO ' . $this->table . ' (Localizador, Id_hotel, Id_tipo_reserva, Email_cliente, Fecha_reserva, Fecha_modificacion, Id_destino, Fecha_entrada, Hora_entrada, Numero_vuelo_entrada, Origen_vuelo_entrada, Hora_vuelo_salida, Fecha_vuelo_salida, Num_viajeros, Id_vehiculo) 
-              VALUES (:localizador, :id_hotel, :id_tipo_reserva, :email_cliente, :fecha_reserva, :fecha_modificacion, :id_destino, :fecha_entrada, :hora_entrada, :numero_vuelo_entrada, :origen_vuelo_entrada, :hora_vuelo_salida, :fecha_vuelo_salida, :num_viajeros, :id_vehiculo)';
+            $query = 'INSERT INTO ' . $this->table . ' (Localizador, Id_hotel, Id_tipo_reserva, Email_cliente, Fecha_reserva, Fecha_modificacion, Id_destino, Fecha_entrada, Hora_entrada, Numero_vuelo_entrada, Origen_vuelo_entrada, Hora_vuelo_salida, Fecha_vuelo_salida, Num_viajeros, Id_vehiculo, tipo_creador_reserva) 
+          VALUES (:localizador, :id_hotel, :id_tipo_reserva, :email_cliente, :fecha_reserva, :fecha_modificacion, :id_destino, :fecha_entrada, :hora_entrada, :numero_vuelo_entrada, :origen_vuelo_entrada, :hora_vuelo_salida, :fecha_vuelo_salida, :num_viajeros, :id_vehiculo, :tipo_creador_reserva)';
 
             $stmt = $this->conn->prepare($query);
 
@@ -84,6 +84,7 @@ class Booking
             $stmt->bindParam(":fecha_vuelo_salida", $data['fecha_vuelo_salida']);
             $stmt->bindParam(":num_viajeros", $data['num_viajeros']);
             $stmt->bindParam(":id_vehiculo", $data['id_vehiculo']);
+            $stmt->bindParam(":tipo_creador_reserva", $data['tipo_creador_reserva']); // Nuevo campo
 
             $stmt->execute();
             return true;
@@ -92,6 +93,7 @@ class Booking
             return false;
         }
     }
+
 
     public function updateBooking($data) {
         // Base de la consulta SQL

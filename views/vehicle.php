@@ -25,23 +25,27 @@ include '../controllers/vehicles/update.php';
 </head>
 <body>
 <div class="container-fluid mt-4">
+    <!-- Icono de flecha de vuelta -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a href="dashboard-admin.php" class=" text-secondary text-decoration-none fw-bold fs-3"><i class="bi bi-arrow-return-left"></i></a>
     </nav>
+    <!-- Título -->
     <div class="container-fluid">
-        <h1 class="text-center">Gestión de Vehículos</h1>
+        <h1 class="text-center fw-bold text-secondary">Gestión de Vehículos</h1>
     </div>
+    <!-- Botón creación vehículo -->
     <div class="row">
-        <div class="col text-start">
-            <button type="button" class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#addVehicleModal">
+        <div class="col text-start pt-4 pb-2">
+            <button type="button" class="btn btn-outline-info fw-bold" data-bs-toggle="modal" data-bs-target="#addVehicleModal">
                 Nuevo Vehiculo
             </button>
         </div>
     </div>
+    <!-- Tabla -->
     <div class="row">
         <div class="col">
             <div class="table-responsive">
-                <table class="table table-light table-striped table-hover w-100 h-100">
+                <table class="table table-info table-striped table-hover w-100 h-100">
                     <thead>
                     <tr>
                         <th scope="col">ID Vehiculo</th>
@@ -57,7 +61,7 @@ include '../controllers/vehicles/update.php';
                             <td><?php echo $vehicle['description']; ?></td>
                             <td><?php echo $vehicle['email_rider']; ?></td>
                             <td><?php echo $vehicle['pass']; ?></td>
-                            
+
                             <td>
                                 <div class="btn-group" role="group">
                                     <button onclick="abrirModalActualizar(<?php echo htmlspecialchars(json_encode($vehicle)); ?>)" class="btn btn-sm btn-outline-secondary">Modificar</button>
@@ -75,12 +79,16 @@ include '../controllers/vehicles/update.php';
     </div>
 </div>
 
+<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////// MODALS //////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
 <!-- Modal de creacion Vehiculo -->
 <div class="modal fade" id="addVehicleModal" tabindex="-1" aria-labelledby="addVehicleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Nuevo vehiculo</h2>
+            <div class="modal-header bg-info-subtle">
+                <h2 class="modal-title">Añade un nuevo vehículo</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -107,10 +115,10 @@ include '../controllers/vehicles/update.php';
                         </div>
                     </div>
                     <!-- Botones de envio y cierre -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        <button type="submit" class="btn btn-primary" name="addVehicle">Crear</button>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-info border-info-subtle fw-bold text-white" name="addVehicle">Crear</button>
                     </div>
+                    <div class="modal-footer"></div>
                 </form>
             </div>
         </div>
@@ -121,8 +129,8 @@ include '../controllers/vehicles/update.php';
 <div class="modal fade" id="updateVehicleModal" tabindex="-1" aria-labelledby="updateVehicleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Modificar Vehículo</h2>
+            <div class="modal-header bg-info-subtle">
+                <h2 class="modal-title">Actualiza el vehículo</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -149,10 +157,10 @@ include '../controllers/vehicles/update.php';
                         </div>
                     </div>
                     <!-- Botones de envio y cierre -->
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        <button type="submit" class="btn btn-primary" name="updateVehicle">Modificar</button>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-info border-info-subtle fw-bold text-white" name="updateVehicle">Modificar</button>
                     </div>
+                    <div class="modal-footer"></div>
                 </form>
             </div>
         </div>
@@ -163,8 +171,8 @@ include '../controllers/vehicles/update.php';
 <div class="modal fade" id="confirmarEliminacionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Confirmar Eliminación</h5>
+            <div class="modal-header bg-info-subtle">
+                <h2 class="modal-title" id="exampleModalLabel">Confirmar Eliminación</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -178,9 +186,10 @@ include '../controllers/vehicles/update.php';
     </div>
 </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////// EVENTS //////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
 <script>
     function abrirModalActualizar(vehicle) {
         document.querySelector('#updateIdVehicleInput').value = vehicle.id_vehicle || '';
@@ -199,8 +208,9 @@ include '../controllers/vehicles/update.php';
         var modal = new bootstrap.Modal(document.getElementById('confirmarEliminacionModal'));
         modal.show();
     }
-
 </script>
-
+<!-- Archivos para accionar los modales -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
 </body>
-</html>
+</html

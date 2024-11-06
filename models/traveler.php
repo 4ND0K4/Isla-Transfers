@@ -19,7 +19,7 @@ class Traveler
     {
         $this->db = $db;
     }
-    
+
     ///////////////////////////////////LOGIN/////////////////////////////////
 
     // Login para Viajeros/Travelers (por email)
@@ -42,7 +42,7 @@ class Traveler
             return false;
         }
     }
-    
+
     /////////////////////////////CRUD///////////////////////////////////77
 
     public function readTraveler() {
@@ -79,7 +79,6 @@ class Traveler
             return null;
         }
     }
-
     public function updateTraveler() {
         $query = 'UPDATE ' . $this->table . ' SET Nombre=:nombre, Apellido1=:apellido1, Apellido2=:apellido2, Direccion=:direccion, CodigoPostal=:codigoPostal, Ciudad=:ciudad, Pais=:pais, Email=:email';
 

@@ -25,34 +25,38 @@ class  Vehicle
         $stmt->bindParam(":id_vehiculo", $this->Id_vehiculo);
         $stmt->bindParam(":descripcion", $this->Descripcion);
         $stmt->bindParam(":email_conductor", $this->Email_conductor);
-        $stmt->bindParam(":password", $this->Password);
+        $stmt->bindParam(":password", $this->Password); // Contraseña ya hasheada
 
-        if ($stmt->execute())
-        {
-            return true;
-        }
-        return false;
+        return $stmt->execute();
     }
-
+    
     public function updateVehicle() {
-        $query = 'UPDATE ' . $this->table . ' SET Descripcion=:descripcion, Email_conductor=:email_conductor, Password=:password WHERE Id_vehiculo=:id_vehiculo';
+        // Consulta base para actualizar el vehículo
+        $query = 'UPDATE ' . $this->table . ' SET Descripcion=:descripcion, Email_conductor=:email_conductor';
+
+        // Solo incluir la contraseña en el SQL si se ha proporcionado una nueva
+        if (!empty($this->Password)) {
+            $query .= ', Password=:password';
+        }
+        $query .= ' WHERE Id_vehiculo=:id_vehiculo';
+
         $stmt = $this->conn->prepare($query);
 
+        // Bindeo de parámetros
         $stmt->bindParam(":id_vehiculo", $this->Id_vehiculo);
         $stmt->bindParam(":descripcion", $this->Descripcion);
         $stmt->bindParam(":email_conductor", $this->Email_conductor);
-        $stmt->bindParam(":password", $this->Password);
 
-        if ($stmt->execute()) {
-            return true;
+        // Solo bindear la contraseña si es nueva y hasheada
+        if (!empty($this->Password)) {
+            $stmt->bindParam(":password", $this->Password);
         }
-        return false;
-    }
 
+        return $stmt->execute();
+    }
+    
     public function deleteVehicle($id_vehicle) {
         $query = 'DELETE FROM ' . $this->table . ' WHERE Id_vehiculo = :id_vehiculo';
         return db_query_execute($query, [':id_vehiculo' => $id_vehicle]);
     }
-
-
 }

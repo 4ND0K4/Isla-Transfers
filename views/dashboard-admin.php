@@ -46,9 +46,9 @@ if (!isset($_SESSION['admin'])) {
                     console.log(info.event.extendedProps);
                     // Verifica el tipo de reserva y cambia el color del evento
                     if (info.event.extendedProps.id_tipo_reserva == 1) { // Aeropuerto-Hotel
-                        info.el.style.backgroundColor = '#6c757d'; // Color verde
+                        info.el.style.backgroundColor = '#0d6efd'; // Color verde
                     } else if (info.event.extendedProps.id_tipo_reserva == 2) { // Hotel-Aeropuerto
-                        info.el.style.backgroundColor = '#343a40'; // Color rojo
+                        info.el.style.backgroundColor = '#dc3545'; // Color rojo
                     }
                 },
                 eventClick: function(info) {
@@ -109,20 +109,20 @@ if (!isset($_SESSION['admin'])) {
             <div class="offcanvas-body d-flex flex-column justify-content-between px-0">
                 <ul class="navbar-nav fs-5 justify-content-evenly">
                     <li class="nav-item p-3 py-md-1">
-                        <a href="booking.php" class="nav-link text-info text-center">RESERVAS</a>
+                        <a href="booking.php" class="nav-link text-white text-center">RESERVAS</a>
                     </li>
                     <div class="vr bg-light"></div>
                     <li class="nav-item p-3 py-md-1">
-                        <a href="hotel.php" class="nav-link text-info text-center">HOTELES</a>
+                        <a href="hotel.php" class="nav-link text-white text-center">HOTELES</a>
                     </li>
                     <div class="vr bg-light"></div>
                     <li class="nav-item p-3 py-md-1">
-                        <a href="vehicle.php" class="nav-link text-info text-center">VEHÍCULOS</a>
+                        <a href="vehicle.php" class="nav-link text-white text-center">VEHÍCULOS</a>
                     </li>
                 </ul>
                 <div class="d-lg-none align-self-center py-3">
                     <!-- En tu archivo dashboard-admin.php -->
-                    <a href="../controllers/adminController.php?action=logout" class="text-danger text-decoration-none"><i class="bi bi-person-gear px-2 text-danger"></i>logout</a>
+                    <a href="../controllers/adminController.php?action=logout" class="text-danger text-decoration-none"><i class="bi bi-person-gear px-2 text-danger"></i>Cerrar sesión</a>
                 </div>
             </div>
         </section>
@@ -134,6 +134,10 @@ if (!isset($_SESSION['admin'])) {
             <div id="calendar"></div>
         </div>
 </div>
+<div class="text-end p-5">
+    <a href="../controllers/adminController.php?action=logout" class="text-danger text-decoration-none fs-5"><i class="bi bi-person-gear px-2 text-danger"></i>Cerrar sesión</a>
+</div>
+<!-- Archivos para accionar los modales -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
 </body>

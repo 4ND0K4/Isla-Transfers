@@ -1,22 +1,13 @@
 <?php
 session_start();
-// Determina el creador de la reserva mediante la sesión del tipo de usuario
-$creador = '';
-if (isset($_SESSION['admin'])) {
-    $creador = 'admin';
-} elseif (isset($_SESSION['travelerUser'])) {
-    $creador = 'traveler';
-}
-// Verifica que se haya identificado al creador
-if (empty($creador)) {
-    die("Error: No se pudo identificar al creador de la reserva.");
-}
-//
+$tipo_creador_reserva = isset($_SESSION['admin']) ? 1 : 2; // 1 para admin, 2 para traveler
+
+// Declaraciones de inclusión
 require_once __DIR__ . '/../../models/db.php';
 require_once __DIR__ . '/../../models/booking.php';
 require_once __DIR__ . '/../../models/traveler.php';
 
-// Conexión BBDD
+// Conectar con la base de datos
 $db = db_connect();
 if (!$db) {
     die("Error al conectar con la base de datos");
@@ -30,12 +21,18 @@ function generateLocator($length = 10) {
     return substr(str_shuffle("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, $length);
 }
 
+// Variable que regula que el usuario traveler no pueda modificar fechas con menos de 2 días
+$fechaMinima = (new DateTime())->modify('+2 days')->format('Y-m-d H:i:s');
+
 // CREACIÓN DE LA RESERVA
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    //Variables
-    $locator = generateLocator();
-    $id_destino = $_POST['id_destino'] ?? null;
-    $email_cliente = $_POST['email_cliente'];
+    // Variables
+    $locator = generateLocator(); //El localizador será el código generado por la función
+    $id_destino = $_POST['id_destino'] ?? null; //Se introducirá id_destino y esté será el mismo valor de id_hotel
+    $email_cliente = $_POST['email_cliente']; //Se cogerá el email de transfer_viajeros -> email para identificar al usuario de la reserva. Solo permite realizar reservas con usuarios que existen en la BBDD
+    $horaVueloSalida = $_POST['hora_vuelo_salida'] ?? null; //Reduce tres horas la fecha ingresada
+    $fechaEntrada = $_POST['fecha_entrada'] ?? null;
+    $fechaVueloSalida = $_POST['fecha_vuelo_salida'] ?? null;
 
     // Validar si el email del cliente de la reserva existe en la base de datos (tabla transfer_viajeros)
     $traveler = $travelerModel->findByEmail($email_cliente);
@@ -56,6 +53,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Si id_hotel no está definido, usa el valor de id_destino
     $id_hotel = !empty($_POST['id_hotel']) ? $_POST['id_hotel'] : $id_destino;
 
+    // Recoge la hora ingresada por el usuario desde el formulario para restarle 3 horas (hora recogida)
+    if ($horaVueloSalida) {
+        // Convierte la hora ingresada a un objeto DateTime
+        $horaVueloSalidaObj = new DateTime($horaVueloSalida);
+
+        // Resta tres horas
+        $horaVueloSalidaObj->modify('-3 hours');
+
+        // Obtén el valor modificado en formato de hora (HH:MM:SS)
+        $horaVueloSalida = $horaVueloSalidaObj->format('H:i:s');
+    }
+
+    /* Previamente se ha Verificado si el email existe en la tabla y obtener el tipo de usuario */
+
+    // Validación para los usuarios tipo traveler
+    if (isset($_SESSION['travelerUser'])) {
+        $fechaMinima = (new DateTime())->modify('+2 days')->format('Y-m-d');
+
+        // Validar fecha_entrada
+        if ($fechaEntrada && $fechaEntrada < $fechaMinima) {
+            die("Error: Los usuarios traveler solo pueden hacer reservas con fecha de entrada a partir de 48 horas después del día actual.");
+        }
+
+        // Validar fecha_vuelo_salida
+        if ($fechaVueloSalida && $fechaVueloSalida < $fechaMinima) {
+            die("Error: Los usuarios traveler solo pueden hacer reservas con fecha de vuelo de salida a partir de 48 horas después del día actual.");
+        }
+    }
+
     // Preparar los datos para la creación
     $data = [
         'localizador' => $locator,
@@ -65,17 +91,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'fecha_reserva' => date('Y-m-d H:i:s'),
         'fecha_modificacion' => date('Y-m-d H:i:s'),
         'id_destino' => $id_destino,
-        'fecha_entrada' => $_POST['fecha_entrada'] ?? null,
+        'fecha_entrada' => $fechaEntrada,
         'hora_entrada' => $_POST['hora_entrada'] ?? null,
         'numero_vuelo_entrada' => $_POST['numero_vuelo_entrada'] ?? null,
         'origen_vuelo_entrada' => $_POST['origen_vuelo_entrada'] ?? null,
-        'hora_vuelo_salida' => $_POST['hora_vuelo_salida'] ?? null,
-        'fecha_vuelo_salida' => $_POST['fecha_vuelo_salida'] ?? null,
+        'hora_vuelo_salida' => $horaVueloSalida ?? null,
+        'fecha_vuelo_salida' => $fechaVueloSalida,
         'num_viajeros' => $_POST['num_viajeros'],
-        'id_vehiculo' => $_POST['id_vehiculo'] ?? null,
+        'id_vehiculo' => $_POST['id_vehiculo'] ?? 1,
+        'tipo_creador_reserva' => $tipo_creador_reserva // Nuevo campo
     ];
 
-    // Validación de id_hotel en la base de datos
+    // Validación de id_hotel en la base de datos antes de crear la/s reserva/s y genera lcoalizadores únicos
     if ($isValidHotel) {
         $booking = new Booking($db);
         //
