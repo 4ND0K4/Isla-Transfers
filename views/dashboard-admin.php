@@ -35,13 +35,39 @@ if (!isset($_SESSION['admin'])) {
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
-                locale: "es",
+                locale: "es", // En español
+                firstDay: 1, // Comienza en lunes
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
                 events: '../controllers/bookings/getCalendar.php',
+
+                // Cambia el estilo de los nombres de los días
+                dayHeaderContent: function(arg) {
+                    let span = document.createElement('span');
+                    span.innerText = arg.text;
+                    span.style.color = '#343a40'; // Color del texto
+                    span.style.padding = '5px';
+                    span.style.display = 'block';
+                    return { domNodes: [span] };
+                },
+                // Cambia el color de la celda de hoy
+                dayCellDidMount: function(info) {
+                    if (info.isToday) {
+                        info.el.style.backgroundColor = '#e2e3e5'; // Color de fondo para el día actual
+                        info.el.style.color = '#343a40'; // Color del texto del día actual
+                        info.el.style.fontWeight = 'bold'; // Negrita para destacar el día actual
+                    }
+                    // Cambia el color del número de día para cada celda
+                    let dayNumberElement = info.el.querySelector('.fc-daygrid-day-number');
+                    if (dayNumberElement) {
+                        dayNumberElement.style.color = '#343a40'; // Color para el número de cada día
+                        dayNumberElement.style.fontWeight = 'bold'; // Negrita para el número del día
+                        dayNumberElement.style.textDecoration = 'none'; // Elimina el subrayado
+                    }
+                },
                 eventDidMount: function(info) {
                     console.log(info.event.extendedProps);
                     // Verifica el tipo de reserva y cambia el color del evento

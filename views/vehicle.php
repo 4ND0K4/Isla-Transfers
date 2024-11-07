@@ -52,6 +52,7 @@ include '../controllers/vehicles/update.php';
                         <th scope="col">Descripción</th>
                         <th scope="col">Email conductor</th>
                         <th scope="col">Password</th>
+                        <th scope="col"><!--Botones--></th>
                     </tr>
                     </thead>
                     <tbody>

@@ -80,23 +80,24 @@ $hotelNames = [
                 <table class="table table-secondary table-striped table-hover w-100 h-100">
                     <thead>
                     <tr>
-                        <th>Id reserva</th>
-                        <th>Localizador</th>
-                        <th>Hotel</th>
-                        <th>Tipo de Reserva</th>
-                        <th>Email Cliente</th>
-                        <th>Fecha de Reserva</th>
-                        <th>Número de Viajeros</th>
+                        <th scope="col">Id reserva</th>
+                        <th scope="col">Localizador</th>
+                        <th scope="col">Hotel</th>
+                        <th scope="col">Tipo de Reserva</th>
+                        <th scope="col">Email Cliente</th>
+                        <th scope="col">Fecha de Reserva</th>
+                        <th scope="col">Número de Viajeros</th>
                         <?php if ($Id_tipo_reserva == 1 || !$Id_tipo_reserva): ?>
-                            <th>Fecha Llegada</th>
-                            <th>Hora Llegada</th>
-                            <th>Número Vuelo Llegada</th>
-                            <th>Origen Vuelo</th>
+                            <th scope="col">Fecha Llegada</th>
+                            <th scope="col">Hora Llegada</th>
+                            <th scope="col">Número Vuelo Llegada</th>
+                            <th scope="col">Origen Vuelo</th>
                         <?php endif; ?>
                         <?php if ($Id_tipo_reserva == 2 || !$Id_tipo_reserva): ?>
-                            <th>Hora Vuelo Salida</th>
-                            <th>Fecha Vuelo Salida</th>
+                            <th scope="col">Hora Vuelo Salida</th>
+                            <th scope="col">Fecha Vuelo Salida</th>
                         <?php endif; ?>
+                        <th scope="col"><!--Botones--></th>
                     </tr>
                     </thead>
                     <tbody>

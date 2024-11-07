@@ -60,6 +60,7 @@ $zoneNames = [
                         <th scope="col">Comisión</th>
                         <th scope="col">Usuario</th>
                         <th scope="col">Password</th>
+                        <th scope="col"><!--Botones--></th>
                     </tr>
                     </thead>
                     <tbody>
