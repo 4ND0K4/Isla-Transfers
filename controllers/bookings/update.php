@@ -1,4 +1,6 @@
 <?php
+// Iniciar sesión para acceder a las variables de sesión
+
 // Declaraciones de inclusión
 require_once(__DIR__ . '/../../models/db.php');
 require_once(__DIR__ . '/../../models/booking.php');
@@ -29,6 +31,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Asignar id_hotel. Usar id_destino si id_hotel no está presente
     $id_hotel = !empty($_POST['id_hotel']) ? $_POST['id_hotel'] : $id_destino;
 
+    // Determinar el tipo de creador de reserva basado en la sesión
+    $tipo_creador_reserva = isset($_SESSION['admin']) ? 1 : (isset($_SESSION['travelerUser']) ? 2 : null);
+
     // Preparar los datos para la actualización
     $data = [
         'id_reserva' => $_POST['id_reserva'], // ID de la reserva
@@ -39,7 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'fecha_modificacion' => date('Y-m-d H:i:s'), // Fecha y hora de la modificación
         'id_destino' => $id_destino, // ID del destino de la reserva
         'num_viajeros' => $_POST['num_viajeros'], // Número de viajeros
-        'id_vehiculo' => $_POST['id_vehiculo'] ?? null // ID del vehículo opcional
+        'id_vehiculo' => $_POST['id_vehiculo'] ?? 1, // ID del vehículo opcional
+        'tipo_creador_reserva' => $tipo_creador_reserva ?? null// Campo automático según la sesión
     ];
 
     // Agregar campos adicionales según el tipo de reserva
@@ -53,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data['hora_vuelo_salida'] = $_POST['hora_vuelo_salida'] ?? null;
     }
 
-    // Llamar al metodo de actualización en el modelo
+    // Llamar al método de actualización en el modelo
     $result = $booking->updateBooking($data);
 
     // Redirigir a la página de reservas si la actualización es exitosa

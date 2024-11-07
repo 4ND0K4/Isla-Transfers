@@ -99,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'fecha_vuelo_salida' => $fechaVueloSalida,
         'num_viajeros' => $_POST['num_viajeros'],
         'id_vehiculo' => $_POST['id_vehiculo'] ?? 1,
-        'tipo_creador_reserva' => $tipo_creador_reserva // Nuevo campo
+        'tipo_creador_reserva' => $tipo_creador_reserva ?? null
     ];
 
     // Validación de id_hotel en la base de datos antes de crear la/s reserva/s y genera lcoalizadores únicos
