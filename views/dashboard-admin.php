@@ -1,4 +1,4 @@
-?php
+<?php
 session_start();
 if (!isset($_SESSION['admin'])) {
     header("Location: /views/login-admin.php");
@@ -41,6 +41,12 @@ if (!isset($_SESSION['admin'])) {
                     left: 'prev,next today',
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                buttonText: {
+                    today: 'Hoy',
+                    month: 'Mes',
+                    week: 'Semana',
+                    day: 'Día'
                 },
                 events: '../controllers/bookings/getCalendar.php',
 
@@ -186,21 +192,21 @@ if (!isset($_SESSION['admin'])) {
                     </li>
                 </ul>
                 <div class="d-lg-none align-self-center py-3">
-                    <!-- En tu archivo dashboard-admin.php -->
-                    <a href="../controllers/adminController.php?action=logout" class="text-danger text-decoration-none"><i class="bi bi-person-gear px-2 text-danger"></i>Cerrar sesión</a>
+                    <!-- logout -->
+                    <a href="../controllers/adminController.php?action=logout" class="text-danger text-decoration-none"><i class="bi bi-plugin text-danger"></i> Cerrar sesión</a>
                 </div>
             </div>
         </section>
     </div>
 </nav>
-<h1 class="text-center py-3">CALENDARIO DE RESERVAS</h1>
+<h1 class="text-center py-5">CALENDARIO DE RESERVAS</h1>
 <div class="container">
         <div class="col-xl">
             <div id="calendar"></div>
         </div>
 </div>
 <div class="text-center p-5">
-    <a href="../controllers/adminController.php?action=logout" class="text-danger text-decoration-none fs-5"><i class="bi bi-person-gear px-2 text-danger"></i>Cerrar sesión</a>
+    <a href="../controllers/adminController.php?action=logout" class="text-danger text-decoration-none fs-5"><i class="bi bi-plugin text-danger"></i> Cerrar sesión</a>
 </div>
 <!-- Archivos para accionar los modales -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

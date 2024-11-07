@@ -45,6 +45,39 @@ $_SESSION['travelerName'] = $travelerData['name'];
     <!-- Enlaces Hojas Estilo-->
     <link rel="stylesheet" href="../assets/css/general.css">
     <link rel="stylesheet" href="../assets/css/traveler.css">
+    <!-- Estilos para los header del FullCalendario-->
+    <style>
+        /* CSS Personalizado para la Barra de Herramientas */
+        .fc .fc-prev-button,
+        .fc .fc-next-button,
+        .fc .fc-today-button {
+            background-color: #e2e3e5 !important;
+            color: #000000 !important;
+            border: none !important;
+            font-weight: bold !important;
+        }
+        .fc .fc-prev-button:hover,
+        .fc .fc-next-button:hover,
+        .fc .fc-today-button:hover {
+            background-color: #fff3cd !important;
+            color: #000000 !important;
+        }
+        .fc .fc-toolbar-title {
+            color: #28a745 !important;
+            font-size: 1.5em !important;
+            font-weight: bold !important;
+            font-family: Arial, sans-serif !important;
+        }
+        .fc .fc-button-group .fc-button {
+            background-color: #e2e3e5 !important;
+            color: #000000 !important;
+            border: none !important;
+        }
+        .fc .fc-button-group .fc-button:hover {
+            background-color: #d4edda !important;
+            color: #000000 !important;
+        }
+    </style>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -57,45 +90,141 @@ $_SESSION['travelerName'] = $travelerData['name'];
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 locale: "es",
+                firstDay: 1,
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
+                buttonText: {
+                    today: 'Hoy',
+                    month: 'Mes',
+                    week: 'Semana',
+                    day: 'Día'
+                },
                 events: '../controllers/bookings/getCalendar.php',
+
+                dayHeaderContent: function(arg) {
+                    let span = document.createElement('span');
+                    span.innerText = arg.text;
+                    span.style.color = '#28a745';
+                    span.style.padding = '5px';
+                    span.style.display = 'block';
+                    return { domNodes: [span] };
+                },
+
+                dayCellDidMount: function(info) {
+                    if (info.isToday) {
+                        info.el.style.backgroundColor = '#fff3cd';
+                        info.el.style.color = '#28a745';
+                        info.el.style.fontWeight = 'bold';
+                    }
+                    let dayNumberElement = info.el.querySelector('.fc-daygrid-day-number');
+                    if (dayNumberElement) {
+                        dayNumberElement.style.color = '#28a745';
+                        dayNumberElement.style.fontWeight = 'bold';
+                        dayNumberElement.style.textDecoration = 'none';
+                    }
+                },
+
                 eventDidMount: function(info) {
                     console.log(info.event.extendedProps);
-                        // Verifica el creador de la reserva y cambia el color del evento
-                        if (info.event.extendedProps.tipo_creador_reserva === 1) {
-                            info.el.style.backgroundColor = '#007bff'; // Color para reservas creadas por el admin (por ejemplo, gris oscuro)
-                        } else if (info.event.extendedProps.tipo_creador_reserva === 2) {
-                            info.el.style.backgroundColor = '#ffc107'; // Color para reservas creadas por el traveler (por ejemplo, gris claro)
-                        }
+                    // Verifica el creador de la reserva y cambia el color del evento
+                    if (info.event.extendedProps.tipo_creador_reserva === 1) {
+                        info.el.style.backgroundColor = '#17a2b8'; // Color para reservas creadas por el admin (por ejemplo, gris oscuro)
+                        info.el.style.color = '#ffffff';
+                    } else if (info.event.extendedProps.tipo_creador_reserva === 2) {
+                        info.el.style.backgroundColor = '#ffc107'; // Color para reservas creadas por el traveler (por ejemplo, gris claro)
+                        info.el.style.color = '#ffffff';
+                    }
                 },
                 eventClick: function(info) {
                     Swal.fire({
-                        title: 'Detalles de la Reserva',
+                        title: '<strong style="color: #343a40; font-size: 1em; font-weight: bold;">Detalles de la Reserva</strong>',
                         html: `
-                    <strong>Tipo de Reserva:</strong> ${info.event.extendedProps.id_tipo_reserva == 1 ? 'Aeropuerto-Hotel' : 'Hotel-Aeropuerto'}<br>
-                    <strong>Dia llegada:</strong> ${info.event.start} <br>
-                    <strong>Hora</strong> ${info.event.extendedProps.hora_entrada} <br>
-                    <strong>Hora</strong> ${info.event.extendedProps.hora_vuelo_salida} <br>
-                    <strong>Hotel</strong> ${info.event.title} <br>
-                    <strong>Origen vuelo</strong> ${info.event.extendedProps.origen_vuelo_entrada} <br>
-                    <strong>Nº viajeros</strong> ${info.event.extendedProps.num_viajeros} <br>
-                    <strong>Localizador</strong> ${info.event.extendedProps.localizador} <br>
-                    <strong>Reserva ID:</strong> ${info.event.id} <br>
-                `,
+                        <p style="color: #6c757d; font-size: 1em; text-align: left; margin-left: 20px;">
+                            <strong>Ruta:</strong> <!--Tipo de Reserva-->${info.event.extendedProps.id_tipo_reserva == 1 ? 'Aeropuerto-Hotel' : 'Hotel-Aeropuerto'} -
+                            <strong>Origen/Destino:</strong> <!--Hotel-->${info.event.title}
+                        </p>
+                        <p style="color: #6c757d; font-size: 1em; text-align: left; margin-left: 20px;">
+                            <strong>Día:</strong> <!--Día recogida entrada/salida-->${info.event.start.toLocaleDateString()}
+                            <strong>Hora:</strong> <!--Hora recogida entrada/salida-->${info.event.start.toLocaleTimeString()}
+                        </p>
+                        <p style="color: #6c757d; font-size: 1em; text-align: left; margin-left: 20px;">
+                            <strong>Nº vuelo:</strong> ${info.event.extendedProps.numero_vuelo_entrada} -
+                            <strong>Origen:</strong> ${info.event.extendedProps.origen_vuelo_entrada}
+                        </p>
+                        <p style="color: #6c757d; font-size: 1em; text-align: left; margin-left: 20px;">
+                            <strong>Vehículo:</strong> ${info.event.extendedProps.id_vehiculo} -
+                            <strong>Nº viajeros:</strong> ${info.event.extendedProps.num_viajeros}
+                        </p>
+                        <p style="color: #6c757d; font-size: 1em; text-align: left; margin-left: 20px;">
+                            <strong>Cliente:</strong> ${info.event.extendedProps.email_cliente}<br>
+                        </p>
+                            <hr>
+                        <p style="color: #6c757d; font-size: 1em; text-align: left; margin-left: 20px;">
+                            <strong>ID:</strong> ${info.event.id} -
+                            <strong>Localizador:</strong> ${info.event.extendedProps.localizador}
+                        </p>
+                            <div class="mt-3">
+                                <button onclick="editarReserva(${info.event.id})" class="btn btn-success">Editar</button>
+                                <button onclick="eliminarReserva('${info.event.id}')" class="btn btn-danger">Eliminar</button>
+                            </div>`,
                         icon: 'info',
-                        confirmButtonText: 'Cerrar',
+                        confirmButtonText: '<i class="bi bi-x text-dark"></i>',
                         customClass: {
-                            confirmButton: 'my-confirm-button'
+                            popup: 'swal-wide' // Clase personalizada para ajustar el ancho si lo deseas
+                        },
+                        didOpen: () => {
+                            // Acceder al elemento de la tarjeta y aplicar estilo de fondo
+                            const swalPopup = Swal.getPopup();
+                            swalPopup.style.backgroundColor = '#fff3cd';  // Color de fondo
+                            swalPopup.style.borderRadius = '10px';        // Bordes redondeados
+                            swalPopup.style.color = '#343a40';            // Color del texto
+                            swalPopup.style.boxShadow = '0px 4px 10px rgba(0, 0, 0, 0.2)'; // Sombra de la tarjeta
+
+                            const confirmButton = Swal.getConfirmButton();
+                            confirmButton.style.backgroundColor = '#fff3cd'; // Color fondo
+                            confirmButton.style.color = 'white'; // Color texto
+                            confirmButton.style.fontSize = '16px'; // Tamaño de fuente
+                            confirmButton.style.fontWeight = 'bold'; // Negrita
+                            confirmButton.style.fontFamily = 'Arial, sans-serif'; // Fuente
+                            confirmButton.style.padding = '1px'; // Padding
+                            confirmButton.style.borderRadius = '8px'; // Bordes redondeados
+                            confirmButton.style.border = '0px'; // Color borde
+                            confirmButton.style.boxShadow = '0px 4px 10px rgba(0, 0, 0, 0.2)'; // Sombra
+                            confirmButton.style.transition = 'all 0.3s ease'; // Transición
+                            confirmButton.style.margin = '10px'; // Espacio externo
+
+                            // Efecto hover
+                            confirmButton.onmouseover = () => {
+                                confirmButton.style.backgroundColor = '#6c757d'; // Cambio de color en hover
+                                confirmButton.style.transform = 'scale(1.05)'; // Efecto de aumento
+                            };
+                            confirmButton.onmouseout = () => {
+                                confirmButton.style.backgroundColor = '#fff3cd';
+                                confirmButton.style.transform = 'scale(1)';
+                            };
+                            const iconElement = Swal.getIcon();
+                            iconElement.style.color = '#ffc107'; // Cambia el color del ícono
+                            iconElement.style.borderColor = '#ffc107'; // Cambia el color del círculo
                         }
                     });
                 }
             });
             calendar.render();
         });
+        // Función para abrir el modal de actualización y cerrar SweetAlert2
+        function editarReserva(idReserva) {
+            Swal.close(); // Cierra el modal de SweetAlert2
+            abrirModalActualizarReserva(idReserva); // Abre el modal de Bootstrap para editar la reserva
+        }
+
+        // Función para la confirmación de eliminación y cierre de SweetAlert2
+        function eliminarReserva(idReserva) {
+            Swal.close(); // Cierra el modal de SweetAlert2
+            confirmarEliminacion(`/controllers/bookings/delete.php?id_booking=${idReserva}`);
+        }
     </script>
 </head>
 <body>
@@ -120,17 +249,17 @@ $_SESSION['travelerName'] = $travelerData['name'];
 </nav>
 <div class="container">
     <!-- Título -->
-    <h1 class="text-center pt-3 text-success">¡Hola, <?php echo htmlspecialchars($_SESSION['travelerName']); ?>!</h1>
+    <h1 class="text-center pt-3 fw-light text-success">¡Hola, <?php echo htmlspecialchars($_SESSION['travelerName']); ?>!</h1>
     <!-- Subtítulo -->
-    <h2 class="text-center text-warning pt-5"> Gestiona tus reservas desde aquí</h2>
+    <h2 class="text-center text-warning fw-bold pt-3">Añade, modifica y elimina tus reservas.</h2>
     <!-- Párrafo de alerta -->
-    <p class="text-center text-secondary">¡Recuerda! No puedes crear, modificar ni cancelar tus reservas con menos de 48 horas de antelación.</p>
+    <p class="text-center text-secondary pb-3">¡Pero recuerda! No puedes crear, modificar ni cancelar tus reservas con menos de 48 horas de antelación.</p>
     <!-- Grupo de 3 botones -->
     <div class="container-fluid">
         <!-- Botón de crear -->
-        <div class="col text-center p-1">
-            <button type="button" class="btn btn-lg btn-warning text-white" data-bs-toggle="modal" data-bs-target="#addBookingModal">
-                Nueva reserva
+        <div class="col text-center fw-bold">
+            <button type="button" class="btn btn-lg text-warning" data-bs-toggle="modal" data-bs-target="#addBookingModal">
+                <i class="bi bi-journal-plus display-3"></i>
             </button>
         </div>
         <!-- Botón de editar -->
@@ -143,15 +272,19 @@ $_SESSION['travelerName'] = $travelerData['name'];
         </div>
     </div>
     <div class="">
-    <?php if (isset($_GET['success']) && $_GET['success'] === 'update_exitoso'): ?>
-        <div class="alert alert-success" role="alert">
-            Perfil actualizado correctamente.
+        <div class="">
+            <?php if (isset($_GET['update_success'])): ?>
+                <div id="updateSuccess" class="alert alert-success" role="alert">
+                    Perfil actualizado correctamente.
+                </div>
+
         </div>
-    <?php elseif (isset($_GET['error']) && $_GET['error'] === 'update_fallido'): ?>
-        <div class="alert alert-danger" role="alert">
-            Error al actualizar el perfil. Inténtelo de nuevo.
-        </div>
-    <?php endif; ?>
+        <div class="">
+            <?php unset($_SESSION['update_error']); ?>
+                <div id="update_error" class="alert alert-danger" role="alert">
+                    Error al actualizar el perfil. Inténtelo de nuevo.
+                </div>
+            <?php endif; ?>
     </div>
 </div>
 <!-- CALENDA-->
@@ -275,6 +408,126 @@ $_SESSION['travelerName'] = $travelerData['name'];
     </div>
 </div>
 
+    <!--Modal modificación Reservas-->
+    <div class="modal fade" id="updateBookingModal" tabindex="-1" aria-labelledby="updateBookingModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-secondary-subtle">
+                    <h2 class="modal-title">Actualice la reserva</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="../controllers/bookings/update.php" method="POST">
+                        <input type="hidden" id="updateIdBookingInput" name="id_reserva">
+
+                        <!-- Campo oculto para id_vehiculo, con valor predeterminado si está vacío -->
+                        <input type="hidden" name="id_vehiculo" id="updateIdVehicleInput" value="1">
+
+                        <input type="hidden" id="updateTipoCreadorReserva" name="tipo_creador_reserva">
+
+
+                        <!-- Id Tipo Reserva -->
+                        <div class="form-floating mb-3">
+                            <input type="number" class="form-control" name="id_tipo_reserva" id="updateIdTypeBookingInput" placeholder="Tipo de reserva" onchange="mostrarCampos('update') readonly">
+                            <label for="updateIdTypeBookingInput">Tipo de reserva (1: Aeropuerto-Hotel, 2: Hotel-Aeropuerto)</label>
+                        </div>
+
+                        <!-- Localizador -->
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" name="localizador" id="updateLocatorInput" placeholder="Localizador" readonly>
+                            <label for="updateLocatorInput">Localizador</label>
+                        </div>
+
+                        <!-- Número Viajeros -->
+                        <div class="form-floating mb-3">
+                            <input type="number" class="form-control" name="num_viajeros" id="updateNumTravelersInput" aria-describedby="helpNumTravelers" placeholder="Numero de viajeros">
+                            <label for="updateNumTravelersInput">Número de viajeros</label>
+                        </div>
+
+                        <!-- Email Cliente -->
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control" name="email_cliente" id="updateEmailClientInput" aria-describedby="helpEmailClient" placeholder="Email del cliente" required>
+                            <label for="updateEmailClientInput">Email del cliente</label>
+                        </div>
+
+                        <!-- Id Destino-->
+                        <div class="form-floating mb-3">
+                            <!--<input type="number" class="form-control" name="id_destino" id="idDestinationInput"  aria-describedby="helpIdDestination" placeholder="Id de destino" required>-->
+                            <select name="id_destino" id="updateIdDestinationInput" class="form-select" required>
+                                <option value="">Selecciona un Id de Destino</option>
+                                <?php foreach ($hotels as $hotelId): ?>
+                                    <option value="<?php echo $hotelId; ?>">
+                                        <?php echo isset($hotelNames[$hotelId]) ? $hotelNames[$hotelId] : "Hotel Desconocido ($hotelId)"; ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <label for="updateIdDestinationInput">Id de destino</label>
+                        </div>
+
+                        <!-- Campos específicos para Aeropuerto - Hotel (id_tipo_reserva = 1) -->
+                        <div id="aeropuerto-hotel-fields-update" style="display: none;">
+                            <div class="form-floating mb-3">
+                                <input type="date" class="form-control" name="fecha_entrada" id="updateDateInInput" placeholder="Fecha de entrada">
+                                <label for="updateDateInInput">Fecha Llegada</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="time" class="form-control" name="hora_entrada" id="updateHourInInput" placeholder="Hora de entrada">
+                                <label for="updateHourInInput">Hora Llegada</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" name="numero_vuelo_entrada" id="updateNumFlightInInput" placeholder="Número de vuelo de entrada">
+                                <label for="updateNumFlightInInput">Número Vuelo Llegada</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" name="origen_vuelo_entrada" id="updateOriginFlightInInput" placeholder="Origen del vuelo de entrada">
+                                <label for="updateOriginFlightInInput">Origen Vuelo</label>
+                            </div>
+                        </div>
+
+                        <!-- Campos específicos para Hotel - Aeropuerto (id_tipo_reserva = 2) -->
+                        <div id="hotel-aeropuerto-fields-update" style="display: none;">
+                            <div class="form-floating mb-3">
+                                <input type="date" class="form-control" name="fecha_vuelo_salida" id="updateDateFlightOutInput" placeholder="Fecha del vuelo de salida">
+                                <label for="updateDateFlightOutInput">Fecha Vuelo Salida</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="time" class="form-control" name="hora_vuelo_salida" id="updateHourFlightOutInput" placeholder="Hora del vuelo de salida">
+                                <label for="updateHourFlightOutInput">Hora Vuelo Salida</label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-dark fw-bold text-white" name="updateBooking">Modificar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal de Confirmación de Eliminación -->
+    <div class="modal fade" id="confirmarEliminacionModal" tabindex="-1" aria-labelledby="confirmarEliminacionLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-secondary-subtle">
+                    <h2 class="modal-title" id="confirmarEliminacionLabel">Confirmar Eliminación</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    ¿Estás seguro de que deseas eliminar esta reserva?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" id="btnEliminar" class="btn btn-danger" data-url="">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
 
 
 <!-- Modal de actualizar Perfil viajero -->
@@ -331,9 +584,9 @@ $_SESSION['travelerName'] = $travelerData['name'];
                         <input class="form-control" type="text" name="country" id="updateCountryInput" placeholder="Introduce tu país">
                     </div>
                         <!--Separador-->
-                        <div class="bg-warning">
-                            <hr class="text-warning">
-                        </div>
+
+                            <hr class="hr hr-blurry text-warning">
+
                     <!-- E-mail-->
                     <div class="mb-3">
                         <label class="form-label text-warning" for="updateEmailInput">Email</label>
@@ -359,10 +612,34 @@ $_SESSION['travelerName'] = $travelerData['name'];
 <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////// EVENTS //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
+    <script>
+        // Configura un temporizador para ocultar los mensajes después de 3 segundos
+        setTimeout(function() {
+            var successDiv = document.getElementById("updateSuccess");
+            var errorDiv = document.getElementById("updateError");
 
-<script>
+            if (successDiv) {
+                // Animación desvanecimiento mensaje de éxito
+                successDiv.style.transition = "opacity 0.5s";
+                successDiv.style.opacity = "0";
+                setTimeout(function() {
+                    successDiv.style.display = "none";
+                }, 500); // Tiempo de transición en ocultar
+            }
+
+            if (errorDiv) {
+                // Animación desvanecimiento mensaje de error
+                errorDiv.style.transition = "opacity 0.5s";
+                errorDiv.style.opacity = "0";
+                setTimeout(function() {
+                    errorDiv.style.display = "none";
+                }, 500); // Tiempo de transición en ocultar
+            }
+        }, 3000); // Tiempo de duración
+    </script>
+<!--<script>
     //
-    <!-- Función que crea las reservas según el tipo de reserva -->
+    Función que crea las reservas según el tipo de reserva
     document.addEventListener('DOMContentLoaded', function() {
         // Muestra los campos por defecto al abrir el modal
         document.getElementById("tipo_reserva").value = "idayvuelta";
@@ -384,7 +661,112 @@ $_SESSION['travelerName'] = $travelerData['name'];
         document.getElementById("aeropuerto-hotel-fields").style.display = (tipoReserva == "1" || tipoReserva == "idayvuelta") ? "block" : "none";
         document.getElementById("hotel-aeropuerto-fields").style.display = (tipoReserva == "2" || tipoReserva == "idayvuelta") ? "block" : "none";
     }
-</script>
+</script>-->
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Configuración para el modal de creación
+            document.getElementById("tipo_reserva").addEventListener('change', function () {
+                mostrarCampos("add");
+            });
+
+            var addBookingModal = document.getElementById('addBookingModal');
+            addBookingModal.addEventListener('shown.bs.modal', function () {
+                document.getElementById("tipo_reserva").value = "idayvuelta";
+                mostrarCampos("add");
+            });
+        });
+
+        // Función para mostrar u ocultar los campos específicos de cada tipo de reserva
+        function mostrarCampos(modalType) {
+            let tipoReserva, aeropuertoHotelFields, hotelAeropuertoFields;
+
+            if (modalType === "add") {
+                tipoReserva = document.getElementById("tipo_reserva").value;
+                aeropuertoHotelFields = document.getElementById("aeropuerto-hotel-fields");
+                hotelAeropuertoFields = document.getElementById("hotel-aeropuerto-fields");
+            } else if (modalType === "update") {
+                tipoReserva = document.getElementById("updateIdTypeBookingInput").value;
+                aeropuertoHotelFields = document.getElementById("aeropuerto-hotel-fields-update");
+                hotelAeropuertoFields = document.getElementById("hotel-aeropuerto-fields-update");
+            }
+
+            if (aeropuertoHotelFields && hotelAeropuertoFields) {
+                // Mostrar ambos campos si es "idayvuelta", o solo uno según el tipo de reserva
+                aeropuertoHotelFields.style.display = (tipoReserva == "1" || tipoReserva === "idayvuelta") ? "block" : "none";
+                hotelAeropuertoFields.style.display = (tipoReserva == "2" || tipoReserva === "idayvuelta") ? "block" : "none";
+            }
+        }
+
+        function abrirModalActualizarReserva(idReserva) {
+            // Llamada AJAX para obtener los datos de la reserva desde el servidor
+            fetch(`../controllers/bookings/getBooking.php?id_reserva=${idReserva}`)
+                .then(response => response.json())
+                .then(booking => {
+                    if (booking.error) {
+                        console.error('Error al obtener los datos de la reserva:', booking.error);
+                        return;
+                    }
+
+                    // Configurar los campos comunes en el modal de actualización
+                    document.getElementById('updateIdBookingInput').value = booking.id_reserva || '';
+                    document.getElementById('updateLocatorInput').value = booking.localizador || '';
+                    document.getElementById('updateIdTypeBookingInput').value = booking.id_tipo_reserva || '';
+                    document.getElementById('updateEmailClientInput').value = booking.email_cliente || '';
+                    document.getElementById('updateNumTravelersInput').value = booking.num_viajeros || '';
+                    document.getElementById('updateIdVehicleInput').value = booking.id_vehiculo || '';
+                    document.getElementById('updateIdDestinationInput').value = booking.id_destino || '';
+                    document.getElementById('updateTipoCreadorReserva').value = booking.tipo_creador_reserva || ''; //añadido
+                    // Mostrar los campos específicos según el tipo de reserva
+                    mostrarCampos("update");
+
+                    // Campos específicos para Aeropuerto - Hotel
+                    if (booking.id_tipo_reserva == 1 || booking.id_tipo_reserva == 'idayvuelta') {
+                        document.getElementById('updateDateInInput').value = booking.fecha_entrada || '';
+                        document.getElementById('updateHourInInput').value = booking.hora_entrada || '';
+                        document.getElementById('updateNumFlightInInput').value = booking.numero_vuelo_entrada || '';
+                        document.getElementById('updateOriginFlightInInput').value = booking.origen_vuelo_entrada || '';
+                    }
+
+                    // Campos específicos para Hotel - Aeropuerto
+                    if (booking.id_tipo_reserva == 2 || booking.id_tipo_reserva == 'idayvuelta') {
+                        document.getElementById('updateDateFlightOutInput').value = booking.fecha_vuelo_salida || '';
+                        document.getElementById('updateHourFlightOutInput').value = booking.hora_vuelo_salida || '';
+                    }
+
+                    // Mostrar el modal de actualización
+                    var modal = new bootstrap.Modal(document.getElementById('updateBookingModal'));
+                    modal.show();
+                })
+                .catch(error => {
+                    console.error('Error al obtener los datos de la reserva:', error);
+                });
+        }
+
+
+        // Función para la confirmación de la eliminación en el modal de Delete
+        function confirmarEliminacion(url) {
+            const btnEliminar = document.getElementById('btnEliminar');
+            btnEliminar.setAttribute('data-url', url);
+
+            btnEliminar.onclick = function () {
+                const urlToDelete = btnEliminar.getAttribute('data-url');
+                if (urlToDelete) {
+                    window.location.href = urlToDelete;
+                }
+            };
+
+            // Mostrar el modal de confirmación de eliminación
+            const modal = new bootstrap.Modal(document.getElementById('confirmarEliminacionModal'));
+            modal.show();
+        }
+
+    </script>
+
+
+
 <script>
         const travelerData = <?php echo isset($travelerData) ? json_encode($travelerData) : 'null'; ?>;
 </script>
@@ -402,7 +784,7 @@ function abrirModalActualizar() {
     document.querySelector('#updateZipCodeInput').value = travelerData.zipCode || '';
     document.querySelector('#updateCityInput').value = travelerData.city || '';
     document.querySelector('#updateCountryInput').value = travelerData.country || '';
-    document.querySelector('#updatePasswordInput').value = ''; // Deja la contraseña en blanco
+    document.querySelector('#updatePasswordInput').value = '';
 
     var modal = new bootstrap.Modal(document.getElementById('updateTravelerModal'));
     modal.show();
@@ -413,3 +795,8 @@ function abrirModalActualizar() {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
+
+
+
+
+
