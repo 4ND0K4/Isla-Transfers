@@ -1,6 +1,4 @@
 <?php
-// Iniciar sesión para acceder a las variables de sesión
-
 // Declaraciones de inclusión
 require_once(__DIR__ . '/../../models/db.php');
 require_once(__DIR__ . '/../../models/booking.php');
@@ -17,6 +15,7 @@ $booking = new Booking($db);
 // Verificar si la solicitud es de tipo POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_destino = $_POST['id_destino'] ?? null;
+    $id_reserva = $_POST['id_reserva'];
 
     // Validación para asegurar que id_destino sea un id_hotel válido
     $validHotelStmt = $db->prepare("SELECT COUNT(*) FROM tranfer_hotel WHERE id_hotel = :id_destino");
@@ -28,24 +27,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit; // Terminar la ejecución si el id_destino no es válido
     }
 
+    // Obtener el valor original de tipo_creador_reserva de la base de datos
+    $stmt = $db->prepare("SELECT tipo_creador_reserva FROM transfer_reservas WHERE id_reserva = :id_reserva");
+    $stmt->execute([':id_reserva' => $id_reserva]);
+    $originalTipoCreador = $stmt->fetchColumn();
+
+    if ($originalTipoCreador === false) {
+        echo "Error: La reserva no existe.";
+        exit;
+    }
+
     // Asignar id_hotel. Usar id_destino si id_hotel no está presente
     $id_hotel = !empty($_POST['id_hotel']) ? $_POST['id_hotel'] : $id_destino;
 
-    // Determinar el tipo de creador de reserva basado en la sesión
-    $tipo_creador_reserva = isset($_SESSION['admin']) ? 1 : (isset($_SESSION['travelerUser']) ? 2 : null);
-
-    // Preparar los datos para la actualización
+    // Preparar los datos para la actualización, usando el tipo_creador_reserva original
     $data = [
-        'id_reserva' => $_POST['id_reserva'], // ID de la reserva
-        'localizador' => $_POST['localizador'], // Código único de la reserva
-        'id_hotel' => $id_hotel, // ID del hotel de la reserva
-        'id_tipo_reserva' => $_POST['id_tipo_reserva'], // Tipo de la reserva
-        'email_cliente' => $_POST['email_cliente'], // Email del cliente
-        'fecha_modificacion' => date('Y-m-d H:i:s'), // Fecha y hora de la modificación
-        'id_destino' => $id_destino, // ID del destino de la reserva
-        'num_viajeros' => $_POST['num_viajeros'], // Número de viajeros
-        'id_vehiculo' => $_POST['id_vehiculo'] ?? 1, // ID del vehículo opcional
-        'tipo_creador_reserva' => $tipo_creador_reserva ?? null// Campo automático según la sesión
+        'id_reserva' => $id_reserva,
+        'localizador' => $_POST['localizador'],
+        'id_hotel' => $id_hotel,
+        'id_tipo_reserva' => $_POST['id_tipo_reserva'],
+        'email_cliente' => $_POST['email_cliente'],
+        'fecha_modificacion' => date('Y-m-d H:i:s'),
+        'id_destino' => $id_destino,
+        'num_viajeros' => $_POST['num_viajeros'],
+        'id_vehiculo' => $_POST['id_vehiculo'] ?? 1,
+        'tipo_creador_reserva' => $originalTipoCreador // Usar el valor original de tipo_creador_reserva
     ];
 
     // Agregar campos adicionales según el tipo de reserva

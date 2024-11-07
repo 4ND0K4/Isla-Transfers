@@ -60,6 +60,22 @@ class Booking
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getBookingById($id_reserva)
+    {
+        try {
+            $query = 'SELECT * FROM ' . $this->table . ' WHERE Id_reserva = :id_reserva';
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':id_reserva', $id_reserva, PDO::PARAM_INT);
+            $stmt->execute();
+
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log('Error en getBookingById: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+
     public function addBooking($data)
     {
         try {

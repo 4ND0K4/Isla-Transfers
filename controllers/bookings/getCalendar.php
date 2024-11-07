@@ -31,19 +31,24 @@ if (isset($_SESSION['admin'])) {
 // Formatear los datos del array events para FullCalendar
 $events = [];
 foreach ($bookings as $row) {
-    // Validar las fechas y usar la fecha alternativa si una es "0000-00-00 00:00:00"
+    // Validar las fechas y horas para usar una alternativa
     $id_tipo_reserva = $row['id_tipo_reserva'];
     $fechaEntrada = $row['fecha_entrada'];
     $fechaVueloSalida = $row['fecha_vuelo_salida'];
+    $horaEntrada = $row['hora_entrada'];
+    $horaSalida = $row['hora_vuelo_salida'];
 
     // Verificar si la fecha es de id_tipo_reserva 1. Si es 1 usa fecha_entrada. Si es 2 usa fecha_vuelo_salida
     $startDate = ($id_tipo_reserva == 1) ? $fechaEntrada : $fechaVueloSalida;
-
+    // Verificar si la hora es de id_tipo_reserva 1. Si es 1 usa hora_entrada. Si es 2 usa hora_vuelo_salida
+    $startTime = ($id_tipo_reserva == 1) ? $horaEntrada : $horaSalida;
+    // Concatenar la fecha y la hora para el campo 'start'
+    $start = ($startDate && $startTime) ? "$startDate $startTime" : $startDate;
     //Array de events
     $events[] = [
         'id' => $row['id_reserva'],
         'title' => 'Hotel ' . $row['id_hotel'],
-        'start' => $startDate,
+        'start' => $start,
         'extendedProps' => [
             'id_hotel' => $row['id_hotel'],
             'localizador' => $row['localizador'],

@@ -1,4 +1,4 @@
-<?php
+?php
 session_start();
 if (!isset($_SESSION['admin'])) {
     header("Location: /views/login-admin.php");
@@ -35,8 +35,8 @@ if (!isset($_SESSION['admin'])) {
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
-                locale: "es", // En español
-                firstDay: 1, // Comienza en lunes
+                locale: "es",
+                firstDay: 1,
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
@@ -44,59 +44,98 @@ if (!isset($_SESSION['admin'])) {
                 },
                 events: '../controllers/bookings/getCalendar.php',
 
-                // Cambia el estilo de los nombres de los días
                 dayHeaderContent: function(arg) {
                     let span = document.createElement('span');
                     span.innerText = arg.text;
-                    span.style.color = '#343a40'; // Color del texto
+                    span.style.color = '#343a40';
                     span.style.padding = '5px';
                     span.style.display = 'block';
                     return { domNodes: [span] };
                 },
-                // Cambia el color de la celda de hoy
+
                 dayCellDidMount: function(info) {
                     if (info.isToday) {
-                        info.el.style.backgroundColor = '#e2e3e5'; // Color de fondo para el día actual
-                        info.el.style.color = '#343a40'; // Color del texto del día actual
-                        info.el.style.fontWeight = 'bold'; // Negrita para destacar el día actual
+                        info.el.style.backgroundColor = '#e2e3e5';
+                        info.el.style.color = '#343a40';
+                        info.el.style.fontWeight = 'bold';
                     }
-                    // Cambia el color del número de día para cada celda
                     let dayNumberElement = info.el.querySelector('.fc-daygrid-day-number');
                     if (dayNumberElement) {
-                        dayNumberElement.style.color = '#343a40'; // Color para el número de cada día
-                        dayNumberElement.style.fontWeight = 'bold'; // Negrita para el número del día
-                        dayNumberElement.style.textDecoration = 'none'; // Elimina el subrayado
+                        dayNumberElement.style.color = '#343a40';
+                        dayNumberElement.style.fontWeight = 'bold';
+                        dayNumberElement.style.textDecoration = 'none';
                     }
                 },
+
                 eventDidMount: function(info) {
-                    console.log(info.event.extendedProps);
-                    // Verifica el tipo de reserva y cambia el color del evento
-                    if (info.event.extendedProps.id_tipo_reserva == 1) { // Aeropuerto-Hotel
-                        info.el.style.backgroundColor = '#0d6efd'; // Color verde
-                    } else if (info.event.extendedProps.id_tipo_reserva == 2) { // Hotel-Aeropuerto
-                        info.el.style.backgroundColor = '#dc3545'; // Color rojo
+                    if (info.event.extendedProps.id_tipo_reserva == 1) {
+                        info.el.style.backgroundColor = '#0d6efd';
+                        info.el.style.color = '#ffffff'; // Color del texto a blanco
+                    } else if (info.event.extendedProps.id_tipo_reserva == 2) {
+                        info.el.style.backgroundColor = '#dc3545';
+                        info.el.style.color = '#ffffff'; // Color del texto a blanco
                     }
                 },
+
                 eventClick: function(info) {
                     Swal.fire({
-                        title: 'Detalles de la Reserva',
+                        title: '<strong style="color: #343a40; font-size: 1em; font-weight: bold;">Detalles de la Reserva</strong>',
                         html: `
-                    <strong>Tipo de Reserva:</strong> ${info.event.extendedProps.id_tipo_reserva == 1 ? 'Aeropuerto-Hotel' : 'Hotel-Aeropuerto'}<br>
-                    <strong>Dia llegada:</strong> ${info.event.start} <br>
-                    <strong>Hora</strong> ${info.event.extendedProps.hora_entrada} <br>
-                    <strong>Hora</strong> ${info.event.extendedProps.hora_vuelo_salida} <br>
-                    <strong>Hotel</strong> ${info.event.title} <br>
-                    <strong>Cliente:</strong> ${info.event.extendedProps.email_cliente} <br>
-                    <strong>Origen vuelo</strong> ${info.event.extendedProps.origen_vuelo_entrada} <br>
-                    <strong>Nº viajeros</strong> ${info.event.extendedProps.num_viajeros} <br>
-                    <strong>Vehículo</strong> ${info.event.extendedProps.id_vehiculo} <br>
-                    <strong>Localizador</strong> ${info.event.extendedProps.localizador} <br>
-                    <strong>Reserva ID:</strong> ${info.event.id} <br>
-                `,
+                        <p style="color: #6c757d; font-size: 1em; text-align: left; margin-left: 20px;">
+                            <strong>Ruta:</strong> <!--Tipo de Reserva-->${info.event.extendedProps.id_tipo_reserva == 1 ? 'Aeropuerto-Hotel' : 'Hotel-Aeropuerto'} -
+                            <strong>Origen/Destino:</strong> <!--Hotel-->${info.event.title}
+                        </p>
+                        <p style="color: #6c757d; font-size: 1em; text-align: left; margin-left: 20px;">
+                            <strong>Día:</strong> <!--Día recogida entrada/salida-->${info.event.start.toLocaleDateString()}
+                            <strong>Hora:</strong> <!--Hora recogida entrada/salida-->${info.event.start.toLocaleTimeString()}
+                        </p>
+                        <p style="color: #6c757d; font-size: 1em; text-align: left; margin-left: 20px;">
+                            <strong>Nº vuelo:</strong> ${info.event.extendedProps.numero_vuelo_entrada} -
+                            <strong>Origen:</strong> ${info.event.extendedProps.origen_vuelo_entrada}
+                        </p>
+                        <p style="color: #6c757d; font-size: 1em; text-align: left; margin-left: 20px;">
+                            <strong>Vehículo:</strong> ${info.event.extendedProps.id_vehiculo} -
+                            <strong>Nº viajeros:</strong> ${info.event.extendedProps.num_viajeros}
+                        </p>
+                        <p style="color: #6c757d; font-size: 1em; text-align: left; margin-left: 20px;">
+                            <strong>Cliente:</strong> ${info.event.extendedProps.email_cliente}<br>
+                        </p>
+                            <hr>
+                        <p style="color: #6c757d; font-size: 1em; text-align: left; margin-left: 20px;">
+                            <strong>ID:</strong> ${info.event.id} -
+                            <strong>Localizador:</strong> ${info.event.extendedProps.localizador}
+                        </p>`,
                         icon: 'info',
-                        confirmButtonText: 'Cerrar',
+                        confirmButtonText: '<span style="color: white; font-weight: bold;">Cerrar</span>',
                         customClass: {
-                            confirmButton: 'my-confirm-button'
+                            popup: 'swal-wide' // Clase personalizada para ajustar el ancho si lo deseas
+                        },
+                        didOpen: () => {
+                            const confirmButton = Swal.getConfirmButton();
+                            confirmButton.style.backgroundColor = '#6c757d'; // Color fondo
+                            confirmButton.style.color = 'white'; // Color texto
+                            confirmButton.style.fontSize = '16px'; // Tamaño de fuente
+                            confirmButton.style.fontWeight = 'bold'; // Negrita
+                            confirmButton.style.fontFamily = 'Arial, sans-serif'; // Fuente
+                            confirmButton.style.padding = '10px 20px'; // Padding
+                            confirmButton.style.borderRadius = '8px'; // Bordes redondeados
+                            confirmButton.style.border = '2px solid #6c757d'; // Color borde
+                            confirmButton.style.boxShadow = '0px 4px 10px rgba(0, 0, 0, 0.2)'; // Sombra
+                            confirmButton.style.transition = 'all 0.3s ease'; // Transición
+                            confirmButton.style.margin = '10px'; // Espacio externo
+
+                            // Efecto hover
+                            confirmButton.onmouseover = () => {
+                                confirmButton.style.backgroundColor = '#e2e3e5'; // Cambio de color en hover
+                                confirmButton.style.transform = 'scale(1.05)'; // Efecto de aumento
+                            };
+                            confirmButton.onmouseout = () => {
+                                confirmButton.style.backgroundColor = '#6c757d';
+                                confirmButton.style.transform = 'scale(1)';
+                            };
+                            const iconElement = Swal.getIcon();
+                            iconElement.style.color = '#e2e3e5'; // Cambia el color del ícono
+                            iconElement.style.borderColor = '#e2e3e5'; // Cambia el color del círculo
                         }
                     });
                 }
@@ -160,7 +199,7 @@ if (!isset($_SESSION['admin'])) {
             <div id="calendar"></div>
         </div>
 </div>
-<div class="text-end p-5">
+<div class="text-center p-5">
     <a href="../controllers/adminController.php?action=logout" class="text-danger text-decoration-none fs-5"><i class="bi bi-person-gear px-2 text-danger"></i>Cerrar sesión</a>
 </div>
 <!-- Archivos para accionar los modales -->
