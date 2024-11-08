@@ -3,7 +3,6 @@ if (!isset($_SESSION)) {
     session_start();
 }
 
-// Asegúrate de incluir el archivo db.php para que la función db_connect esté disponible
 require_once __DIR__ . '/../../models/db.php';
 require_once __DIR__ . '/../../models/traveler.php';
 
@@ -24,15 +23,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $traveler->Pais = $_POST['country'];
     $traveler->Email = $_POST['email'];
 
-    // Actualizar solo si se proporciona una nueva contraseña y hashearla
     if (!empty($_POST['password'])) {
         $traveler->Password = password_hash($_POST['password'], PASSWORD_BCRYPT);
     }
 
     if ($traveler->updateTraveler()) {
-        header('Location: /views/dashboard-traveler.php?success=update_exitoso');
+        $_SESSION['update_success'] = 'Perfil actualizado correctamente.';
     } else {
-        header('Location: /views/dashboard-traveler.php?error=update_fallido');
+        $_SESSION['update_error'] = 'Error al actualizar el perfil. Inténtelo de nuevo.';
     }
+
+    header('Location: /views/dashboard-traveler.php');
     exit();
 }
+?>
