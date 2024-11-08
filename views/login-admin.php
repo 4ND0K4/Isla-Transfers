@@ -25,7 +25,7 @@ session_start();
 <nav class="navbar navbar-expand-xl bg-light px-3">
     <div class="container-fluid">
         <a class="navbar-brand fs-4" href="login-admin.php" id="logo">
-            <img src="../assets/img/logo.png" alt="" width="30" height="24" class="d-inline-block align-text-top">
+            <img src="../assets/img/logo.png" alt="Palmera con sol de fondo" width="30" height="24" class="d-inline-block align-text-top">
             Isla Transfer
         </a>
         <ul class="nav nav-pills justify-content-end">

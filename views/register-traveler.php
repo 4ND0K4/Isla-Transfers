@@ -18,108 +18,83 @@
     <link rel="stylesheet" href="../assets/css/traveler.css">
 </head>
 <body>
-<!-- NAV -->
-<nav class="navbar navbar-expand-xl bg-light">
-    <div class="container-fluid">
-        <!-- LOGO -->
-        <a class="navbar-brand fs-4 ps-5" href="login-traveler.php" id="logo">
-            <img src="../assets/img/logo.png" alt="" width="30" height="24" class="d-inline-block align-text-top">
-            Isla Transfer
-        </a>
-        <ul class="nav nav-pills justify-content-end">
-            <li class="nav-item">
-                <!-- Iniciar Sesión -->
-                <a href="login-traveler.php" class="text-decoration-none fs-5 fw-bold text-warning">Iniciar sesión</a>
-            </li>
-        </ul>
-    </div>
-</nav>
-<!-- BLOQUE PRINCIPAL -->
-<div class="container d-flex justify-content-center align-items-center vh-100">
-    <div class="col-md-4">
-        <!-- Título -->
-        <h1></h1>
-        <!-- Subtítulo -->
-        <h2 class="text-center text-secondary display-5">¡Registrate para comenzar tu viaje!</h2>
-
-        <form class="w-100" role="form" id="myform" action="../controllers/travelers/register.php" method="POST">
-            <!-- ID Viajero -->
-            <div>
-                <input type="hidden" id="floatingInput" name="id_traveler">
-            </div>
-            <!-- Nombre -->
-            <div class="mb-1">
-                <label class="form-label text-warning">Nombre</label>
-                <input class="form-control" type="text" name="name" placeholder="Introduce tu nombre" required>
-            </div>
-            <!-- Appelido 1 -->
-            <div class="mb-3">
-                <label class="form-label text-warning">Apellido1</label>
-                <input class="form-control" type="text" name="surname1" placeholder="Introduce tu primer apellido" required>
-            </div>
-            <!-- Apellido 2 -->
-            <div class="mb-3">
-                <label class="form-label text-warning">Apellido2</label>
-                <input class="form-control" type="text" name="surname2" placeholder="Introduce tu segundo apellido">
-            </div>
-            <!-- E-mail -->
-            <div class="mb-3">
-                <label class="form-label text-warning">Email</label>
-                <input class="form-control" type="email" name="email" placeholder="Introduce tu email" required>
-            </div>
-            <!-- Password -->
-            <div class="mb-3">
-                <label class="form-label text-warning">Password</label>
-                <input class="form-control" type="password" name="password" placeholder="Introduce tu contraseña" required>
-            </div>
-
-             <!-- CAMPOS QUE SE HAN DEJADO PARA INTRODUCIR SOLO LA ACTUALIZACIÓN -->
-            <!--
-
-            <div class="mb-3">
-                <label class="form-label">Dirección</label>
-                <input class="form-control" type="text" name="address" placeholder="Introduce tu dirección aquí" required>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Código Postal</label>
-                <input class="form-control" type="text" name="zipCode" placeholder="Introduce tu código postal" required>
-            </div>
-
-
-            <div class="mb-3">
-                <label class="form-label">Ciudad</label>
-                <input class="form-control" type="text" name="city" placeholder="Introduce tu ciudad" required>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">País</label>
-                <input class="form-control" type="text" name="country" placeholder="Introduce tu país" required>
-            </div>
-
-           -->
-
-            <div class="d-grid gap-2">
-                <button class="btn btn-warning" type="submit" value="Registrarse"> Continuar </button>
-            </div>
-        </form>
-        <div class="d-grid gap-2 w-75">
-            <?php if (isset($_GET['error'])): ?>
-                <div class="alert alert-danger" role="alert" id="registerError">
-                    Error al registrarse. Hay un usuario registrado con este e-mail.
-                </div>
-            <?php endif; ?>
+    <!-- NAV -->
+    <nav class="navbar navbar-expand-xl bg-light">
+        <div class="container-fluid">
+            <!-- LOGO -->
+            <a class="navbar-brand fs-4 ps-5" href="login-traveler.php" id="logo">
+                <img src="../assets/img/logo.png" alt="Palmera con sol de fondo" width="30" height="24" class="d-inline-block align-text-top">
+                Isla Transfer
+            </a>
+            <ul class="nav nav-pills justify-content-end">
+                <li class="nav-item">
+                    <!-- Iniciar Sesión -->
+                    <a href="login-traveler.php" class="text-decoration-none fs-5 fw-bold text-warning">Iniciar sesión</a>
+                </li>
+            </ul>
         </div>
+    </nav>
+    <!-- BLOQUE PRINCIPAL -->
+    <div class="container d-flex justify-content-center align-items-center vh-100">
+        <div class="col-md-4">
+            <!-- Título -->
+            <h1></h1>
+            <!-- Subtítulo -->
+            <h2 class="text-center text-secondary display-5">¡Registrate para comenzar tu viaje!</h2>
 
+            <form class="w-100" role="form" id="myform" action="../controllers/travelers/register.php" method="POST">
+                <!-- ID Viajero -->
+                <div>
+                    <input type="hidden" id="floatingInput" name="id_traveler">
+                </div>
+                <!-- Nombre -->
+                <div class="mb-1">
+                    <label class="form-label text-warning">Nombre</label>
+                    <input class="form-control" type="text" name="name" placeholder="Introduce tu nombre" required>
+                </div>
+                <!-- Appelido 1 -->
+                <div class="mb-3">
+                    <label class="form-label text-warning">Apellido1</label>
+                    <input class="form-control" type="text" name="surname1" placeholder="Introduce tu primer apellido" required>
+                </div>
+                <!-- Apellido 2 -->
+                <div class="mb-3">
+                    <label class="form-label text-warning">Apellido2</label>
+                    <input class="form-control" type="text" name="surname2" placeholder="Introduce tu segundo apellido">
+                </div>
+                <!-- E-mail -->
+                <div class="mb-3">
+                    <label class="form-label text-warning">Email</label>
+                    <input class="form-control" type="email" name="email" placeholder="Introduce tu email" required>
+                </div>
+                <!-- Password -->
+                <div class="mb-3">
+                    <label class="form-label text-warning">Password</label>
+                    <input class="form-control" type="password" name="password" placeholder="Introduce tu contraseña" required>
+                </div>
+                <!-- Botón -->
+                <div class="d-grid gap-2">
+                    <button class="btn btn-warning" type="submit" value="Registrarse"> Continuar </button>
+                </div>
+            </form>
+            <!-- Mensaje de error -->
+            <div class="d-grid gap-2 w-75">
+                <?php if (isset($_GET['error'])): ?>
+                    <div class="alert alert-danger" role="alert" id="registerError">
+                        Error al registrarse. Hay un usuario registrado con este e-mail.
+                    </div>
+                <?php endif; ?>
+            </div>
+
+        </div>
     </div>
-</div>
 
 <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////// EVENTS //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
 <script>
-    // Configura un temporizador para ocultar el mensaje después de 3 segundos
+    // Temporizador mensaje error de registro
     setTimeout(function() {
         var errorDiv = document.getElementById("registerError");
         if (errorDiv) {
@@ -132,7 +107,6 @@
         }
     }, 3000); // Tiempo de duración
 </script>
-
 <!-- Archivos para accionar los modales -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>

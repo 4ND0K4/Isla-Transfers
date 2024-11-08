@@ -35,13 +35,15 @@ if (!isset($_SESSION['admin'])) {
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
-                locale: "es",
-                firstDay: 1,
+                locale: "es", //idioma
+                firstDay: 1, //Inicia en lunes
+                //Colocación de los elementos del header
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
+                //Cambio de nombres del header
                 buttonText: {
                     today: 'Hoy',
                     month: 'Mes',
@@ -49,7 +51,7 @@ if (!isset($_SESSION['admin'])) {
                     day: 'Día'
                 },
                 events: '../controllers/bookings/getCalendar.php',
-
+                //Estilos del today
                 dayHeaderContent: function(arg) {
                     let span = document.createElement('span');
                     span.innerText = arg.text;
@@ -58,7 +60,7 @@ if (!isset($_SESSION['admin'])) {
                     span.style.display = 'block';
                     return { domNodes: [span] };
                 },
-
+                //Estilos de la celda today en el calendario
                 dayCellDidMount: function(info) {
                     if (info.isToday) {
                         info.el.style.backgroundColor = '#e2e3e5';
@@ -72,7 +74,7 @@ if (!isset($_SESSION['admin'])) {
                         dayNumberElement.style.textDecoration = 'none';
                     }
                 },
-
+                //Estilo para las reservas insertadas en las celdas
                 eventDidMount: function(info) {
                     if (info.event.extendedProps.id_tipo_reserva == 1) {
                         info.el.style.backgroundColor = '#0d6efd';
@@ -82,7 +84,7 @@ if (!isset($_SESSION['admin'])) {
                         info.el.style.color = '#ffffff'; // Color del texto a blanco
                     }
                 },
-
+                //Estilo de las cards (con sweetAlert2)
                 eventClick: function(info) {
                     Swal.fire({
                         title: '<strong style="color: #343a40; font-size: 1em; font-weight: bold;">Detalles de la Reserva</strong>',
@@ -114,9 +116,10 @@ if (!isset($_SESSION['admin'])) {
                         icon: 'info',
                         confirmButtonText: '<span style="color: white; font-weight: bold;">Cerrar</span>',
                         customClass: {
-                            popup: 'swal-wide' // Clase personalizada para ajustar el ancho si lo deseas
+                            popup: 'swal-wide' // Clase personalizada para ajustar el ancho
                         },
                         didOpen: () => {
+                            //Estilo botón Cerrar
                             const confirmButton = Swal.getConfirmButton();
                             confirmButton.style.backgroundColor = '#6c757d'; // Color fondo
                             confirmButton.style.color = 'white'; // Color texto
@@ -139,9 +142,10 @@ if (!isset($_SESSION['admin'])) {
                                 confirmButton.style.backgroundColor = '#6c757d';
                                 confirmButton.style.transform = 'scale(1)';
                             };
+                            //Estilo icono superior decorativo
                             const iconElement = Swal.getIcon();
-                            iconElement.style.color = '#e2e3e5'; // Cambia el color del ícono
-                            iconElement.style.borderColor = '#e2e3e5'; // Cambia el color del círculo
+                            iconElement.style.color = '#e2e3e5'; // Color del ícono
+                            iconElement.style.borderColor = '#e2e3e5'; // Color del círculo
                         }
                     });
                 }
@@ -151,63 +155,64 @@ if (!isset($_SESSION['admin'])) {
     </script>
 </head>
 <body>
-<!-- MENU START NAV -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark border border-info">
-    <!-- NAV CONTAINER START -->
-    <div class="container-fluid">
-        <a href="#" class="navbar-brand text-white fw-semibold fs-4">IT ADMIN</a>
-        <!-- NAV BUTTON -->
-        <button class="navbar-toggler"
-                type="button"
-                data-bs-toggle="offcanvas"
-                data-bs-target="#menuLateral">
-            <span class="navbar-toggler-icon "></span>
-        </button>
+    <!-- MENU START NAV -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark border border-info">
+        <!-- NAV CONTAINER START -->
+        <div class="container-fluid">
+            <a href="#" class="navbar-brand text-white fw-semibold fs-4">IT ADMIN</a>
+            <!-- NAV BUTTON -->
+            <button class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#menuLateral">
+                <span class="navbar-toggler-icon "></span>
+            </button>
 
-        <section class="offcanvas offcanvas-start bg-dark"
-                 id="menuLateral"
-                 tabindex="-1"
-        >
-            <div class="offcanvas-header"
-                 data-bs-theme="dark">
-                <h3 class="offcanvas-tittle text-white">IT ADMIN</h3>
-                <button class="btn-close"
-                        type="button"
-                        aria-label="close"
-                        data-bs-dismiss="offcanvas"
-                ></button>
-            </div>
-            <div class="offcanvas-body d-flex flex-column justify-content-between px-0">
-                <ul class="navbar-nav fs-5 justify-content-evenly">
-                    <li class="nav-item p-3 py-md-1">
-                        <a href="booking.php" class="nav-link text-white text-center">RESERVAS</a>
-                    </li>
-                    <div class="vr bg-light"></div>
-                    <li class="nav-item p-3 py-md-1">
-                        <a href="hotel.php" class="nav-link text-white text-center">HOTELES</a>
-                    </li>
-                    <div class="vr bg-light"></div>
-                    <li class="nav-item p-3 py-md-1">
-                        <a href="vehicle.php" class="nav-link text-white text-center">VEHÍCULOS</a>
-                    </li>
-                </ul>
-                <div class="d-lg-none align-self-center py-3">
-                    <!-- logout -->
-                    <a href="../controllers/adminController.php?action=logout" class="text-danger text-decoration-none"><i class="bi bi-plugin text-danger"></i> Cerrar sesión</a>
+            <section class="offcanvas offcanvas-start bg-dark"
+                     id="menuLateral"
+                     tabindex="-1"
+            >
+                <div class="offcanvas-header"
+                     data-bs-theme="dark">
+                    <h3 class="offcanvas-tittle text-white">IT ADMIN</h3>
+                    <button class="btn-close"
+                            type="button"
+                            aria-label="close"
+                            data-bs-dismiss="offcanvas"
+                    ></button>
                 </div>
-            </div>
-        </section>
-    </div>
-</nav>
-<h1 class="text-center py-5">CALENDARIO DE RESERVAS</h1>
-<div class="container">
-        <div class="col-xl">
-            <div id="calendar"></div>
+                <div class="offcanvas-body d-flex flex-column justify-content-between px-0">
+                    <ul class="navbar-nav fs-5 justify-content-evenly">
+                        <li class="nav-item p-3 py-md-1">
+                            <a href="booking.php" class="nav-link text-white text-center">RESERVAS</a>
+                        </li>
+                        <div class="vr bg-light"></div>
+                        <li class="nav-item p-3 py-md-1">
+                            <a href="hotel.php" class="nav-link text-white text-center">HOTELES</a>
+                        </li>
+                        <div class="vr bg-light"></div>
+                        <li class="nav-item p-3 py-md-1">
+                            <a href="vehicle.php" class="nav-link text-white text-center">VEHÍCULOS</a>
+                        </li>
+                    </ul>
+                    <div class="d-lg-none align-self-center py-3">
+                        <!-- logout -->
+                        <a href="../controllers/adminController.php?action=logout" class="text-danger text-decoration-none"><i class="bi bi-plugin text-danger"></i> Cerrar sesión</a>
+                    </div>
+                </div>
+            </section>
         </div>
-</div>
-<div class="text-center p-5">
-    <a href="../controllers/adminController.php?action=logout" class="text-danger text-decoration-none fs-5"><i class="bi bi-plugin text-danger"></i> Cerrar sesión</a>
-</div>
+    </nav>
+    <!-- Calendario -->
+    <h1 class="text-center py-5">CALENDARIO DE RESERVAS</h1>
+    <div class="container">
+            <div class="col-xl">
+                <div id="calendar"></div>
+            </div>
+    </div>
+    <div class="text-center p-5">
+        <a href="../controllers/adminController.php?action=logout" class="text-danger text-decoration-none fs-5"><i class="bi bi-plugin text-danger"></i> Cerrar sesión</a>
+    </div>
 <!-- Archivos para accionar los modales -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>

@@ -1,28 +1,25 @@
 <?php
 session_start();
+// Comprueba la sesión pertenece a travelerUser
 $isTraveler = isset($_SESSION['travelerUser']);
 $emailCliente = $isTraveler ? $_SESSION['travelerUser'] : '';
-//
+// Declaraciones de inclusión
 include '../controllers/travelers/getSession.php';
 include '../controllers/travelers/update.php';
-//
+//Inserción del campo Id_hotel
 $hotelsStmt = $db->prepare("SELECT Id_hotel FROM tranfer_hotel");
 $hotelsStmt->execute();
 $hotels = $hotelsStmt->fetchAll(PDO::FETCH_COLUMN);
-
 // Array de nombres de hoteles asignados manualmente
 $hotelNames = [
-    1 => 'Hotel 1',
-    2 => 'Hotel 2',
-    3 => 'Hotel 3',
-    4 => 'Hotel 4',
-    5 => 'Hotel 5',
-    6 => 'Hotel 6',
-    7 => 'Hotel 7',
-    8 => 'Hotel 8'
-
+    1 => 'Paraíso Escondido Retreat',
+    2 => 'Corazón Isleño Inn',
+    3 => 'Oasis Resort',
+    4 => 'El faro Suites',
+    5 => 'Costa Salvaje Eco Lodge',
+    6 => 'Arenas Doradas Resort'
 ];
-
+//Inclusión del campo name para el saludo inicial
 $_SESSION['travelerName'] = $travelerData['name'];
 ?>
 <!DOCTYPE html>
@@ -45,7 +42,7 @@ $_SESSION['travelerName'] = $travelerData['name'];
     <!-- Enlaces Hojas Estilo-->
     <link rel="stylesheet" href="../assets/css/general.css">
     <link rel="stylesheet" href="../assets/css/traveler.css">
-    <!-- Estilos para los header del FullCalendario-->
+    <!-- Estilos para el header del FullCalendario. No funciona desde las hojas externas -->
     <style>
         /* CSS Personalizado para la Barra de Herramientas */
         .fc .fc-prev-button,
@@ -78,7 +75,7 @@ $_SESSION['travelerName'] = $travelerData['name'];
             color: #000000 !important;
         }
     </style>
-
+    <!-- Librería de sweetAlert2-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -89,13 +86,15 @@ $_SESSION['travelerName'] = $travelerData['name'];
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
-                locale: "es",
-                firstDay: 1,
+                locale: "es", //idioma
+                firstDay: 1, //Inicia en lunes
+                //Colocación de los elementos del header
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
+                //Cambio de nombres del header
                 buttonText: {
                     today: 'Hoy',
                     month: 'Mes',
@@ -103,7 +102,7 @@ $_SESSION['travelerName'] = $travelerData['name'];
                     day: 'Día'
                 },
                 events: '../controllers/bookings/getCalendar.php',
-
+                //Estilos del today
                 dayHeaderContent: function(arg) {
                     let span = document.createElement('span');
                     span.innerText = arg.text;
@@ -112,7 +111,7 @@ $_SESSION['travelerName'] = $travelerData['name'];
                     span.style.display = 'block';
                     return { domNodes: [span] };
                 },
-
+                //Estilos de la celda today en el calendario
                 dayCellDidMount: function(info) {
                     if (info.isToday) {
                         info.el.style.backgroundColor = '#fff3cd';
@@ -126,7 +125,7 @@ $_SESSION['travelerName'] = $travelerData['name'];
                         dayNumberElement.style.textDecoration = 'none';
                     }
                 },
-
+                //Estilo para las reservas insertadas en las celdas
                 eventDidMount: function(info) {
                     console.log(info.event.extendedProps);
                     // Verifica el creador de la reserva y cambia el color del evento
@@ -138,6 +137,7 @@ $_SESSION['travelerName'] = $travelerData['name'];
                         info.el.style.color = '#ffffff';
                     }
                 },
+                //Estilo de las cards (con sweetAlert2)
                 eventClick: function(info) {
                     Swal.fire({
                         title: '<strong style="color: #343a40; font-size: 1em; font-weight: bold;">Detalles de la Reserva</strong>',
@@ -173,16 +173,16 @@ $_SESSION['travelerName'] = $travelerData['name'];
                         icon: 'info',
                         confirmButtonText: '<i class="bi bi-x text-dark"></i>',
                         customClass: {
-                            popup: 'swal-wide' // Clase personalizada para ajustar el ancho si lo deseas
+                            popup: 'swal-wide' // Clase personalizada para ajustar el ancho
                         },
                         didOpen: () => {
-                            // Acceder al elemento de la tarjeta y aplicar estilo de fondo
+                            // Estilo de fondo de la card
                             const swalPopup = Swal.getPopup();
                             swalPopup.style.backgroundColor = '#fff3cd';  // Color de fondo
                             swalPopup.style.borderRadius = '10px';        // Bordes redondeados
                             swalPopup.style.color = '#343a40';            // Color del texto
                             swalPopup.style.boxShadow = '0px 4px 10px rgba(0, 0, 0, 0.2)'; // Sombra de la tarjeta
-
+                            //Estilo botón Cerrar
                             const confirmButton = Swal.getConfirmButton();
                             confirmButton.style.backgroundColor = '#fff3cd'; // Color fondo
                             confirmButton.style.color = 'white'; // Color texto
@@ -205,6 +205,7 @@ $_SESSION['travelerName'] = $travelerData['name'];
                                 confirmButton.style.backgroundColor = '#fff3cd';
                                 confirmButton.style.transform = 'scale(1)';
                             };
+                            //Estilo icono superior decorativo
                             const iconElement = Swal.getIcon();
                             iconElement.style.color = '#ffc107'; // Cambia el color del ícono
                             iconElement.style.borderColor = '#ffc107'; // Cambia el color del círculo
@@ -228,203 +229,195 @@ $_SESSION['travelerName'] = $travelerData['name'];
     </script>
 </head>
 <body>
-<nav class="navbar navbar-expand-xl bg-transparent">
-    <div class="container-fluid">
-        <!-- Logo -->
-        <a class="navbar-brand fs-4 ps-5" href="dashboard-traveler.php" id="logo">
-            <img src="../assets/img/logo.png" alt="" width="30" height="24" class="d-inline-block align-text-top">
-            Isla Transfer <!-- Nombre -->
-        </a>
-        <ul class="nav nav-pills justify-content-end">
-            <li class="nav-item text-center">
-                <!-- BOTÓN ACTUALIZAR -->
-                <button onclick="abrirModalActualizar(<?php echo htmlspecialchars(json_encode($travelerData)); ?>)" class="btn btn-primary bg-transparent border-0 fs-5 fw-bold text-success" data-bs-toggle="modal" data-bs-target="#updateTravelerModal"><i class="bi bi-person-gear px-2 text-success"></i>Perfil</button>
-            </li>
-            <li class="pt-2">
-                <!-- Cerrar sesión -->
-                <a href="../controllers/travelers/login.php?action=logout" class="fs-5 pt-3 px-3 text-decoration-none text-danger"><i class="bi bi-box-arrow-left fs-5"></i></i> Cerrar sesión</a>
-            </li>
-        </ul>
-    </div>
-</nav>
-<div class="container">
-    <!-- Título -->
-    <h1 class="text-center pt-3 fw-light text-success">¡Hola, <?php echo htmlspecialchars($_SESSION['travelerName']); ?>!</h1>
-    <!-- Subtítulo -->
-    <h2 class="text-center text-warning fw-bold pt-3">Añade, modifica y elimina tus reservas.</h2>
-    <!-- Párrafo de alerta -->
-    <p class="text-center text-secondary pb-3">¡Pero recuerda! No puedes crear, modificar ni cancelar tus reservas con menos de 48 horas de antelación.</p>
-    <!-- Grupo de 3 botones -->
-    <div class="container-fluid">
-        <!-- Botón de crear -->
-        <div class="col text-center fw-bold">
-            <button type="button" class="btn btn-lg text-warning" data-bs-toggle="modal" data-bs-target="#addBookingModal">
-                <i class="bi bi-journal-plus display-3"></i>
-            </button>
+    <nav class="navbar navbar-expand-xl bg-transparent">
+        <div class="container-fluid">
+            <!-- Logo -->
+            <a class="navbar-brand fs-4 ps-5" href="dashboard-traveler.php" id="logo">
+                <img src="../assets/img/logo.png" alt="Palmera con sol de fondo" width="30" height="24" class="d-inline-block align-text-top">
+                Isla Transfer <!-- Nombre -->
+            </a>
+            <ul class="nav nav-pills justify-content-end">
+                <li class="nav-item text-center">
+                    <!-- BOTÓN ACTUALIZAR -->
+                    <button onclick="abrirModalActualizar(<?php echo htmlspecialchars(json_encode($travelerData)); ?>)" class="btn btn-primary bg-transparent border-0 fs-5 fw-bold text-success" data-bs-toggle="modal" data-bs-target="#updateTravelerModal"><i class="bi bi-person-gear px-2 text-success"></i>Perfil</button>
+                </li>
+                <li class="pt-2">
+                    <!-- Cerrar sesión -->
+                    <a href="../controllers/travelers/login.php?action=logout" class="fs-5 pt-3 px-3 text-decoration-none text-danger"><i class="bi bi-box-arrow-left fs-5"></i></i> Cerrar sesión</a>
+                </li>
+            </ul>
         </div>
-        <!-- Botón de editar -->
-        <div class="col text-center p-1">
-
-        </div>
-        <!-- Botón de eliminar -->
-        <div class="col text-center p-1">
-
-        </div>
-    </div>
-    <div class="">
-        <div class="">
-            <?php if (isset($_GET['update_success'])): ?>
-                <div id="updateSuccess" class="alert alert-success" role="alert">
-                    Perfil actualizado correctamente.
+    </nav>
+    <!-- Mensajes de actualización -->
+    <div class="d-flex justify-content-end">
+        <div class="col-4 text-center">
+            <?php if (isset($_SESSION['update_success'])): ?>
+                <div id="updateSuccess" class="alert alert-success fs-6" role="alert">
+                    <?php echo $_SESSION['update_success']; ?>
                 </div>
-
-        </div>
-        <div class="">
-            <?php unset($_SESSION['update_error']); ?>
-                <div id="update_error" class="alert alert-danger" role="alert">
-                    Error al actualizar el perfil. Inténtelo de nuevo.
+                <?php unset($_SESSION['update_success']); ?>
+            <?php elseif (isset($_SESSION['update_error'])): ?>
+                <div id="updateError" class="alert alert-danger fs-6" role="alert">
+                    <?php echo $_SESSION['update_error']; ?>
                 </div>
+                <?php unset($_SESSION['update_error']); ?>
             <?php endif; ?>
+        </div>
     </div>
-</div>
-<!-- CALENDA-->
-<div class="container">
-    <div class="col-xl">
-        <div id="calendar"></div>
+    <!-- Bloque principal -->
+    <div class="container">
+        <!-- Título -->
+        <h1 class="text-center pt-3 fw-light text-success">¡Hola, <?php echo htmlspecialchars($_SESSION['travelerName']); ?>!</h1>
+        <!-- Subtítulo -->
+        <h2 class="text-center text-warning fw-bold pt-3">Añade, modifica y elimina tus reservas.</h2>
+        <!-- Párrafo de alerta -->
+        <p class="text-center text-secondary pb-3">¡Pero recuerda! No puedes crear, modificar ni cancelar tus reservas con menos de 48 horas de antelación.</p>
+        <!-- Botón de crear -->
+        <div class="container-fluid">
+            <div class="col text-center fw-bold">
+                <button type="button" class="btn btn-lg text-warning" data-bs-toggle="modal" data-bs-target="#addBookingModal">
+                    <i class="bi bi-journal-plus display-3"></i>
+                </button>
+            </div>
     </div>
-</div>
+    <!-- CALENDARIO-->
+    <div class="container">
+        <div class="col-xl">
+            <div id="calendar"></div>
+        </div>
+    </div>
 
 <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////// MODALS //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
-<!--Modal creacion Reservas-->
-<div class="modal fade" id="addBookingModal" tabindex="-1" aria-labelledby="addBookingModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-warning-subtle">
-                <h2 class="modal-title">Nueva Reserva</h2>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body bg-light">
-                <!-- Se elige entre las 3 opciones para abrir unos campos u otros -->
-                <form action="../controllers/bookings/create.php" method="POST">
-                    <select name="id_tipo_reserva" id="tipo_reserva" class="form-select form-select-sm" onchange="mostrarCampos()">
+    <!--Modal Creación Reservas-->
+    <div class="modal fade" id="addBookingModal" tabindex="-1" aria-labelledby="addBookingModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning-subtle">
+                    <h2 class="modal-title">Nueva Reserva</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body bg-light">
+                    <form action="../controllers/bookings/create.php" method="POST">
 
-                        <option value="1">Aeropuerto-Hotel</option>
-                        <option value="2">Hotel-Aeropuerto</option>
-                        <option value="idayvuelta">Ida/Vuelta</option>
-                    </select>
+                        <!-- Se elige entre las 3 opciones para abrir unos campos u otros -->
+                        <select name="id_tipo_reserva" id="tipo_reserva" class="form-select form-select-sm" onchange="mostrarCampos()">
+                            <option value="1">Aeropuerto-Hotel</option>
+                            <option value="2">Hotel-Aeropuerto</option>
+                            <option value="idayvuelta">Ida/Vuelta</option>
+                        </select>
 
-                    <!-- AEROPUERTO -> HOTEL -->
-                    <div id="aeropuerto-hotel-fields" style="display:none;">
+                        <!-- Bloque campos AEROPUERTO -> HOTEL -->
+                        <div id="aeropuerto-hotel-fields" style="display:none;">
 
-                        <!-- Fecha Entrada -->
-                        <div class="form-floating mb-3">
-                            <input type="date" class="form-control" name="fecha_entrada" id="dateInInput" aria-describedby="helpDateIn" placeholder="Fecha_entrada">
-                            <label for="dateInInput">Día de llegada</label>
-                        </div>
-                        <!-- Hora Entrada -->
-                        <div class="form-floating mb-3">
-                            <input type="time" class="form-control" name="hora_entrada" id="hourInInput" aria-describedby="helpHourIn" placeholder="Hora de entrada">
-                            <label for="hourInInput">Hora de llegada</label>
+                            <!-- Fecha Entrada -->
+                            <div class="form-floating mb-3">
+                                <input type="date" class="form-control" name="fecha_entrada" id="dateInInput" aria-describedby="helpDateIn" placeholder="Fecha_entrada">
+                                <label for="dateInInput">Día de llegada</label>
+                            </div>
+
+                            <!-- Hora Entrada -->
+                            <div class="form-floating mb-3">
+                                <input type="time" class="form-control" name="hora_entrada" id="hourInInput" aria-describedby="helpHourIn" placeholder="Hora de entrada">
+                                <label for="hourInInput">Hora de llegada</label>
+                            </div>
+
+                            <!-- Numero Vuelo Entrada -->
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" name="numero_vuelo_entrada" id="numFlightInInput" aria-describedby="helpNumFlightIn" placeholder="Numero vuelo de entrada">
+                                <label for="numFlightInInput">Numero vuelo</label>
+                            </div>
+
+                            <!-- Origen Vuelo Entrada -->
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" name="origen_vuelo_entrada" id="originFlightInInput" aria-describedby="helpOriginFlightIn" placeholder="Origen vuelo de entrada">
+                                <label for="originFlightInInput">Aeropuerto de origen</label>
+                            </div>
                         </div>
 
-                        <!-- Numero Vuelo Entrada -->
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="numero_vuelo_entrada" id="numFlightInInput" aria-describedby="helpNumFlightIn" placeholder="Numero vuelo de entrada">
-                            <label for="numFlightInInput">Numero vuelo</label>
-                        </div>
-                        <!-- Origen Vuelo Entrada -->
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="origen_vuelo_entrada" id="originFlightInInput" aria-describedby="helpOriginFlightIn" placeholder="Origen vuelo de entrada">
-                            <label for="originFlightInInput">Aeropuerto de origen</label>
-                        </div>
-                    </div>
+                        <!-- Bloque de campos HOTEL -> AEROPUERTO-->
+                        <div id="hotel-aeropuerto-fields" style="display:none;">
 
-                    <!-- HOTEL -> AEROPUERTO-->
-                    <div id="hotel-aeropuerto-fields" style="display:none;">
-                        <!-- Fecha Vuelo Salida -->
-                        <div class="form-floating mb-3">
-                            <input type="date" class="form-control" name="fecha_vuelo_salida" id="dateFlightOutInput" aria-describedby="helpDateFlightOut" placeholder="Fecha vuelo de salida">
-                            <label for="dateFlightOutInput">Fecha vuelo de salida</label>
-                        </div>
-                        <!-- Hora Vuelo Salida -->
-                        <div class="form-floating mb-3">
-                            <input type="time" class="form-control" name="hora_vuelo_salida" id="hourFlightOutInput" aria-describedby="helpHourFlightOut" placeholder="Hora vuelo de salida">
-                            <label for="hourFlightOutInput">Hora vuelo de salida</label>
-                        </div>
-                    </div>
+                            <!-- Fecha Vuelo Salida -->
+                            <div class="form-floating mb-3">
+                                <input type="date" class="form-control" name="fecha_vuelo_salida" id="dateFlightOutInput" aria-describedby="helpDateFlightOut" placeholder="Fecha vuelo de salida">
+                                <label for="dateFlightOutInput">Fecha vuelo de salida</label>
+                            </div>
 
-                    <!-- Campos comunes para ambos trayectos -->
-                    <div>
-                        <!-- Id Hotel
-                        <div class="form-floating mb-3">
-                            <input type="number" class="form-control" name="id_hotel" id="idHotelInput" aria-describedby="helpIdHotel" placeholder="ID hotel" required>
-                            <label for="idHotelInput">Id de hotel</label>
-                        </div>-->
-                        <!-- Id Destino-->
-                        <div class="form-floating mb-3">
-                            <!--<input type="number" class="form-control" name="id_destino" id="idDestinationInput"  aria-describedby="helpIdDestination" placeholder="Id de destino" required>-->
-                            <select name="id_destino" id="idDestinationInput" class="form-select" required>
-                                <option value="">Selecciona un Id de Destino</option>
-                                <?php foreach ($hotels as $hotelId): ?>
-                                    <option value="<?php echo $hotelId; ?>">
-                                        <?php echo isset($hotelNames[$hotelId]) ? $hotelNames[$hotelId] : "Hotel Desconocido ($hotelId)"; ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                            <label for="idDestinationInput">Id de destino</label>
-                        </div>
-                        <!-- Número Viajeros -->
-                        <div class="form-floating mb-3">
-                            <input type="number" class="form-control" name="num_viajeros" id="numTravelersInput" aria-describedby="helpNumTravelers" placeholder="Numero de viajeros">
-                            <label for="numTravelersInput">Número de viajeros</label>
-                        </div>
-                        <!-- Email Cliente -->
-                        <div class="form-floating mb-3">
-                            <input type="email" class="form-control" name="email_cliente" id="emailClientInput" aria-describedby="helpEmailClient"
-                                   placeholder="Email del cliente"
-                                   value="<?php echo htmlspecialchars($emailCliente); ?>"
-                                <?php echo $isTraveler ? 'readonly' : ''; ?>
-                                   required>
-                            <label for="emailClientInput">Email del cliente</label>
-                        </div>
-                        <!-- Id Vehículo
-                        <div class="form-floating mb-3">
-                            <input type="number" class="form-control" name="id_vehiculo" id="idVehicleInput" aria-describedby="helpIdVehicle"  placeholder="Id vehiculo">
-                            <label for="idVehicleInput">Vehículo</label>
-                        </div>-->
-                    </div>
+                            <!-- Hora Vuelo Salida -->
+                            <div class="form-floating mb-3">
+                                <input type="time" class="form-control" name="hora_vuelo_salida" id="hourFlightOutInput" aria-describedby="helpHourFlightOut" placeholder="Hora vuelo de salida">
+                                <label for="hourFlightOutInput">Hora vuelo de salida</label>
+                            </div>
 
-                    <!-- Botones de envio y cierre -->
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-warning fw-bold text-white" name="addBooking">Crear</button>
-                    </div>
-                    <div class="modal-footer"></div>
-                </form>
+                        </div>
+
+                        <!-- Campos comunes para ambos trayectos -->
+                        <div>
+                            <!-- Id Destino-->
+                            <div class="form-floating mb-3">
+                                <!--<input type="number" class="form-control" name="id_destino" id="idDestinationInput"  aria-describedby="helpIdDestination" placeholder="Id de destino" required>-->
+                                <select name="id_destino" id="idDestinationInput" class="form-select" required>
+                                    <option value="">Selecciona un Id de Destino</option>
+                                    <?php foreach ($hotels as $hotelId): ?>
+                                        <option value="<?php echo $hotelId; ?>">
+                                            <?php echo isset($hotelNames[$hotelId]) ? $hotelNames[$hotelId] : "Hotel Desconocido ($hotelId)"; ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <label for="idDestinationInput">Id de destino</label>
+                            </div>
+
+                            <!-- Número Viajeros -->
+                            <div class="form-floating mb-3">
+                                <input type="number" class="form-control" name="num_viajeros" id="numTravelersInput" aria-describedby="helpNumTravelers" placeholder="Numero de viajeros">
+                                <label for="numTravelersInput">Número de viajeros</label>
+                            </div>
+
+                            <!-- Email Cliente -->
+                            <div class="form-floating mb-3">
+                                <input type="email" class="form-control" name="email_cliente" id="emailClientInput" aria-describedby="helpEmailClient"
+                                       placeholder="Email del cliente"
+                                       value="<?php echo htmlspecialchars($emailCliente); ?>"
+                                    <?php echo $isTraveler ? 'readonly' : ''; ?>
+                                       required>
+                                <label for="emailClientInput">Email del cliente</label>
+                            </div>
+
+                        </div>
+
+                        <!-- Botones de envio y cierre -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-warning fw-bold text-white" name="addBooking">Crear</button>
+                        </div>
+                        <div class="modal-footer"></div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-    <!--Modal modificación Reservas-->
+
+    <!-- Modal Actualizar Reserva -->
     <div class="modal fade" id="updateBookingModal" tabindex="-1" aria-labelledby="updateBookingModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header bg-secondary-subtle">
+                <div class="modal-header bg-warning-subtle">
                     <h2 class="modal-title">Actualice la reserva</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
+                    </div>
+                <div class="modal-body bg-light">
                     <form action="../controllers/bookings/update.php" method="POST">
+                        <!-- Id reserva -->
                         <input type="hidden" id="updateIdBookingInput" name="id_reserva">
 
-                        <!-- Campo oculto para id_vehiculo, con valor predeterminado si está vacío -->
+                        <!-- Campo oculto para id_vehiculo, con valor predeterminado 1 si está vacío -->
                         <input type="hidden" name="id_vehiculo" id="updateIdVehicleInput" value="1">
 
+                        <!-- Campo oculto para tipo_creador_reserva, con valor 1 o 2 -->
                         <input type="hidden" id="updateTipoCreadorReserva" name="tipo_creador_reserva">
-
 
                         <!-- Id Tipo Reserva -->
                         <div class="form-floating mb-3">
@@ -465,19 +458,27 @@ $_SESSION['travelerName'] = $travelerData['name'];
                         </div>
 
                         <!-- Campos específicos para Aeropuerto - Hotel (id_tipo_reserva = 1) -->
+
+                        <!-- Fecha de llegada -->
                         <div id="aeropuerto-hotel-fields-update" style="display: none;">
                             <div class="form-floating mb-3">
                                 <input type="date" class="form-control" name="fecha_entrada" id="updateDateInInput" placeholder="Fecha de entrada">
                                 <label for="updateDateInInput">Fecha Llegada</label>
                             </div>
+
+                            <!-- Hora de llegada -->
                             <div class="form-floating mb-3">
                                 <input type="time" class="form-control" name="hora_entrada" id="updateHourInInput" placeholder="Hora de entrada">
                                 <label for="updateHourInInput">Hora Llegada</label>
                             </div>
+
+                            <!-- Número de vuelo -->
                             <div class="form-floating mb-3">
                                 <input type="text" class="form-control" name="numero_vuelo_entrada" id="updateNumFlightInInput" placeholder="Número de vuelo de entrada">
                                 <label for="updateNumFlightInInput">Número Vuelo Llegada</label>
                             </div>
+
+                            <!-- Origen del vuelo -->
                             <div class="form-floating mb-3">
                                 <input type="text" class="form-control" name="origen_vuelo_entrada" id="updateOriginFlightInInput" placeholder="Origen del vuelo de entrada">
                                 <label for="updateOriginFlightInInput">Origen Vuelo</label>
@@ -486,17 +487,23 @@ $_SESSION['travelerName'] = $travelerData['name'];
 
                         <!-- Campos específicos para Hotel - Aeropuerto (id_tipo_reserva = 2) -->
                         <div id="hotel-aeropuerto-fields-update" style="display: none;">
+
+                            <!-- Fecha de salida -->
                             <div class="form-floating mb-3">
                                 <input type="date" class="form-control" name="fecha_vuelo_salida" id="updateDateFlightOutInput" placeholder="Fecha del vuelo de salida">
                                 <label for="updateDateFlightOutInput">Fecha Vuelo Salida</label>
                             </div>
+
+                            <!-- Hora de salida -->
                             <div class="form-floating mb-3">
                                 <input type="time" class="form-control" name="hora_vuelo_salida" id="updateHourFlightOutInput" placeholder="Hora del vuelo de salida">
                                 <label for="updateHourFlightOutInput">Hora Vuelo Salida</label>
                             </div>
                         </div>
-
-                        <button type="submit" class="btn btn-dark fw-bold text-white" name="updateBooking">Modificar</button>
+                        <!-- Botón Modificar -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-warning fw-bold text-white" name="updateBooking">Actualizar</button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -508,11 +515,11 @@ $_SESSION['travelerName'] = $travelerData['name'];
     <div class="modal fade" id="confirmarEliminacionModal" tabindex="-1" aria-labelledby="confirmarEliminacionLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header bg-secondary-subtle">
+                <div class="modal-header bg-warning-subtle">
                     <h2 class="modal-title" id="confirmarEliminacionLabel">Confirmar Eliminación</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body bg-light">
                     ¿Estás seguro de que deseas eliminar esta reserva?
                 </div>
                 <div class="modal-footer">
@@ -524,279 +531,240 @@ $_SESSION['travelerName'] = $travelerData['name'];
     </div>
 
 
+    <!-- Modal de actualizar Perfil viajero -->
+    <div class="modal fade" id="updateTravelerModal" tabindex="-1" aria-labelledby="updateTravelerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header  bg-warning-subtle">
+                    <h2 class="modal-title">Modificar Perfil</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body bg-light">
+                    <form action="../controllers/travelers/update.php" method="POST">
 
-
-
-
-
-
-<!-- Modal de actualizar Perfil viajero -->
-<div class="modal fade" id="updateTravelerModal" tabindex="-1" aria-labelledby="updateTravelerModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header  bg-warning-subtle">
-                <h2 class="modal-title">Modificar Perfil</h2>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body bg-light">
-                <form action="../controllers/travelers/update.php" method="POST">
-                    <!-- Id Viajero -->
-                    <div class="container mt-4">
-                        <input type="hidden" name="id_traveler" id="updateIdTravelerInput">
-                    </div>
-                    <!-- Nombre -->
-                    <div class="mb-3">
-                        <label class="form-label text-warning" for="updateNameInput">Nombre</label>
-                        <input class="form-control" type="text" name="name" id="updateNameInput" placeholder="Introduce tu nombre">
-                    </div>
-                    <!-- Apellido 1 -->
-                    <div class="mb-3">
-                        <label class="form-label text-warning" for="updateSurname1Input">Apellido1</label>
-                        <input class="form-control" type="text" name="surname1" id="updateSurname1Input" placeholder="Introduce tu primer apellido">
-                    </div>
-                    <!-- Apellido 2 -->
-                    <div class="mb-3">
-                        <label class="form-label text-warning" for="updateSurname2Input">Apellido2</label>
-                        <input class="form-control" type="text" name="surname2" id="updateSurname2Input" placeholder="Introduce tu segundo apellido">
-                    </div>
-                        <!--Separador-->
-                        <div class="bg-warning">
-                            <hr class="text-warning">
+                        <!-- Id Viajero -->
+                        <div class="container mt-4">
+                            <input type="hidden" name="id_traveler" id="updateIdTravelerInput">
                         </div>
-                    <!-- Direccion -->
-                    <div class="mb-3">
-                        <label class="form-label text-warning" for="updateAddressInput">Dirección</label>
-                        <input class="form-control" type="text" name="address" id="updateAddressInput" placeholder="Introduce tu dirección aquí">
-                    </div>
-                    <!-- Codigo Postal -->
-                    <div class="mb-3">
-                        <label class="form-label text-warning" for="updateZipCodeInput">Código Postal</label>
-                        <input class="form-control" type="text" name="zipCode" id="updateZipCodeInput" placeholder="Introduce tu código postal">
-                    </div>
-                    <!-- Ciudad -->
-                    <div class="mb-3">
-                        <label class="form-label text-warning" for="updateCityInput">Ciudad</label>
-                        <input class="form-control" type="text" name="city" id="updateCityInput" placeholder="Introduce tu ciudad">
-                    </div>
-                    <!-- Pais -->
-                    <div class="mb-3">
-                        <label class="form-label text-warning" for="updateCountryInput">País</label>
-                        <input class="form-control" type="text" name="country" id="updateCountryInput" placeholder="Introduce tu país">
-                    </div>
-                        <!--Separador-->
 
+                        <!-- E-mail-->
+                        <div class="mb-3">
+                            <label class="form-label text-warning" for="updateEmailInput">Email</label>
+                            <input class="form-control" type="email" name="email" id="updateEmailInput" placeholder="Introduce tu email">
+                        </div>
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label class="form-label text-warning" for="updatePasswordInput">Password</label>
+                            <input class="form-control" type="password" name="password" id="updatePasswordInput" placeholder="Introduce una nueva contraseña">
+                        </div>
+
+                            <!--Separador-->
                             <hr class="hr hr-blurry text-warning">
 
-                    <!-- E-mail-->
-                    <div class="mb-3">
-                        <label class="form-label text-warning" for="updateEmailInput">Email</label>
-                        <input class="form-control" type="email" name="email" id="updateEmailInput" placeholder="Introduce tu email">
-                    </div>
-                    <!-- Password -->
-                    <div class="mb-3">
-                        <label class="form-label text-warning" for="updatePasswordInput">Password</label>
-                        <input class="form-control" type="password" name="password" id="updatePasswordInput" placeholder="Introduce una nueva contraseña">
-                    </div>
+                        <!-- Nombre -->
+                        <div class="mb-3">
+                            <label class="form-label text-warning" for="updateNameInput">Nombre</label>
+                            <input class="form-control" type="text" name="name" id="updateNameInput" placeholder="Introduce tu nombre">
+                        </div>
+                        <!-- Apellido 1 -->
+                        <div class="mb-3">
+                            <label class="form-label text-warning" for="updateSurname1Input">Apellido1</label>
+                            <input class="form-control" type="text" name="surname1" id="updateSurname1Input" placeholder="Introduce tu primer apellido">
+                        </div>
+                        <!-- Apellido 2 -->
+                        <div class="mb-3">
+                            <label class="form-label text-warning" for="updateSurname2Input">Apellido2</label>
+                            <input class="form-control" type="text" name="surname2" id="updateSurname2Input" placeholder="Introduce tu segundo apellido">
+                        </div>
 
-                    <!-- Botones de envio y cierre -->
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-warning fw-bold text-white" name="updateTraveler">Modificar</button>
-                    </div>
-                    <div class="modal-footer"></div>
-                </form>
+                            <!--Separador-->
+                            <div class="bg-warning">
+                                <hr class="text-warning">
+                            </div>
+
+                        <!-- Direccion -->
+                        <div class="mb-3">
+                            <label class="form-label text-warning" for="updateAddressInput">Dirección</label>
+                            <input class="form-control" type="text" name="address" id="updateAddressInput" placeholder="Introduce tu dirección aquí">
+                        </div>
+
+                        <!-- Codigo Postal -->
+                        <div class="mb-3">
+                            <label class="form-label text-warning" for="updateZipCodeInput">Código Postal</label>
+                            <input class="form-control" type="text" name="zipCode" id="updateZipCodeInput" placeholder="Introduce tu código postal">
+                        </div>
+
+                        <!-- Ciudad -->
+                        <div class="mb-3">
+                            <label class="form-label text-warning" for="updateCityInput">Ciudad</label>
+                            <input class="form-control" type="text" name="city" id="updateCityInput" placeholder="Introduce tu ciudad">
+                        </div>
+
+                        <!-- Pais -->
+                        <div class="mb-3">
+                            <label class="form-label text-warning" for="updateCountryInput">País</label>
+                            <input class="form-control" type="text" name="country" id="updateCountryInput" placeholder="Introduce tu país">
+                        </div>
+
+                        <!-- Botones de envio y cierre -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-warning fw-bold text-white" name="updateTraveler">Modificar</button>
+                        </div>
+                        <div class="modal-footer"></div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////// EVENTS //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-    <script>
-        // Configura un temporizador para ocultar los mensajes después de 3 segundos
-        setTimeout(function() {
-            var successDiv = document.getElementById("updateSuccess");
-            var errorDiv = document.getElementById("updateError");
+<script>
+    /* Mensajes de error */
+    setTimeout(function() {
+        var successDiv = document.getElementById("updateSuccess");
+        var errorDiv = document.getElementById("updateError");
 
-            if (successDiv) {
-                // Animación desvanecimiento mensaje de éxito
-                successDiv.style.transition = "opacity 0.5s";
-                successDiv.style.opacity = "0";
-                setTimeout(function() {
-                    successDiv.style.display = "none";
-                }, 500); // Tiempo de transición en ocultar
-            }
+        if (successDiv) {
+            successDiv.style.transition = "opacity 0.5s";
+            successDiv.style.opacity = "0";
+            setTimeout(function() {
+                successDiv.style.display = "none";
+            }, 500);
+        }
 
-            if (errorDiv) {
-                // Animación desvanecimiento mensaje de error
-                errorDiv.style.transition = "opacity 0.5s";
-                errorDiv.style.opacity = "0";
-                setTimeout(function() {
-                    errorDiv.style.display = "none";
-                }, 500); // Tiempo de transición en ocultar
-            }
-        }, 3000); // Tiempo de duración
-    </script>
-<!--<script>
-    //
-    Función que crea las reservas según el tipo de reserva
-    document.addEventListener('DOMContentLoaded', function() {
-        // Muestra los campos por defecto al abrir el modal
-        document.getElementById("tipo_reserva").value = "idayvuelta";
-        mostrarCampos();
+        if (errorDiv) {
+            errorDiv.style.transition = "opacity 0.5s";
+            errorDiv.style.opacity = "0";
+            setTimeout(function() {
+                errorDiv.style.display = "none";
+            }, 500);
+        }
+    }, 3000);
 
-        // Muestra u oculta los campos según el valor seleccionado
-        document.getElementById("tipo_reserva").addEventListener('change', mostrarCampos);
+    /* Creación de reserva */
+    document.addEventListener('DOMContentLoaded', function () {
+        // Configuración para el modal de creación
+        document.getElementById("tipo_reserva").addEventListener('change', function () {
+            mostrarCampos("add");
+        });
 
-        // Evento para mantener los campos de ida y vuelta al abrir el modal
         var addBookingModal = document.getElementById('addBookingModal');
-        addBookingModal.addEventListener('shown.bs.modal', function() {
-            document.getElementById("tipo_reserva").value = "idayvuelta"; // Configura el valor predeterminado
-            mostrarCampos(); // Muestra los campos al abrir
+        addBookingModal.addEventListener('shown.bs.modal', function () {
+            document.getElementById("tipo_reserva").value = "idayvuelta";
+            mostrarCampos("add");
         });
     });
 
-    function mostrarCampos() {
-        var tipoReserva = document.getElementById("tipo_reserva").value;
-        document.getElementById("aeropuerto-hotel-fields").style.display = (tipoReserva == "1" || tipoReserva == "idayvuelta") ? "block" : "none";
-        document.getElementById("hotel-aeropuerto-fields").style.display = (tipoReserva == "2" || tipoReserva == "idayvuelta") ? "block" : "none";
+    /* Función para mostrar u ocultar los campos específicos de cada tipo de reserva */
+    function mostrarCampos(modalType) {
+        let tipoReserva, aeropuertoHotelFields, hotelAeropuertoFields;
+
+        if (modalType === "add") {
+            tipoReserva = document.getElementById("tipo_reserva").value;
+            aeropuertoHotelFields = document.getElementById("aeropuerto-hotel-fields");
+            hotelAeropuertoFields = document.getElementById("hotel-aeropuerto-fields");
+        } else if (modalType === "update") {
+            tipoReserva = document.getElementById("updateIdTypeBookingInput").value;
+            aeropuertoHotelFields = document.getElementById("aeropuerto-hotel-fields-update");
+            hotelAeropuertoFields = document.getElementById("hotel-aeropuerto-fields-update");
+        }
+
+        if (aeropuertoHotelFields && hotelAeropuertoFields) {
+            // Mostrar ambos campos si es "idayvuelta", o solo uno según el tipo de reserva
+            aeropuertoHotelFields.style.display = (tipoReserva == "1" || tipoReserva === "idayvuelta") ? "block" : "none";
+            hotelAeropuertoFields.style.display = (tipoReserva == "2" || tipoReserva === "idayvuelta") ? "block" : "none";
+        }
     }
-</script>-->
 
-
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Configuración para el modal de creación
-            document.getElementById("tipo_reserva").addEventListener('change', function () {
-                mostrarCampos("add");
-            });
-
-            var addBookingModal = document.getElementById('addBookingModal');
-            addBookingModal.addEventListener('shown.bs.modal', function () {
-                document.getElementById("tipo_reserva").value = "idayvuelta";
-                mostrarCampos("add");
-            });
-        });
-
-        // Función para mostrar u ocultar los campos específicos de cada tipo de reserva
-        function mostrarCampos(modalType) {
-            let tipoReserva, aeropuertoHotelFields, hotelAeropuertoFields;
-
-            if (modalType === "add") {
-                tipoReserva = document.getElementById("tipo_reserva").value;
-                aeropuertoHotelFields = document.getElementById("aeropuerto-hotel-fields");
-                hotelAeropuertoFields = document.getElementById("hotel-aeropuerto-fields");
-            } else if (modalType === "update") {
-                tipoReserva = document.getElementById("updateIdTypeBookingInput").value;
-                aeropuertoHotelFields = document.getElementById("aeropuerto-hotel-fields-update");
-                hotelAeropuertoFields = document.getElementById("hotel-aeropuerto-fields-update");
-            }
-
-            if (aeropuertoHotelFields && hotelAeropuertoFields) {
-                // Mostrar ambos campos si es "idayvuelta", o solo uno según el tipo de reserva
-                aeropuertoHotelFields.style.display = (tipoReserva == "1" || tipoReserva === "idayvuelta") ? "block" : "none";
-                hotelAeropuertoFields.style.display = (tipoReserva == "2" || tipoReserva === "idayvuelta") ? "block" : "none";
-            }
-        }
-
-        function abrirModalActualizarReserva(idReserva) {
-            // Llamada AJAX para obtener los datos de la reserva desde el servidor
-            fetch(`../controllers/bookings/getBooking.php?id_reserva=${idReserva}`)
-                .then(response => response.json())
-                .then(booking => {
-                    if (booking.error) {
-                        console.error('Error al obtener los datos de la reserva:', booking.error);
-                        return;
-                    }
-
-                    // Configurar los campos comunes en el modal de actualización
-                    document.getElementById('updateIdBookingInput').value = booking.id_reserva || '';
-                    document.getElementById('updateLocatorInput').value = booking.localizador || '';
-                    document.getElementById('updateIdTypeBookingInput').value = booking.id_tipo_reserva || '';
-                    document.getElementById('updateEmailClientInput').value = booking.email_cliente || '';
-                    document.getElementById('updateNumTravelersInput').value = booking.num_viajeros || '';
-                    document.getElementById('updateIdVehicleInput').value = booking.id_vehiculo || '';
-                    document.getElementById('updateIdDestinationInput').value = booking.id_destino || '';
-                    document.getElementById('updateTipoCreadorReserva').value = booking.tipo_creador_reserva || ''; //añadido
-                    // Mostrar los campos específicos según el tipo de reserva
-                    mostrarCampos("update");
-
-                    // Campos específicos para Aeropuerto - Hotel
-                    if (booking.id_tipo_reserva == 1 || booking.id_tipo_reserva == 'idayvuelta') {
-                        document.getElementById('updateDateInInput').value = booking.fecha_entrada || '';
-                        document.getElementById('updateHourInInput').value = booking.hora_entrada || '';
-                        document.getElementById('updateNumFlightInInput').value = booking.numero_vuelo_entrada || '';
-                        document.getElementById('updateOriginFlightInInput').value = booking.origen_vuelo_entrada || '';
-                    }
-
-                    // Campos específicos para Hotel - Aeropuerto
-                    if (booking.id_tipo_reserva == 2 || booking.id_tipo_reserva == 'idayvuelta') {
-                        document.getElementById('updateDateFlightOutInput').value = booking.fecha_vuelo_salida || '';
-                        document.getElementById('updateHourFlightOutInput').value = booking.hora_vuelo_salida || '';
-                    }
-
-                    // Mostrar el modal de actualización
-                    var modal = new bootstrap.Modal(document.getElementById('updateBookingModal'));
-                    modal.show();
-                })
-                .catch(error => {
-                    console.error('Error al obtener los datos de la reserva:', error);
-                });
-        }
-
-
-        // Función para la confirmación de la eliminación en el modal de Delete
-        function confirmarEliminacion(url) {
-            const btnEliminar = document.getElementById('btnEliminar');
-            btnEliminar.setAttribute('data-url', url);
-
-            btnEliminar.onclick = function () {
-                const urlToDelete = btnEliminar.getAttribute('data-url');
-                if (urlToDelete) {
-                    window.location.href = urlToDelete;
+    /* Función para actualizar la reserva según su id_tipo_reserva */
+    function abrirModalActualizarReserva(idReserva) {
+        // Llamada AJAX para obtener los datos de la reserva desde el servidor
+        fetch(`../controllers/bookings/getBooking.php?id_reserva=${idReserva}`)
+            .then(response => response.json())
+            .then(booking => {
+                if (booking.error) {
+                    console.error('Error al obtener los datos de la reserva:', booking.error);
+                    return;
                 }
-            };
 
-            // Mostrar el modal de confirmación de eliminación
-            const modal = new bootstrap.Modal(document.getElementById('confirmarEliminacionModal'));
-            modal.show();
-        }
+                // Configurar los campos comunes en el modal de actualización
+                document.getElementById('updateIdBookingInput').value = booking.id_reserva || '';
+                document.getElementById('updateLocatorInput').value = booking.localizador || '';
+                document.getElementById('updateIdTypeBookingInput').value = booking.id_tipo_reserva || '';
+                document.getElementById('updateEmailClientInput').value = booking.email_cliente || '';
+                document.getElementById('updateNumTravelersInput').value = booking.num_viajeros || '';
+                document.getElementById('updateIdVehicleInput').value = booking.id_vehiculo || '';
+                document.getElementById('updateIdDestinationInput').value = booking.id_destino || '';
+                document.getElementById('updateTipoCreadorReserva').value = booking.tipo_creador_reserva || ''; //añadido
+                // Mostrar los campos específicos según el tipo de reserva
+                mostrarCampos("update");
 
-    </script>
+                // Campos específicos para Aeropuerto - Hotel
+                if (booking.id_tipo_reserva == 1 || booking.id_tipo_reserva == 'idayvuelta') {
+                    document.getElementById('updateDateInInput').value = booking.fecha_entrada || '';
+                    document.getElementById('updateHourInInput').value = booking.hora_entrada || '';
+                    document.getElementById('updateNumFlightInInput').value = booking.numero_vuelo_entrada || '';
+                    document.getElementById('updateOriginFlightInInput').value = booking.origen_vuelo_entrada || '';
+                }
 
+                // Campos específicos para Hotel - Aeropuerto
+                if (booking.id_tipo_reserva == 2 || booking.id_tipo_reserva == 'idayvuelta') {
+                    document.getElementById('updateDateFlightOutInput').value = booking.fecha_vuelo_salida || '';
+                    document.getElementById('updateHourFlightOutInput').value = booking.hora_vuelo_salida || '';
+                }
 
+                // Mostrar el modal de actualización
+                var modal = new bootstrap.Modal(document.getElementById('updateBookingModal'));
+                modal.show();
+            })
+            .catch(error => {
+                console.error('Error al obtener los datos de la reserva:', error);
+            });
+    }
 
-<script>
-        const travelerData = <?php echo isset($travelerData) ? json_encode($travelerData) : 'null'; ?>;
-</script>
-<script>
-//
-function abrirModalActualizar() {
-    console.log('Se ejecuta la función abrirModalActualizar');
-    console.log('Datos de travelerData:', travelerData);
-    document.querySelector('#updateIdTravelerInput').value = travelerData.id_traveler || '';
-    document.querySelector('#updateNameInput').value = travelerData.name || '';
-    document.querySelector('#updateSurname1Input').value = travelerData.surname1 || '';
-    document.querySelector('#updateSurname2Input').value = travelerData.surname2 || '';
-    document.querySelector('#updateEmailInput').value = travelerData.email || '';
-    document.querySelector('#updateAddressInput').value = travelerData.address || '';
-    document.querySelector('#updateZipCodeInput').value = travelerData.zipCode || '';
-    document.querySelector('#updateCityInput').value = travelerData.city || '';
-    document.querySelector('#updateCountryInput').value = travelerData.country || '';
-    document.querySelector('#updatePasswordInput').value = '';
+    /* Función para la confirmación de la eliminación en el modal de Delete */
+    function confirmarEliminacion(url) {
+        const btnEliminar = document.getElementById('btnEliminar');
+        btnEliminar.setAttribute('data-url', url);
 
-    var modal = new bootstrap.Modal(document.getElementById('updateTravelerModal'));
-    modal.show();
-}
+        btnEliminar.onclick = function () {
+            const urlToDelete = btnEliminar.getAttribute('data-url');
+            if (urlToDelete) {
+                window.location.href = urlToDelete;
+            }
+        };
+
+        // Mostrar el modal de confirmación de eliminación
+        const modal = new bootstrap.Modal(document.getElementById('confirmarEliminacionModal'));
+        modal.show();
+    }
+
+    /* Lectura del array travelerData */
+    const travelerData = <?php echo isset($travelerData) ? json_encode($travelerData) : 'null'; ?>;
+
+    /* Modal actualizar perfil */
+    function abrirModalActualizar() {
+        console.log('Se ejecuta la función abrirModalActualizar');
+        console.log('Datos de travelerData:', travelerData);
+        document.querySelector('#updateIdTravelerInput').value = travelerData.id_traveler || '';
+        document.querySelector('#updateNameInput').value = travelerData.name || '';
+        document.querySelector('#updateSurname1Input').value = travelerData.surname1 || '';
+        document.querySelector('#updateSurname2Input').value = travelerData.surname2 || '';
+        document.querySelector('#updateEmailInput').value = travelerData.email || '';
+        document.querySelector('#updateAddressInput').value = travelerData.address || '';
+        document.querySelector('#updateZipCodeInput').value = travelerData.zipCode || '';
+        document.querySelector('#updateCityInput').value = travelerData.city || '';
+        document.querySelector('#updateCountryInput').value = travelerData.country || '';
+        document.querySelector('#updatePasswordInput').value = '';
+
+        var modal = new bootstrap.Modal(document.getElementById('updateTravelerModal'));
+        modal.show();
+    }
 </script>
 <!-- Archivos para accionar los modales -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
 </body>
 </html>
-
-
-
-
-
