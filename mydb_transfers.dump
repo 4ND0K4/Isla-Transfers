@@ -1,0 +1,241 @@
+-- MySQL dump 10.13  Distrib 5.7.29, for Win64 (x86_64)
+--
+-- Host: localhost    Database: transfer
+-- ------------------------------------------------------
+-- Server version	5.6.51
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `tranfer_hotel`
+--
+
+DROP TABLE IF EXISTS `tranfer_hotel`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tranfer_hotel` (
+  `id_hotel` int(11) NOT NULL AUTO_INCREMENT,
+  `id_zona` int(11) DEFAULT NULL,
+  `Comision` int(11) DEFAULT NULL,
+  `usuario` int(11) DEFAULT NULL,
+  `password` varchar(100) NOT NULL,
+  PRIMARY KEY (`id_hotel`),
+  KEY `FK_HOTEL_ZONA` (`id_zona`),
+  CONSTRAINT `FK_HOTEL_ZONA` FOREIGN KEY (`id_zona`) REFERENCES `transfer_zona` (`id_zona`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tranfer_hotel`
+--
+
+LOCK TABLES `tranfer_hotel` WRITE;
+/*!40000 ALTER TABLE `tranfer_hotel` DISABLE KEYS */;
+INSERT INTO `tranfer_hotel` VALUES (1,1,25,901382,'$2y$10$LdlBJGBb1h9EiShjxKtwt.s2sIzLCk4vSVBiqDK9soCMKMY6Myioa'),(2,3,25,548213,'$2y$10$Kow.OFRgQx7NoeZWMnQ7VukOaQYrxeQQTEMx.ZnwNLESDFxwyeEJq'),(3,2,25,69281,'$2y$10$xf7ECn.Q2trjosuxKYm.NedDD2wrPz2EUBw09KPCQNmO1efdDMShe'),(4,3,25,830746,'$2y$10$qHWZwjuwMaO5NcKmWQNfQeDYmRQKexATZNplqd9XYia6RYTycK6tO'),(5,1,25,173482,'$2y$10$1/yGVoMBGYuRNwPD8c4KMOJ/JJsqGTBEVCtwA8gLbxmTSnXfW1C2K'),(6,2,25,52867,'$2y$10$fkN8MJDaNLi5hmfbmZSv1.ZiZskNSzRTgqiJWHe8Hev0Ng/Np0SKG');
+/*!40000 ALTER TABLE `tranfer_hotel` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `transfer_precios`
+--
+
+DROP TABLE IF EXISTS `transfer_precios`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `transfer_precios` (
+  `id_precios` int(11) NOT NULL,
+  `id_vehiculo` int(11) NOT NULL,
+  `id_hotel` int(11) NOT NULL,
+  `Precio` int(11) NOT NULL,
+  KEY `FK_PRECIOS_HOTEL` (`id_hotel`),
+  KEY `FK_PRECIOS_VEHICULO` (`id_vehiculo`),
+  CONSTRAINT `FK_PRECIOS_HOTEL` FOREIGN KEY (`id_hotel`) REFERENCES `tranfer_hotel` (`id_hotel`),
+  CONSTRAINT `FK_PRECIOS_VEHICULO` FOREIGN KEY (`id_vehiculo`) REFERENCES `transfer_vehiculo` (`id_vehiculo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `transfer_precios`
+--
+
+LOCK TABLES `transfer_precios` WRITE;
+/*!40000 ALTER TABLE `transfer_precios` DISABLE KEYS */;
+/*!40000 ALTER TABLE `transfer_precios` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `transfer_reservas`
+--
+
+DROP TABLE IF EXISTS `transfer_reservas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `transfer_reservas` (
+  `id_reserva` int(11) NOT NULL AUTO_INCREMENT,
+  `localizador` varchar(100) NOT NULL,
+  `id_hotel` int(11) DEFAULT NULL COMMENT 'Es el hotel que realiza la reserva',
+  `id_tipo_reserva` int(11) NOT NULL,
+  `email_cliente` varchar(100) NOT NULL,
+  `fecha_reserva` datetime NOT NULL,
+  `fecha_modificacion` datetime NOT NULL,
+  `id_destino` int(11) NOT NULL,
+  `fecha_entrada` date NOT NULL,
+  `hora_entrada` time NOT NULL,
+  `numero_vuelo_entrada` varchar(50) NOT NULL,
+  `origen_vuelo_entrada` varchar(50) NOT NULL,
+  `hora_vuelo_salida` time NOT NULL,
+  `fecha_vuelo_salida` date NOT NULL,
+  `num_viajeros` int(11) NOT NULL,
+  `id_vehiculo` int(11) NOT NULL,
+  `tipo_creador_reserva` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id_reserva`),
+  KEY `FK_RESERVAS_DESTINO` (`id_destino`),
+  KEY `FK_RESERVAS_HOTEL` (`id_hotel`),
+  KEY `FK_RESERVAS_TIPO` (`id_tipo_reserva`),
+  KEY `FK_RESERVAS_VEHICULO` (`id_vehiculo`),
+  CONSTRAINT `FK_RESERVAS_DESTINO` FOREIGN KEY (`id_destino`) REFERENCES `tranfer_hotel` (`id_hotel`),
+  CONSTRAINT `FK_RESERVAS_HOTEL` FOREIGN KEY (`id_hotel`) REFERENCES `tranfer_hotel` (`id_hotel`),
+  CONSTRAINT `FK_RESERVAS_TIPO` FOREIGN KEY (`id_tipo_reserva`) REFERENCES `transfer_tipo_reserva` (`id_tipo_reserva`),
+  CONSTRAINT `FK_RESERVAS_VEHICULO` FOREIGN KEY (`id_vehiculo`) REFERENCES `transfer_vehiculo` (`id_vehiculo`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `transfer_reservas`
+--
+
+LOCK TABLES `transfer_reservas` WRITE;
+/*!40000 ALTER TABLE `transfer_reservas` DISABLE KEYS */;
+INSERT INTO `transfer_reservas` VALUES (1,'ZGXJUEO63Q',2,1,'traveler1@mail.com','2024-11-08 06:03:56','2024-11-08 06:04:35',2,'2024-11-08','14:00:00','DUS7325','DÃ¼sseldorf','00:00:00','0000-00-00',2,1,1),(2,'B3G0SUTVWF',2,2,'traveler1@mail.com','2024-11-08 06:03:56','2024-11-08 06:04:59',2,'0000-00-00','00:00:00','','','07:30:00','2024-11-12',2,1,1),(3,'0EXLK5ZQFP',1,1,'traveler1@mail.com','2024-11-08 06:08:12','2024-11-08 06:08:12',1,'2024-11-27','17:30:00','DUS5743','DÃ¼sseldorf','09:15:00','2024-12-03',4,1,2),(4,'3LO9YDMKVN',1,2,'traveler1@mail.com','2024-11-08 06:08:12','2024-11-08 06:08:12',1,'2024-11-27','17:30:00','DUS5743','DÃ¼sseldorf','09:15:00','2024-12-03',4,1,2),(5,'DW4BZ3PC62',3,1,'traveler2@mail.com','2024-11-08 06:12:35','2024-11-08 06:12:35',3,'2024-11-14','16:00:00','BOD7205','Burdeos','08:30:00','2024-11-19',3,1,2),(6,'OQ7XDFU6MI',3,2,'traveler2@mail.com','2024-11-08 06:12:35','2024-11-08 06:12:35',3,'2024-11-14','16:00:00','BOD7205','Burdeos','08:30:00','2024-11-19',3,1,2),(7,'9VSKMDU3WO',5,1,'traveler3@mail.com','2024-11-08 06:15:17','2024-11-08 06:15:17',5,'2024-11-20','13:30:00','BHX6412','Birmingham','00:00:00','0000-00-00',1,1,2),(8,'TGXYNFQCM1',4,1,'traveler4@mail.com','2024-11-08 06:18:26','2024-11-08 06:18:26',4,'2024-11-28','12:30:00','BLQ5388','Bolonia','04:30:00','2024-12-02',5,1,2),(9,'TLF8VE24J7',4,2,'traveler4@mail.com','2024-11-08 06:18:26','2024-11-08 06:18:26',4,'2024-11-28','12:30:00','BLQ5388','Bolonia','04:30:00','2024-12-02',5,1,2),(10,'M6WEFQBJSI',3,1,'traveler5@mail.com','2024-11-08 06:22:56','2024-11-08 06:22:56',3,'2024-11-12','16:15:00','OVD4739','Asturias','09:15:00','2024-11-19',2,1,1),(11,'XKE019QMH4',3,2,'traveler5@mail.com','2024-11-08 06:22:56','2024-11-08 06:22:56',3,'2024-11-12','16:15:00','OVD4739','Asturias','09:15:00','2024-11-19',2,1,1);
+/*!40000 ALTER TABLE `transfer_reservas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `transfer_tipo_reserva`
+--
+
+DROP TABLE IF EXISTS `transfer_tipo_reserva`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `transfer_tipo_reserva` (
+  `id_tipo_reserva` int(11) NOT NULL AUTO_INCREMENT,
+  `Descripción` int(11) NOT NULL,
+  PRIMARY KEY (`id_tipo_reserva`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `transfer_tipo_reserva`
+--
+
+LOCK TABLES `transfer_tipo_reserva` WRITE;
+/*!40000 ALTER TABLE `transfer_tipo_reserva` DISABLE KEYS */;
+INSERT INTO `transfer_tipo_reserva` VALUES (1,1),(2,2);
+/*!40000 ALTER TABLE `transfer_tipo_reserva` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `transfer_vehiculo`
+--
+
+DROP TABLE IF EXISTS `transfer_vehiculo`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `transfer_vehiculo` (
+  `id_vehiculo` int(11) NOT NULL AUTO_INCREMENT,
+  `descripcion` varchar(100) NOT NULL,
+  `email_conductor` varchar(100) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  PRIMARY KEY (`id_vehiculo`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `transfer_vehiculo`
+--
+
+LOCK TABLES `transfer_vehiculo` WRITE;
+/*!40000 ALTER TABLE `transfer_vehiculo` DISABLE KEYS */;
+INSERT INTO `transfer_vehiculo` VALUES (1,'Coche 5 plazas','rider1@mail.com','$2y$10$Oes8JuxNXkRHWvyqkamw6OrcelUQkItfIYlQc..qG8ETYKd5riA2m'),(2,'Coche 7 plazas','rider2@mail.com','$2y$10$gcKecc063zI.SBAOipMwmeNZzOAA/tRRWL6qUTKaUnTiW/2D/F6d.'),(3,'MicrobÃºs 12 plazas','rider3@mail.com','$2y$10$J4SeuorHHr1F6ndWUy5tguo6xXDnRiOw3oJANjXFqJ1R1xAMAWRb2'),(4,'MinibÃºs 22 plazas','rider4@mail.com','$2y$10$bIGnw4q1APwEsQrne674gui0G3Owoj4ksLIIx.W7xlg99d1zmOFsS');
+/*!40000 ALTER TABLE `transfer_vehiculo` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `transfer_viajeros`
+--
+
+DROP TABLE IF EXISTS `transfer_viajeros`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `transfer_viajeros` (
+  `id_viajero` int(11) NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) NOT NULL,
+  `apellido1` varchar(100) NOT NULL,
+  `apellido2` varchar(100) NOT NULL,
+  `direccion` varchar(100) NOT NULL,
+  `codigoPostal` varchar(100) NOT NULL,
+  `ciudad` varchar(100) NOT NULL,
+  `pais` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  PRIMARY KEY (`id_viajero`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `transfer_viajeros`
+--
+
+LOCK TABLES `transfer_viajeros` WRITE;
+/*!40000 ALTER TABLE `transfer_viajeros` DISABLE KEYS */;
+INSERT INTO `transfer_viajeros` VALUES (1,'Hans','Muller','','Kasernenstrasse, 36','40212','DÃ¼sseldorf','Alemania','traveler1@mail.com','$2y$10$OtR45QN6kOMA7tBgVHy5Tu6oyIpMXsumrT5J3rI9jgwz1VtQzdzVS'),(2,'Sophie','Dubois','','','','Burdeos','Francia','traveler2@mail.com','$2y$10$wSvSPkvZ4X/WK/k.sxTWue9Hat5NL5qaW2QeIPm5.2zFMRfbL52b2'),(3,'Ian','Smith','','','','','','traveler3@mail.com','$2y$10$DBXufyOghJt5OStQIAQLYOx.KGYTFYe/Ac08AXz3WHgOwFog7m3h6'),(4,'Giulia','Rossi','','','','','','traveler4@mail.com','$2y$10$J985W8SRG0CS51xgYqZ7EuQxOcPZOOJYWvTGUnFJ/uDYeAKVeU/oO'),(5,'Ana','Rodriguez','Noriega','','','Oviedo','EspaÃ±a','traveler5@mail.com','$2y$10$QZiH1s/9kjQjw467KFMQ/uQ7tuTELvieKzIetz2rGcSSnIGyDzUlK');
+/*!40000 ALTER TABLE `transfer_viajeros` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `transfer_zona`
+--
+
+DROP TABLE IF EXISTS `transfer_zona`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `transfer_zona` (
+  `id_zona` int(11) NOT NULL AUTO_INCREMENT,
+  `descripcion` int(11) NOT NULL,
+  PRIMARY KEY (`id_zona`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `transfer_zona`
+--
+
+LOCK TABLES `transfer_zona` WRITE;
+/*!40000 ALTER TABLE `transfer_zona` DISABLE KEYS */;
+INSERT INTO `transfer_zona` VALUES (1,1),(2,2),(3,3);
+/*!40000 ALTER TABLE `transfer_zona` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping routines for database 'transfer'
+--
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2024-11-08  7:23:57
