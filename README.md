@@ -47,8 +47,8 @@ App Web sobre gestión de transfers desarrollada por PHPower(UOCX4).
 
   4.2 DDBB
     La base de datos fue diseñada cuidadosamente para soportar el flujo de trabajo de Isla Transfers, con tablas específicas para gestionar reservas, usuarios, hoteles y vehículos, asegurando una organización eficiente de la información. Durante el desarrollo de la aplicación, se realizaron ajustes en algunos campos para optimizar la inserción y recuperación de datos, mejorando la eficiencia y precisión en el manejo de información.
-
-    La estructura final de la base de datos, así como las relaciones entre las tablas, están completamente documentadas para facilitar tanto la implementación inicial como el mantenimiento continuo. Esta documentación proporciona una referencia clara para futuras expansiones y asegura la escalabilidad del sistema conforme crezca la demanda.  
+  
+  La estructura final de la base de datos, así como las relaciones entre las tablas, están completamente documentadas para facilitar tanto la implementación inicial como el mantenimiento continuo. Esta documentación proporciona una referencia clara para futuras expansiones y asegura la escalabilidad del sistema conforme crezca la demanda.  
 
   4.3 Tecnologías usadas
     - Bootstrap 5: Para una interfaz responsiva y moderna, con componentes de UI consistentes.
