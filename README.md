@@ -1,6 +1,7 @@
 # Isla Transfers
 App Web sobre gestión de transfers desarrollada por PHPower(UOCX4).
 1. Introducción
+
   Este proyecto consiste en el desarrollo de una aplicación web para la reserva y gestión de transfers entre el aeropuerto y los hoteles de una isla. La aplicación está diseñada para facilitar la coordinación de transfers, mejorando la experiencia tanto para los clientes particulares como para la administración de Isla Transfers.
 
   Para el entorno de servidor se usa PHP puro (sin frameworks) junto con MySQL como base de datos. En el front-end, se emplean HTML, CSS (utilizando Bootstrap 5) y JavaScript. La organización del proyecto es colaborativa, empleando Trello para la gestión de tareas y GitHub para el control de versiones y la colaboración en el código.
