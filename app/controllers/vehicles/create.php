@@ -1,10 +1,15 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once __DIR__ . '/../../models/db.php';
 require_once __DIR__ . '/../../models/vehicle.php';
 
 $db = db_connect();
 if(!$db) {
-    die("Error al conectar con la base de datos");
+    $_SESSION['create_vehicle_error'] = "Error al conectar con la base de datos.";
+    header('Location: /views/vehicle.php');
+    exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -21,10 +26,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Agrega el vehículo
     if ($vehicle->addVehicle()) {
-        header('Location: /views/vehicle.php');
+        $_SESSION['create_vehicle_success'] = "Vehículo creado correctamente.";
     } else {
-        echo "Error al crear la reserva";
+        $_SESSION['create_vehicle_error'] = "Error al crear el vehículo.";
     }
-}
 
+    // Redirigir a la página de origen para mostrar el mensaje
+    header("Location: " . $_SERVER['HTTP_REFERER']);
+    exit;
+}
 ?>
+

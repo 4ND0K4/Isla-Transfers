@@ -1,4 +1,5 @@
 <?php
+session_start();
 include '../controllers/vehicles/read.php';
 include '../controllers/vehicles/delete.php';
 include '../controllers/vehicles/update.php';
@@ -41,6 +42,58 @@ include '../controllers/vehicles/update.php';
             </button>
         </div>
     </div>
+
+    <!-- ///////////////////////////////////////////// MENSAJES DE SUCCESS / ERROR ///////////////////////////////////////////// -->
+            
+    <div class="d-flex justify-content-end">
+        <div class="col-4 text-center">
+            <?php if (isset($_SESSION['create_vehicle_success'])): ?>
+                <div id="createVehicleSuccess" class="alert alert-success fs-6" role="alert">
+                    <?php echo $_SESSION['create_vehicle_success']; ?>
+                </div>
+                <?php unset($_SESSION['create_vehicle_success']); ?>
+            <?php elseif (isset($_SESSION['create_cehicle_error'])): ?>
+                <div id="createVehicleError" class="alert alert-danger fs-6" role="alert">
+                    <?php echo $_SESSION['create_vehicle_error']; ?>
+                </div>
+                <?php unset($_SESSION['create_vehicle_error']); ?>
+            <?php endif; ?>
+        </div>
+    </div>
+    <!-- Mensajes de error de modificación de hotel -->
+    <div class="d-flex justify-content-end">
+        <div class="col-4 text-center">
+            <?php if (isset($_SESSION['update_vehicle_success'])): ?>
+                <div id="updateVehicleSuccess" class="alert alert-success fs-6" role="alert">
+                    <?php echo $_SESSION['update_vehicle_success']; ?>
+                </div>
+                <?php unset($_SESSION['update_vehicle_success']); ?>
+            <?php elseif (isset($_SESSION['update_vehicle_error'])): ?>
+                <div id="updateVehicleError" class="alert alert-danger fs-6" role="alert">
+                    <?php echo $_SESSION['update_vehicle_error']; ?>
+                </div>
+                <?php unset($_SESSION['update_vehicle_error']); ?>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- Mensajes de error de borrado de hotel -->
+    <div class="d-flex justify-content-end">
+        <div class="col-4 text-center">
+            <?php if (isset($_SESSION['delete_vehicle_success'])): ?>
+                <div id="deleteVehicleSuccess" class="alert alert-success fs-6" role="alert">
+                    <?php echo $_SESSION['delete_vehicle_success']; ?>
+                </div>
+                <?php unset($_SESSION['delete_vehicle_success']); ?>
+            <?php elseif (isset($_SESSION['delete_vehicle_error'])): ?>
+                <div id="deleteVehicleError" class="alert alert-danger fs-6" role="alert">
+                    <?php echo $_SESSION['delete_vehicle_error']; ?>
+                </div>
+                <?php unset($_SESSION['delete_vehicle_error']); ?>
+            <?php endif; ?>
+        </div>
+    </div>
+
     <!-- Tabla -->
     <div class="row">
         <div class="col">
@@ -192,6 +245,29 @@ include '../controllers/vehicles/update.php';
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 
 <script>
+     function hideMessage(successId, errorId) {
+    setTimeout(function() {
+        var successDiv = document.getElementById(successId);
+        var errorDiv = document.getElementById(errorId);
+
+        [successDiv, errorDiv].forEach(function(div) {
+            if (div) {
+                div.style.transition = "opacity 0.5s";
+                div.style.opacity = "0";
+                setTimeout(function() {
+                    div.style.display = "none";
+                }, 500);
+            }
+        });
+    }, 5000);
+}
+
+// Llamar a la función para cada par de mensajes
+hideMessage("createVehicleSuccess", "createVehicleError");
+hideMessage("updateVehicleSuccess", "updateVehicleError");
+hideMessage("deleteVehicleSuccess", "deleteVehicleError");
+
+
     function abrirModalActualizar(vehicle) {
         document.querySelector('#updateIdVehicleInput').value = vehicle.id_vehicle || '';
         document.querySelector('#updateDescriptionInput').value = vehicle.description || '';

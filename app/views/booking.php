@@ -57,6 +57,54 @@ $hotelNames = [
         <div class="col text-start pt-4 pb-2">
             <button type="button" class="btn btn-outline-dark fw-bold" data-bs-toggle="modal" data-bs-target="#addBookingModal">Nueva reserva</button>
         </div>
+
+        <!-- ///////////////////////////////////////////// MENSAJES DE SUCCESS / ERROR ///////////////////////////////////////////// -->
+
+        <!-- Mensajes de creación de reserva success / error -->
+        <div class="col text-center pt-4 pb-2">
+            <?php if (isset($_SESSION['create_booking_success'])): ?>
+                <div id="createBookingSuccess" class="alert alert-success fs-6" role="alert">
+                    <?php echo $_SESSION['create_booking_success']; ?>
+                </div>
+                <?php unset($_SESSION['create_booking_success']); ?>
+            <?php elseif (isset($_SESSION['create_booking_error'])): ?>
+                <div id="createBookingError" class="alert alert-danger fs-6" role="alert">
+                    <?php echo $_SESSION['create_booking_error']; ?>
+                </div>
+                <?php unset($_SESSION['create_booking_error']); ?>
+            <?php endif; ?>
+        </div>
+
+        <!-- Mensajes de modificación de reserva success / error -->
+        <div class="col text-center pt-4 pb-2">
+            <?php if (isset($_SESSION['update_booking_success'])): ?>
+                <div id="updateBookingSuccess" class="alert alert-success fs-6" role="alert">
+                    <?php echo $_SESSION['update_booking_success']; ?>
+                </div>
+                <?php unset($_SESSION['update_booking_success']); ?>
+            <?php elseif (isset($_SESSION['update_booking_error'])): ?>
+                <div id="updateBookingError" class="alert alert-danger fs-6" role="alert">
+                    <?php echo $_SESSION['update_booking_error']; ?>
+                </div>
+                <?php unset($_SESSION['update_booking_error']); ?>
+            <?php endif; ?>
+        </div>
+    
+        <!-- Mensajes de eliminación de reserva success / error -->
+        <div class="col text-center pt-4 pb-2">
+            <?php if (isset($_SESSION['delete_booking_success'])): ?>
+                <div id="deleteBookingSuccess" class="alert alert-success fs-6" role="alert">
+                    <?php echo $_SESSION['delete_booking_success']; ?>
+                </div>
+                <?php unset($_SESSION['delete_booking_success']); ?>
+            <?php elseif (isset($_SESSION['delete_booking_error'])): ?>
+                <div id="deleteBookingError" class="alert alert-danger fs-6" role="alert">
+                    <?php echo $_SESSION['delete_booking_error']; ?>
+                </div>
+                <?php unset($_SESSION['delete_booking_error']); ?>
+            <?php endif; ?>
+        </div>
+
         <!-- Filtro por tipo de reserva -->
         <div class="col text-end pt-4 pb-2">
             <form method="GET" action="">
@@ -356,6 +404,29 @@ $hotelNames = [
 ////////////////////////////////////////////////////// EVENTS //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <script>
+    function hideMessage(successId, errorId) {
+    setTimeout(function() {
+        var successDiv = document.getElementById(successId);
+        var errorDiv = document.getElementById(errorId);
+
+        [successDiv, errorDiv].forEach(function(div) {
+            if (div) {
+                div.style.transition = "opacity 0.5s";
+                div.style.opacity = "0";
+                setTimeout(function() {
+                    div.style.display = "none";
+                }, 500);
+            }
+        });
+    }, 5000);
+}
+
+// Llamar a la función para cada par de mensajes
+hideMessage("createBookingSuccess", "createBookingError");
+hideMessage("updateBookingSuccess", "updateBookingError");
+hideMessage("deleteBookingSuccess", "deleteBookingError");
+
+
     document.addEventListener('DOMContentLoaded', function () {
         // Configuración para el modal de creación
         document.getElementById("tipo_reserva").addEventListener('change', function () {

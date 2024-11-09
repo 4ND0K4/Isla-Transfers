@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 $tipo_creador_reserva = isset($_SESSION['admin']) ? 1 : 2; // 1 para admin, 2 para traveler
 
 // Declaraciones de inclusión

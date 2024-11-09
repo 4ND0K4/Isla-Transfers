@@ -1,10 +1,10 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 // Declaraciones de inclusión
 require_once __DIR__ . '/../../models/db.php';
 require_once __DIR__ . '/../../models/booking.php';
-
-// Iniciar la sesión
-session_start();
 
 // Verificar que la solicitud sea GET y que se haya pasado un ID de reserva
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id_booking'])) {

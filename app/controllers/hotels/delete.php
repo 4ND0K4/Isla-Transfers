@@ -1,4 +1,7 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once __DIR__ . '/../../models/db.php';
 require_once __DIR__ . '/../../models/hotel.php';
 
@@ -7,19 +10,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['idHotel'])) {
     $db = db_connect();
     $hotel = new Hotel($db);
 
-    // Debug: Verificar que el id_hotel se recibe correctamente
-    error_log("Intentando eliminar hotel con ID: " . $id_hotel);
-
+    // Intentar eliminar el hotel
     if ($hotel->deleteHotel($id_hotel)) {
-        // Debug: Confirmar eliminación
-        error_log("Hotel con ID " . $id_hotel . " eliminado correctamente.");
-        header('Location: /views/hotel.php');
-        exit;
+        $_SESSION['delete_hotel_success'] = "Hotel eliminado correctamente.";
     } else {
-        error_log("Error al intentar borrar el hotel con ID " . $id_hotel);
-        echo "Error al borrar el hotel";
+        $_SESSION['delete_hotel_error'] = "Error al intentar eliminar el hotel.";
     }
-} else {
-    error_log("ID del hotel no especificado o método incorrecto.");
+
+    // Redirigir a la página de origen para mostrar el mensaje
+    header("Location: " . $_SERVER['HTTP_REFERER']);
+    exit;
 }
 ?>
+

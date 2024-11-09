@@ -1,4 +1,5 @@
 <?php
+session_start();
 include '../controllers/hotels/read.php';
 require_once __DIR__ . '/../models/db.php';
 //Cambia los id_zona por descriptores
@@ -34,20 +35,72 @@ $zoneNames = [
 </head>
 <body>
 <div class="container-fluid mt-4">
-    <!-- Icono de flecha de vuelta -->
+    <!-- Icono de flecha de vuelta al dashboard-Admin -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a href="dashboard-admin.php" class=" text-secondary text-decoration-none fw-bold fs-3"><i class="bi bi-arrow-return-left"></i></a>
     </nav>
+
     <!-- Título -->
     <div class="container-fluid">
         <h1 class="text-center fw-bold text-secondary">Gestión de Hoteles</h1>
     </div>
     <div class="row">
-        <!-- Botón creación de hotel -->
+        <!-- Botón creación --> 
         <div class="col text-start pt-4 pb-2">
             <button type="button" class="btn btn-outline-success fw-bold" data-bs-toggle="modal" data-bs-target="#addHotelModal">Nuevo Hotel</button>
+        </div>  
+           
+            
+        <!-- ///////////////////////////////////////////// MENSAJES DE SUCCESS / ERROR ///////////////////////////////////////////// -->
+            
+        <!-- Mensajes de error de creación de hotel --> 
+        <div class="col text-end pt-4 pb-2">
+            <?php if (isset($_SESSION['create_hotel_success'])): ?>
+                <div id="createHotelSuccess" class="alert alert-success fs-6" role="alert">
+                    <?php echo $_SESSION['create_hotel_success']; ?>
+                </div>
+                <?php unset($_SESSION['create_hotel_success']); ?>
+            <?php elseif (isset($_SESSION['create_hotel_error'])): ?>
+                <div id="createHotelError" class="alert alert-danger fs-6" role="alert">
+                    <?php echo $_SESSION['create_hotel_error']; ?>
+                </div>
+                <?php unset($_SESSION['create_hotel_error']); ?>
+            <?php endif; ?>
         </div>
+    
+        <!-- Mensajes de error de modificación de hotel -->    
+        <div class="col text-end pt-4 pb-2">
+            <?php if (isset($_SESSION['update_hotel_success'])): ?>
+                <div id="updateHotelSuccess" class="alert alert-success fs-6" role="alert">
+                    <?php echo $_SESSION['update_hotel_success']; ?>
+                </div>
+                <?php unset($_SESSION['update_hotel_success']); ?>
+            <?php elseif (isset($_SESSION['update_hotel_error'])): ?>
+                <div id="updateHotelError" class="alert alert-danger fs-6" role="alert">
+                    <?php echo $_SESSION['update_hotel_error']; ?>
+                </div>
+                <?php unset($_SESSION['update_hotel_error']); ?>
+            <?php endif; ?>
+        </div>
+    
+
+        <!-- Mensajes de error de borrado de hotel -->   
+        <div class="col text-end pt-4 pb-2">
+            <?php if (isset($_SESSION['delete_hotel_success'])): ?>
+                <div id="deleteHotelSuccess" class="alert alert-success fs-6" role="alert">
+                    <?php echo $_SESSION['delete_hotel_success']; ?>
+                </div>
+                <?php unset($_SESSION['delete_hotel_success']); ?>
+            <?php elseif (isset($_SESSION['delete_hotel_error'])): ?>
+                <div id="deleteHotelError" class="alert alert-danger fs-6" role="alert">
+                    <?php echo $_SESSION['delete_hotel_error']; ?>
+                </div>
+                <?php unset($_SESSION['delete_hotel_error']); ?>
+            <?php endif; ?>
+        </div>
+
     </div>
+                           
     <!-- Tabla -->
     <div class="row">
         <div class="col">
@@ -218,6 +271,30 @@ $zoneNames = [
 ////////////////////////////////////////////////////// EVENTS //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <script>
+     function hideMessage(successId, errorId) {
+    setTimeout(function() {
+        var successDiv = document.getElementById(successId);
+        var errorDiv = document.getElementById(errorId);
+
+        [successDiv, errorDiv].forEach(function(div) {
+            if (div) {
+                div.style.transition = "opacity 0.5s";
+                div.style.opacity = "0";
+                setTimeout(function() {
+                    div.style.display = "none";
+                }, 500);
+            }
+        });
+    }, 5000);
+}
+
+// Llamar a la función para cada par de mensajes
+hideMessage("createHotelSuccess", "createHotelError");
+hideMessage("updateHotelSuccess", "updateHotelError");
+hideMessage("deleteHotelSuccess", "deleteHotelError");
+
+
+
     function abrirModalActualizar(hotel) {
         document.querySelector('#updateIdHotelInput').value = hotel.idHotel || '';
         document.querySelector('#updateIdZoneInput').value = hotel.idZone || '';
