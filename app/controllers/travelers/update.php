@@ -28,12 +28,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($traveler->updateTraveler()) {
-        $_SESSION['update_success'] = 'Perfil actualizado correctamente.';
+        $_SESSION['update_traveler_success'] = 'Perfil actualizado correctamente.';
     } else {
-        $_SESSION['update_error'] = 'Error al actualizar el perfil. Inténtelo de nuevo.';
+        $_SESSION['update_traveler_error'] = 'Error al actualizar el perfil. Inténtelo de nuevo.';
     }
 
-    header('Location: /views/dashboard-traveler.php');
+    header("Location: " . $_SERVER['HTTP_REFERER']);
     exit();
 }
 ?>

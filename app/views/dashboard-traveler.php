@@ -229,6 +229,8 @@ $_SESSION['travelerName'] = $travelerData['name'];
     </script>
 </head>
 <body>
+    <!-- //////////////////////////////////////////////// NAV //////////////////////////////////////////////// -->
+
     <nav class="navbar navbar-expand-xl bg-transparent">
         <div class="container-fluid">
             <!-- Logo -->
@@ -248,39 +250,138 @@ $_SESSION['travelerName'] = $travelerData['name'];
             </ul>
         </div>
     </nav>
-    <!-- Mensajes de actualización -->
+    
+    <!-- ///////////////////////////////////////////// MENSAJES DE SUCCESS / ERROR ///////////////////////////////////////////// -->
+    
+    <!-- Mensajes de actualización Perfil success / error -->
     <div class="d-flex justify-content-end">
         <div class="col-4 text-center">
-            <?php if (isset($_SESSION['update_success'])): ?>
-                <div id="updateSuccess" class="alert alert-success fs-6" role="alert">
-                    <?php echo $_SESSION['update_success']; ?>
+            <?php if (isset($_SESSION['update_traveler_success'])): ?>
+                <div id="updateTravelerSuccess" class="alert alert-success fs-6" role="alert">
+                    <?php echo $_SESSION['update_traveler_success']; ?>
                 </div>
-                <?php unset($_SESSION['update_success']); ?>
-            <?php elseif (isset($_SESSION['update_error'])): ?>
-                <div id="updateError" class="alert alert-danger fs-6" role="alert">
-                    <?php echo $_SESSION['update_error']; ?>
+                <?php unset($_SESSION['update_traveler_success']); ?>
+            <?php elseif (isset($_SESSION['update_traveler_error'])): ?>
+                <div id="updateTravelerError" class="alert alert-danger fs-6" role="alert">
+                    <?php echo $_SESSION['update_traveler_error']; ?>
                 </div>
-                <?php unset($_SESSION['update_error']); ?>
+                <?php unset($_SESSION['update_traveler_error']); ?>
             <?php endif; ?>
         </div>
     </div>
-    <!-- Bloque principal -->
+
+    <!-- Mensajes de creación de reserva success / error -->
+    <div class="d-flex justify-content-end">
+        <div class="col-4 text-center">
+            <?php if (isset($_SESSION['create_booking_success'])): ?>
+                <div id="createBookingSuccess" class="alert alert-success fs-6" role="alert">
+                    <?php echo $_SESSION['create_booking_success']; ?>
+                </div>
+                <?php unset($_SESSION['create_booking_success']); ?>
+            <?php elseif (isset($_SESSION['create_booking_error'])): ?>
+                <div id="createBookingError" class="alert alert-danger fs-6" role="alert">
+                    <?php echo $_SESSION['create_booking_error']; ?>
+                </div>
+                <?php unset($_SESSION['create_booking_error']); ?>
+            <?php endif; ?>
+        </div>
+    </div>
+
+
+    <!-- Mensajes de actualización Reserva success / error -->
+    <div class="d-flex justify-content-end">
+        <div class="col-4 text-center">
+            <?php if (isset($_SESSION['update_booking_success'])): ?>
+                <div id="updateBookingSuccess" class="alert alert-success fs-6" role="alert">
+                    <?php echo $_SESSION['update_booking_success']; ?>
+                </div>
+                <?php unset($_SESSION['update_booking_success']); ?>
+            <?php elseif (isset($_SESSION['update_booking_error'])): ?>
+                <div id="updateBookingError" class="alert alert-danger fs-6" role="alert">
+                    <?php echo $_SESSION['update_booking_error']; ?>
+                </div>
+                <?php unset($_SESSION['update_booking_error']); ?>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- Mensajes de eliminación success / error -->
+    <div class="d-flex justify-content-end">
+        <div class="col-4 text-center">
+            <?php if (isset($_SESSION['delete_booking_success'])): ?>
+                <div id="deleteBookingSuccess" class="alert alert-success fs-6" role="alert">
+                    <?php echo $_SESSION['delete_booking_success']; ?>
+                </div>
+                <?php unset($_SESSION['delete_booking_success']); ?>
+            <?php elseif (isset($_SESSION['delete_booking_error'])): ?>
+                <div id="deleteBookingError" class="alert alert-danger fs-6" role="alert">
+                    <?php echo $_SESSION['delete_booking_error']; ?>
+                </div>
+                <?php unset($_SESSION['delete_booking_error']); ?>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- Mensaje de error si se intenta crear con menos de 48 horas der antelacion -->
+    <div class="d-flex justify-content-end">
+        <div class="col-4 text-center">
+            <?php if (isset($_SESSION['create_48_error'])): ?>
+                <div id="create48Error" class="alert alert-danger fs-6" role="alert">
+                    <?php echo $_SESSION['create_48_error']; ?>
+                </div>
+                <?php unset($_SESSION['create_48_error']); ?>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- Mensaje de error si se intenta modificar con menos de 48 horas der antelacion -->
+    <div class="d-flex justify-content-end">
+        <div class="col-4 text-center">
+            <?php if (isset($_SESSION['update_48_error'])): ?>
+                <div id="update48Error" class="alert alert-danger fs-6" role="alert">
+                    <?php echo $_SESSION['update_48_error']; ?>
+                </div>
+                <?php unset($_SESSION['update_48_error']); ?>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- Mensaje de error si se intenta eliminar con menos de 48 horas der antelacion -->
+    <div class="d-flex justify-content-end">
+        <div class="col-4 text-center">
+            <?php if (isset($_SESSION['delete_48_error'])): ?>
+                <div id="delete48Error" class="alert alert-danger fs-6" role="alert">
+                    <?php echo $_SESSION['delete_48_error']; ?>
+                </div>
+                <?php unset($_SESSION['delete_48_error']); ?>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- //////////////////////////////////////////////// BLOQUE PRINCIPAL //////////////////////////////////////////////// -->
+    
     <div class="container">
+        
         <!-- Título -->
         <h1 class="text-center pt-3 fw-light text-success">¡Hola, <?php echo htmlspecialchars($_SESSION['travelerName']); ?>!</h1>
+        
         <!-- Subtítulo -->
-        <h2 class="text-center text-warning fw-bold pt-3">Añade, modifica y elimina tus reservas.</h2>
+        <h2 class="text-center text-secondary fw-bold pt-3">Añade, modifica y elimina tus reservas.</h2>
+        
         <!-- Párrafo de alerta -->
         <p class="text-center text-secondary pb-3">¡Pero recuerda! No puedes crear, modificar ni cancelar tus reservas con menos de 48 horas de antelación.</p>
+        
         <!-- Botón de crear -->
-        <div class="container-fluid">
-            <div class="col text-center fw-bold">
-                <button type="button" class="btn btn-lg text-warning" data-bs-toggle="modal" data-bs-target="#addBookingModal">
-                    <i class="bi bi-journal-plus display-3"></i>
-                </button>
-            </div>
+        <div class="col text-center fw-bold">
+            <button type="button" class="btn btn-lg text-warning" data-bs-toggle="modal" data-bs-target="#addBookingModal">
+                <i class="bi bi-journal-plus display-3"></i>
+            </button>
+        </div>
+
     </div>
-    <!-- CALENDARIO-->
+    
+    <!-- //////////////////////////////////////////////// CALENDARIO //////////////////////////////////////////////// -->
+    
     <div class="container">
         <div class="col-xl">
             <div id="calendar"></div>
@@ -301,81 +402,80 @@ $_SESSION['travelerName'] = $travelerData['name'];
                 </div>
                 <div class="modal-body bg-light">
                     <form action="../controllers/bookings/create.php" method="POST">
-
-                        <!-- Se elige entre las 3 opciones para abrir unos campos u otros -->
-                        <select name="id_tipo_reserva" id="tipo_reserva" class="form-select form-select-sm" onchange="mostrarCampos()">
-                            <option value="1">Aeropuerto-Hotel</option>
-                            <option value="2">Hotel-Aeropuerto</option>
-                            <option value="idayvuelta">Ida/Vuelta</option>
-                        </select>
-
+                        <div class="pb-3">
+                        <!-- Id_tipo_reserva Se elige entre las 3 opciones para abrir unos campos u otros -->
+                            <select name="id_tipo_reserva" id="tipo_reserva" class="form-select form-select-sm" onchange="mostrarCampos()">
+                                <option value="1">Aeropuerto-Hotel</option>
+                                <option value="2">Hotel-Aeropuerto</option>
+                                <option value="idayvuelta">Ida/Vuelta</option>
+                            </select>
+                        </div>
                         <!-- Bloque campos AEROPUERTO -> HOTEL -->
                         <div id="aeropuerto-hotel-fields" style="display:none;">
-
-                            <!-- Fecha Entrada -->
-                            <div class="form-floating mb-3">
-                                <input type="date" class="form-control" name="fecha_entrada" id="dateInInput" aria-describedby="helpDateIn" placeholder="Fecha_entrada">
-                                <label for="dateInInput">Día de llegada</label>
+                            <div class="d-flex flex-row bd-highlight mb-3"> 
+                                <!-- Fecha Entrada -->
+                                <div class="form-floating mb-3 col-6">
+                                    <input type="date" class="form-control" name="fecha_entrada" id="dateInInput" aria-describedby="helpDateIn" placeholder="Fecha_entrada">
+                                    <label for="dateInInput">Día de llegada</label>
+                                </div>
+                                <!-- Hora Entrada -->
+                                <div class="form-floating mb-3 col-6">
+                                    <input type="time" class="form-control" name="hora_entrada" id="hourInInput" aria-describedby="helpHourIn" placeholder="Hora de entrada">
+                                    <label for="hourInInput">Hora de llegada</label>
+                                </div>
                             </div>
-
-                            <!-- Hora Entrada -->
-                            <div class="form-floating mb-3">
-                                <input type="time" class="form-control" name="hora_entrada" id="hourInInput" aria-describedby="helpHourIn" placeholder="Hora de entrada">
-                                <label for="hourInInput">Hora de llegada</label>
-                            </div>
-
-                            <!-- Numero Vuelo Entrada -->
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" name="numero_vuelo_entrada" id="numFlightInInput" aria-describedby="helpNumFlightIn" placeholder="Numero vuelo de entrada">
-                                <label for="numFlightInInput">Numero vuelo</label>
-                            </div>
-
-                            <!-- Origen Vuelo Entrada -->
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" name="origen_vuelo_entrada" id="originFlightInInput" aria-describedby="helpOriginFlightIn" placeholder="Origen vuelo de entrada">
-                                <label for="originFlightInInput">Aeropuerto de origen</label>
+                            <div class="d-flex flex-row bd-highlight mb-3"> 
+                                <!-- Numero Vuelo Entrada -->
+                                <div class="form-floating mb-3 col-6">
+                                    <input type="text" class="form-control" name="numero_vuelo_entrada" id="numFlightInInput" aria-describedby="helpNumFlightIn" placeholder="Numero vuelo de entrada">
+                                    <label for="numFlightInInput">Numero vuelo</label>
+                                </div>
+                                <!-- Origen Vuelo Entrada -->
+                                <div class="form-floating mb-3 col-6">
+                                    <input type="text" class="form-control" name="origen_vuelo_entrada" id="originFlightInInput" aria-describedby="helpOriginFlightIn" placeholder="Origen vuelo de entrada">
+                                    <label for="originFlightInInput">Aeropuerto de origen</label>
+                                </div>
                             </div>
                         </div>
 
                         <!-- Bloque de campos HOTEL -> AEROPUERTO-->
                         <div id="hotel-aeropuerto-fields" style="display:none;">
-
-                            <!-- Fecha Vuelo Salida -->
-                            <div class="form-floating mb-3">
-                                <input type="date" class="form-control" name="fecha_vuelo_salida" id="dateFlightOutInput" aria-describedby="helpDateFlightOut" placeholder="Fecha vuelo de salida">
-                                <label for="dateFlightOutInput">Fecha vuelo de salida</label>
+                            <div class="d-flex flex-row bd-highlight mb-3">
+                                <!-- Fecha Vuelo Salida -->
+                                <div class="form-floating mb-3 col-6">
+                                    <input type="date" class="form-control" name="fecha_vuelo_salida" id="dateFlightOutInput" aria-describedby="helpDateFlightOut" placeholder="Fecha vuelo de salida">
+                                    <label for="dateFlightOutInput">Fecha vuelo de salida</label>
+                                </div>
+                                <!-- Hora Vuelo Salida -->
+                                <div class="form-floating mb-3 col-6">
+                                    <input type="time" class="form-control" name="hora_vuelo_salida" id="hourFlightOutInput" aria-describedby="helpHourFlightOut" placeholder="Hora vuelo de salida">
+                                    <label for="hourFlightOutInput">Hora vuelo de salida</label>
+                                </div>
                             </div>
-
-                            <!-- Hora Vuelo Salida -->
-                            <div class="form-floating mb-3">
-                                <input type="time" class="form-control" name="hora_vuelo_salida" id="hourFlightOutInput" aria-describedby="helpHourFlightOut" placeholder="Hora vuelo de salida">
-                                <label for="hourFlightOutInput">Hora vuelo de salida</label>
-                            </div>
-
                         </div>
 
                         <!-- Campos comunes para ambos trayectos -->
                         <div>
-                            <!-- Id Destino-->
-                            <div class="form-floating mb-3">
-                                <!--<input type="number" class="form-control" name="id_destino" id="idDestinationInput"  aria-describedby="helpIdDestination" placeholder="Id de destino" required>-->
-                                <select name="id_destino" id="idDestinationInput" class="form-select" required>
-                                    <option value="">Selecciona un Id de Destino</option>
-                                    <?php foreach ($hotels as $hotelId): ?>
-                                        <option value="<?php echo $hotelId; ?>">
-                                            <?php echo isset($hotelNames[$hotelId]) ? $hotelNames[$hotelId] : "Hotel Desconocido ($hotelId)"; ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                                <label for="idDestinationInput">Id de destino</label>
+                            <div class="d-flex flex-row bd-highlight mb-3">
+                                <!-- Id Destino-->
+                                <div class="form-floating mb-3 col-6">
+                                    <!--<input type="number" class="form-control" name="id_destino" id="idDestinationInput"  aria-describedby="helpIdDestination" placeholder="Id de destino" required>-->
+                                    <select name="id_destino" id="idDestinationInput" class="form-select" required>
+                                        <option value="">Selecciona un hotel</option>
+                                        <?php foreach ($hotels as $hotelId): ?>
+                                            <option value="<?php echo $hotelId; ?>">
+                                                <?php echo isset($hotelNames[$hotelId]) ? $hotelNames[$hotelId] : "Hotel Desconocido ($hotelId)"; ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                    <label for="idDestinationInput">Hotel</label>
+                                </div>
+                                <!-- Número Viajeros -->
+                                <div class="form-floating mb-3 col-6">
+                                    <input type="number" class="form-control" name="num_viajeros" id="numTravelersInput" aria-describedby="helpNumTravelers" placeholder="Numero de viajeros">
+                                    <label for="numTravelersInput">Número de viajeros</label>
+                                </div>
                             </div>
-
-                            <!-- Número Viajeros -->
-                            <div class="form-floating mb-3">
-                                <input type="number" class="form-control" name="num_viajeros" id="numTravelersInput" aria-describedby="helpNumTravelers" placeholder="Numero de viajeros">
-                                <label for="numTravelersInput">Número de viajeros</label>
-                            </div>
-
                             <!-- Email Cliente -->
                             <div class="form-floating mb-3">
                                 <input type="email" class="form-control" name="email_cliente" id="emailClientInput" aria-describedby="helpEmailClient"
@@ -410,96 +510,113 @@ $_SESSION['travelerName'] = $travelerData['name'];
                     </div>
                 <div class="modal-body bg-light">
                     <form action="../controllers/bookings/update.php" method="POST">
-                        <!-- Id reserva -->
-                        <input type="hidden" id="updateIdBookingInput" name="id_reserva">
+                            <!-- Campo oculto de Id reserva -->
+                            <input type="hidden" id="updateIdBookingInput" name="id_reserva">
 
-                        <!-- Campo oculto para id_vehiculo, con valor predeterminado 1 si está vacío -->
-                        <input type="hidden" name="id_vehiculo" id="updateIdVehicleInput" value="1">
+                            <!-- Campo oculto para id_vehiculo, con valor predeterminado 1 si está vacío -->
+                            <input type="hidden" name="id_vehiculo" id="updateIdVehicleInput" value="1">
 
-                        <!-- Campo oculto para tipo_creador_reserva, con valor 1 o 2 -->
-                        <input type="hidden" id="updateTipoCreadorReserva" name="tipo_creador_reserva">
+                            <!-- Campo oculto para tipo_creador_reserva, con valor 1 o 2 -->
+                            <input type="hidden" id="updateTipoCreadorReserva" name="tipo_creador_reserva">
 
-                        <!-- Id Tipo Reserva -->
-                        <div class="form-floating mb-3">
-                            <input type="number" class="form-control" name="id_tipo_reserva" id="updateIdTypeBookingInput" placeholder="Tipo de reserva" onchange="mostrarCampos('update') readonly">
-                            <label for="updateIdTypeBookingInput">Tipo de reserva (1: Aeropuerto-Hotel, 2: Hotel-Aeropuerto)</label>
-                        </div>
+                            <!-- Campo oculto Id Tipo Reserva -->
+                            <div class="form-floating mb-3">
+                                <input type="hidden" class="form-control" name="id_tipo_reserva" id="updateIdTypeBookingInput" placeholder="Tipo de reserva" onchange="mostrarCampos('update')">
+                            </div>
 
-                        <!-- Localizador -->
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="localizador" id="updateLocatorInput" placeholder="Localizador" readonly>
-                            <label for="updateLocatorInput">Localizador</label>
-                        </div>
+                             <!-- Localizador -->
+                             <div class="form-floating mb-3">
+                                <input type="hidden" class="form-control" name="localizador" id="updateLocatorInput" placeholder="Localizador">
+                            </div>
 
-                        <!-- Número Viajeros -->
-                        <div class="form-floating mb-3">
-                            <input type="number" class="form-control" name="num_viajeros" id="updateNumTravelersInput" aria-describedby="helpNumTravelers" placeholder="Numero de viajeros">
-                            <label for="updateNumTravelersInput">Número de viajeros</label>
-                        </div>
-
-                        <!-- Email Cliente -->
-                        <div class="form-floating mb-3">
-                            <input type="email" class="form-control" name="email_cliente" id="updateEmailClientInput" aria-describedby="helpEmailClient" placeholder="Email del cliente" required>
-                            <label for="updateEmailClientInput">Email del cliente</label>
-                        </div>
-
-                        <!-- Id Destino-->
-                        <div class="form-floating mb-3">
-                            <!--<input type="number" class="form-control" name="id_destino" id="idDestinationInput"  aria-describedby="helpIdDestination" placeholder="Id de destino" required>-->
-                            <select name="id_destino" id="updateIdDestinationInput" class="form-select" required>
-                                <option value="">Selecciona un Id de Destino</option>
-                                <?php foreach ($hotels as $hotelId): ?>
-                                    <option value="<?php echo $hotelId; ?>">
-                                        <?php echo isset($hotelNames[$hotelId]) ? $hotelNames[$hotelId] : "Hotel Desconocido ($hotelId)"; ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                            <label for="updateIdDestinationInput">Id de destino</label>
-                        </div>
+                            <!-- Email Cliente -->
+                            <div class="form-floating mb-3">
+                                <input type="hidden" class="form-control" name="email_cliente" id="updateEmailClientInput" aria-describedby="helpEmailClient" placeholder="Email del cliente">
+                            </div>
 
                         <!-- Campos específicos para Aeropuerto - Hotel (id_tipo_reserva = 1) -->
 
                         <!-- Fecha de llegada -->
                         <div id="aeropuerto-hotel-fields-update" style="display: none;">
-                            <div class="form-floating mb-3">
-                                <input type="date" class="form-control" name="fecha_entrada" id="updateDateInInput" placeholder="Fecha de entrada">
-                                <label for="updateDateInInput">Fecha Llegada</label>
+                            
+                            <div class="d-flex flex-row bd-highlight mb-3">          
+                        
+                                <div class="form-floating mb-3 col-6">
+                                    <input type="date" class="form-control" name="fecha_entrada" id="updateDateInInput" placeholder="Fecha de entrada">
+                                    <label for="updateDateInInput">Fecha Llegada</label>
+                                </div>
+
+                                <!-- Hora de llegada -->
+                                <div class="form-floating mb-3 col-6">
+                                    <input type="time" class="form-control" name="hora_entrada" id="updateHourInInput" placeholder="Hora de entrada">
+                                    <label for="updateHourInInput">Hora Llegada</label>
+                                </div>
+
                             </div>
 
-                            <!-- Hora de llegada -->
-                            <div class="form-floating mb-3">
-                                <input type="time" class="form-control" name="hora_entrada" id="updateHourInInput" placeholder="Hora de entrada">
-                                <label for="updateHourInInput">Hora Llegada</label>
+                            <div class="d-flex flex-row bd-highlight mb-3">
+
+                                <!-- Número de vuelo -->
+                                <div class="form-floating mb-3 col-6">
+                                    <input type="text" class="form-control" name="numero_vuelo_entrada" id="updateNumFlightInInput" placeholder="Número de vuelo de entrada">
+                                    <label for="updateNumFlightInInput">Número Vuelo Llegada</label>
+                                </div>
+
+                                <!-- Origen del vuelo -->
+                                <div class="form-floating mb-3 col-6">
+                                    <input type="text" class="form-control" name="origen_vuelo_entrada" id="updateOriginFlightInInput" placeholder="Origen del vuelo de entrada">
+                                    <label for="updateOriginFlightInInput">Origen Vuelo</label>
+                                </div>
+
                             </div>
 
-                            <!-- Número de vuelo -->
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" name="numero_vuelo_entrada" id="updateNumFlightInInput" placeholder="Número de vuelo de entrada">
-                                <label for="updateNumFlightInInput">Número Vuelo Llegada</label>
-                            </div>
-
-                            <!-- Origen del vuelo -->
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" name="origen_vuelo_entrada" id="updateOriginFlightInInput" placeholder="Origen del vuelo de entrada">
-                                <label for="updateOriginFlightInInput">Origen Vuelo</label>
-                            </div>
                         </div>
 
-                        <!-- Campos específicos para Hotel - Aeropuerto (id_tipo_reserva = 2) -->
+                             <!-- Campos específicos para Hotel - Aeropuerto (id_tipo_reserva = 2) -->
                         <div id="hotel-aeropuerto-fields-update" style="display: none;">
+                            
+                            <div class="d-flex flex-row bd-highlight mb-3">
 
-                            <!-- Fecha de salida -->
-                            <div class="form-floating mb-3">
-                                <input type="date" class="form-control" name="fecha_vuelo_salida" id="updateDateFlightOutInput" placeholder="Fecha del vuelo de salida">
-                                <label for="updateDateFlightOutInput">Fecha Vuelo Salida</label>
+                                <!-- Fecha de salida -->
+                                <div class="form-floating mb-3 col-6">
+                                    <input type="date" class="form-control" name="fecha_vuelo_salida" id="updateDateFlightOutInput" placeholder="Fecha del vuelo de salida">
+                                    <label for="updateDateFlightOutInput">Fecha Vuelo Salida</label>
+                                </div>
+
+                                <!-- Hora de salida -->
+                                <div class="form-floating mb-3 col-6">
+                                    <input type="time" class="form-control" name="hora_vuelo_salida" id="updateHourFlightOutInput" placeholder="Hora del vuelo de salida">
+                                    <label for="updateHourFlightOutInput">Hora Vuelo Salida</label>
+                                </div>
+
                             </div>
 
-                            <!-- Hora de salida -->
-                            <div class="form-floating mb-3">
-                                <input type="time" class="form-control" name="hora_vuelo_salida" id="updateHourFlightOutInput" placeholder="Hora del vuelo de salida">
-                                <label for="updateHourFlightOutInput">Hora Vuelo Salida</label>
-                            </div>
                         </div>
+
+                        <div class="d-flex flex-row bd-highlight mb-3">
+
+                            <!-- Id Destino-->
+                            <div class="form-floating mb-3 col-6">
+                                <!--<input type="number" class="form-control" name="id_destino" id="idDestinationInput"  aria-describedby="helpIdDestination" placeholder="Id de destino" required>-->
+                                <select name="id_destino" id="updateIdDestinationInput" class="form-select" required>
+                                    <option value="">Selecciona un hotel</option>
+                                    <?php foreach ($hotels as $hotelId): ?>
+                                        <option value="<?php echo $hotelId; ?>">
+                                            <?php echo isset($hotelNames[$hotelId]) ? $hotelNames[$hotelId] : "Hotel Desconocido ($hotelId)"; ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <label for="updateIdDestinationInput">Hotel</label>
+                            </div>
+
+                             <!-- Número Viajeros -->
+                            <div class="form-floating mb-3 col-6">
+                                <input type="number" class="form-control" name="num_viajeros" id="updateNumTravelersInput" aria-describedby="helpNumTravelers" placeholder="Numero de viajeros">
+                                <label for="updateNumTravelersInput">Número de viajeros</label>
+                            </div>
+
+                        </div>
+
                         <!-- Botón Modificar -->
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-warning fw-bold text-white" name="updateBooking">Actualizar</button>
@@ -621,27 +738,31 @@ $_SESSION['travelerName'] = $travelerData['name'];
 ////////////////////////////////////////////////////// EVENTS //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <script>
-    /* Mensajes de error */
+   function hideMessage(successId, errorId) {
     setTimeout(function() {
-        var successDiv = document.getElementById("updateSuccess");
-        var errorDiv = document.getElementById("updateError");
+        var successDiv = document.getElementById(successId);
+        var errorDiv = document.getElementById(errorId);
 
-        if (successDiv) {
-            successDiv.style.transition = "opacity 0.5s";
-            successDiv.style.opacity = "0";
-            setTimeout(function() {
-                successDiv.style.display = "none";
-            }, 500);
-        }
+        [successDiv, errorDiv].forEach(function(div) {
+            if (div) {
+                div.style.transition = "opacity 0.5s";
+                div.style.opacity = "0";
+                setTimeout(function() {
+                    div.style.display = "none";
+                }, 500);
+            }
+        });
+    }, 5000);
+}
 
-        if (errorDiv) {
-            errorDiv.style.transition = "opacity 0.5s";
-            errorDiv.style.opacity = "0";
-            setTimeout(function() {
-                errorDiv.style.display = "none";
-            }, 500);
-        }
-    }, 3000);
+// Llamar a la función para cada par de mensajes
+hideMessage("updateTravelerSuccess", "updateTravelerError");
+hideMessage("createBookingSuccess", "createBookingError");
+hideMessage("updateBookingSuccess", "updateBookingError");
+hideMessage("deleteBookingSuccess", "deleteBookingError");
+hideMessage("create48Error");
+hideMessage("update48Error");
+hideMessage("delete48Error");
 
     /* Creación de reserva */
     document.addEventListener('DOMContentLoaded', function () {

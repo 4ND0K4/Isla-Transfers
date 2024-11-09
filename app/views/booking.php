@@ -15,15 +15,12 @@ $hotelsStmt->execute();
 $hotels = $hotelsStmt->fetchAll(PDO::FETCH_COLUMN);
 // Array de nombres de hoteles asignados manualmente
 $hotelNames = [
-    1 => 'Hotel 1',
-    2 => 'Hotel 2',
-    3 => 'Hotel 3',
-    4 => 'Hotel 4',
-    5 => 'Hotel 5',
-    6 => 'Hotel 6',
-    7 => 'Hotel 7',
-    8 => 'Hotel 8',
-    9 => 'Hotel 9'
+    1 => 'Paraíso Escondido Retreat',
+    2 => 'Corazón Isleño Inn',
+    3 => 'Oasis Resort',
+    4 => 'El faro Suites',
+    5 => 'Costa Salvaje Eco Lodge',
+    6 => 'Arenas Doradas Resort'
 ];
 ?>
 <!DOCTYPE html>
@@ -156,11 +153,14 @@ $hotelNames = [
             <div class="modal-body">
                 <!-- Se elige entre las 3 opciones para abrir unos campos u otros -->
                 <form action="../controllers/bookings/create.php" method="POST">
-                    <select name="id_tipo_reserva" id="tipo_reserva" class="form-select form-select-sm" aria-label="multiple select" onchange="mostrarCampos()">
-                        <option value="1">Aeropuerto-Hotel</option>
-                        <option value="2">Hotel-Aeropuerto</option>
-                        <option value="idayvuelta">Ida/Vuelta</option>
-                    </select>
+
+                    <div class="pb-3">
+                        <select name="id_tipo_reserva" id="tipo_reserva" class="form-select form-select-sm" aria-label="multiple select" onchange="mostrarCampos()">
+                            <option value="1">Aeropuerto-Hotel</option>
+                            <option value="2">Hotel-Aeropuerto</option>
+                            <option value="idayvuelta">Ida/Vuelta</option>
+                        </select>
+                    </div>
 
                     <!-- AEROPUERTO -> HOTEL -->
                     <div id="aeropuerto-hotel-fields" style="display:none;">

@@ -3,6 +3,9 @@
 require_once(__DIR__ . '/../../models/db.php');
 require_once(__DIR__ . '/../../models/booking.php');
 
+// Iniciar la sesión
+session_start();
+
 // Conectar a la base de datos
 $db = db_connect();
 if (!$db) {
@@ -23,8 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $isValidHotel = $validHotelStmt->fetchColumn() > 0;
 
     if (!$isValidHotel) {
-        echo "Error: El id_destino no es válido. Debe ser un id_hotel existente.";
-        exit; // Terminar la ejecución si el id_destino no es válido
+        $_SESSION['update_error'] = "Error: El id_destino no es válido. Debe ser un id_hotel existente.";
+        header("Location: " . $_SERVER['HTTP_REFERER']);
+        exit;
     }
 
     // Obtener el valor original de tipo_creador_reserva de la base de datos
@@ -33,8 +37,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $originalTipoCreador = $stmt->fetchColumn();
 
     if ($originalTipoCreador === false) {
-        echo "Error: La reserva no existe.";
+        $_SESSION['update_error'] = "Error: La reserva no existe.";
+        header("Location: " . $_SERVER['HTTP_REFERER']);
         exit;
+    }
+
+    // Validación para usuarios tipo traveler: no permitir modificar reservas con menos de 48 horas de antelación
+    if (isset($_SESSION['travelerUser'])) {
+        $fechaMinima = (new DateTime())->modify('+2 days')->format('Y-m-d');
+
+        $fechaEntrada = $_POST['fecha_entrada'] ?? null;
+        $fechaVueloSalida = $_POST['fecha_vuelo_salida'] ?? null;
+
+        if ($fechaEntrada && $fechaEntrada < $fechaMinima) {
+            $_SESSION['update_48_error'] = "No puede modificar reservas con menos de 48 horas de antelación.";
+            header("Location: " . $_SERVER['HTTP_REFERER']);
+            exit;
+        }
+        
+        if ($fechaVueloSalida && $fechaVueloSalida < $fechaMinima) {
+            $_SESSION['update_48_error'] = "No puede modificar reservas con menos de 48 horas de antelación.";
+            header("Location: " . $_SERVER['HTTP_REFERER']);
+            exit;
+        }
     }
 
     // Asignar id_hotel. Usar id_destino si id_hotel no está presente
@@ -51,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'id_destino' => $id_destino,
         'num_viajeros' => $_POST['num_viajeros'],
         'id_vehiculo' => $_POST['id_vehiculo'] ?? 1,
-        'tipo_creador_reserva' => $originalTipoCreador // Usar el valor original de tipo_creador_reserva
+        'tipo_creador_reserva' => $originalTipoCreador
     ];
 
     // Agregar campos adicionales según el tipo de reserva
@@ -68,13 +93,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Llamar al método de actualización en el modelo
     $result = $booking->updateBooking($data);
 
-    // Redirigir a la página de reservas si la actualización es exitosa
+    // Establecer el mensaje según el resultado de la actualización
     if ($result) {
-        header("Location: " . $_SERVER['HTTP_REFERER']);
-        exit; // Finalizar el script tras la redirección
+        $_SESSION['update_booking_success'] = "Reserva actualizada correctamente.";
     } else {
-        // Mostrar un mensaje en caso de fallo en la actualización
-        echo "Error al actualizar la reserva";
+        $_SESSION['update_booking_error'] = "Error al actualizar la reserva.";
     }
+
+    // Redirigir a la página de origen para mostrar el mensaje
+    header("Location: " . $_SERVER['HTTP_REFERER']);
+    exit;
 }
 ?>

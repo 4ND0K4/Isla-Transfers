@@ -10,7 +10,9 @@ require_once __DIR__ . '/../../models/traveler.php';
 // Conectar con la base de datos
 $db = db_connect();
 if (!$db) {
-    die("Error al conectar con la base de datos");
+    $_SESSION['create_error'] = "Error al conectar con la base de datos.";
+    header("Location: " . $_SERVER['HTTP_REFERER']);
+    exit;
 }
 
 // Crear instancia de Traveler (para buscar datos del usuario)
@@ -24,20 +26,21 @@ function generateLocator($length = 10) {
 // Variable que regula que el usuario traveler no pueda modificar fechas con menos de 2 días
 $fechaMinima = (new DateTime())->modify('+2 days')->format('Y-m-d H:i:s');
 
-// CREACIÓN DE LA RESERVA
+// Verificar si la solicitud es de tipo POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Variables
-    $locator = generateLocator(); //El localizador será el código generado por la función
-    $id_destino = $_POST['id_destino'] ?? null; //Se introducirá id_destino y esté será el mismo valor de id_hotel
-    $email_cliente = $_POST['email_cliente']; //Se cogerá el email de transfer_viajeros -> email para identificar al usuario de la reserva. Solo permite realizar reservas con usuarios que existen en la BBDD
-    $horaVueloSalida = $_POST['hora_vuelo_salida'] ?? null; //Reduce tres horas la fecha ingresada
+    $locator = generateLocator();
+    $id_destino = $_POST['id_destino'] ?? null;
+    $email_cliente = $_POST['email_cliente'];
+    $horaVueloSalida = $_POST['hora_vuelo_salida'] ?? null;
     $fechaEntrada = $_POST['fecha_entrada'] ?? null;
     $fechaVueloSalida = $_POST['fecha_vuelo_salida'] ?? null;
 
-    // Validar si el email del cliente de la reserva existe en la base de datos (tabla transfer_viajeros)
+    // Validar si el email del cliente de la reserva existe en la base de datos
     $traveler = $travelerModel->findByEmail($email_cliente);
     if (!$traveler) {
-        die("Error: El email ingresado no corresponde a ningún viajero en la base de datos.");
+        $_SESSION['create_error'] = "Error: El email ingresado no corresponde a ningún viajero en la base de datos.";
+        header("Location: " . $_SERVER['HTTP_REFERER']);
+        exit;
     }
 
     // Validación para asegurar que id_destino sea un id_hotel válido
@@ -46,39 +49,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $isValidHotel = $validHotelStmt->fetchColumn() > 0;
 
     if (!$isValidHotel) {
-        echo "Error: El id_destino no es válido. Debe ser un id_hotel existente.";
+        $_SESSION['create_error'] = "Error: El id_destino no es válido. Debe ser un id_hotel existente.";
+        header("Location: " . $_SERVER['HTTP_REFERER']);
         exit;
     }
 
     // Si id_hotel no está definido, usa el valor de id_destino
     $id_hotel = !empty($_POST['id_hotel']) ? $_POST['id_hotel'] : $id_destino;
 
-    // Recoge la hora ingresada por el usuario desde el formulario para restarle 3 horas (hora recogida)
+    // Resta tres horas a la hora de vuelo de salida, si está definida
     if ($horaVueloSalida) {
-        // Convierte la hora ingresada a un objeto DateTime
         $horaVueloSalidaObj = new DateTime($horaVueloSalida);
-
-        // Resta tres horas
         $horaVueloSalidaObj->modify('-3 hours');
-
-        // Obtén el valor modificado en formato de hora (HH:MM:SS)
         $horaVueloSalida = $horaVueloSalidaObj->format('H:i:s');
     }
 
-    /* Previamente se ha Verificado si el email existe en la tabla y obtener el tipo de usuario */
-
-    // Validación para los usuarios tipo traveler
+    // Validación para los usuarios tipo traveler no puedan crear reservas con menos de 48 horas
     if (isset($_SESSION['travelerUser'])) {
         $fechaMinima = (new DateTime())->modify('+2 days')->format('Y-m-d');
-
-        // Validar fecha_entrada
         if ($fechaEntrada && $fechaEntrada < $fechaMinima) {
-            die("Error: Los usuarios traveler solo pueden hacer reservas con fecha de entrada a partir de 48 horas después del día actual.");
+            $_SESSION['create_48_error'] = "No puede realizar reservas con menos de 48 horas de antelación.";
+            header("Location: " . $_SERVER['HTTP_REFERER']);
+            exit;
         }
-
-        // Validar fecha_vuelo_salida
         if ($fechaVueloSalida && $fechaVueloSalida < $fechaMinima) {
-            die("Error: Los usuarios traveler solo pueden hacer reservas con fecha de vuelo de salida a partir de 48 horas después del día actual.");
+            $_SESSION['create_48_error'] = "No puede realizar reservas con menos de 48 horas de antelación.";
+            header("Location: " . $_SERVER['HTTP_REFERER']);
+            exit;
         }
     }
 
@@ -102,28 +99,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'tipo_creador_reserva' => $tipo_creador_reserva ?? null
     ];
 
-    // Validación de id_hotel en la base de datos antes de crear la/s reserva/s y genera lcoalizadores únicos
-    if ($isValidHotel) {
-        $booking = new Booking($db);
-        //
-        if ($data['id_tipo_reserva'] === 'idayvuelta') {
-            // Crear ambas reservas para "ida y vuelta"
-            $data['id_tipo_reserva'] = 1; // Aeropuerto-Hotel
-            $data['localizador'] = generateLocator(); // Genera un localizador para la primera reserva
-            $booking->addBooking($data);
+    // Crear la reserva
+    $booking = new Booking($db);
+    $createResult = false;
 
-            $data['id_tipo_reserva'] = 2; // Hotel-Aeropuerto
-            $data['localizador'] = generateLocator(); // Genera un nuevo localizador para la segunda reserva
-            $booking->addBooking($data);
-        } else {
-            // Crea la reserva individual (aeropuerto-hotel o hotel-aeropuerto)
-            $data['localizador'] = generateLocator(); // Genera un localizador único
-            $booking->addBooking($data);
-        }
-        header("Location: " . $_SERVER['HTTP_REFERER']);
-        exit;
+    if ($data['id_tipo_reserva'] === 'idayvuelta') {
+        $data['id_tipo_reserva'] = 1;
+        $data['localizador'] = generateLocator();
+        $createResult = $booking->addBooking($data);
+
+        $data['id_tipo_reserva'] = 2;
+        $data['localizador'] = generateLocator();
+        $createResult = $createResult && $booking->addBooking($data);
     } else {
-        echo "Error: El id_hotel no es válido.";
+        $data['localizador'] = generateLocator();
+        $createResult = $booking->addBooking($data);
     }
+
+    if ($createResult) {
+        $_SESSION['create_booking_success'] = "Reserva creada correctamente.";
+    } else {
+        $_SESSION['create_booking_error'] = "Error al crear la reserva.";
+    }
+
+    // Redirigir a la página de origen para mostrar el mensaje
+    header("Location: " . $_SERVER['HTTP_REFERER']);
+    exit;
 }
 ?>
