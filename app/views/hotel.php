@@ -34,7 +34,6 @@ $zoneNames = [
     <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
 <body>
-
 <!-- ///////////////////////////////////////////// NAV ///////////////////////////////////////////// -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">       
     <!-- Icono de flecha de vuelta al dashboard-admin -->

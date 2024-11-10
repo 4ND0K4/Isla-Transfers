@@ -1,4 +1,10 @@
 <?php
+require_once __DIR__ . '/../../vendor/autoload.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -8,6 +14,91 @@ $tipo_creador_reserva = isset($_SESSION['admin']) ? 1 : 2; // 1 para admin, 2 pa
 require_once __DIR__ . '/../../models/db.php';
 require_once __DIR__ . '/../../models/booking.php';
 require_once __DIR__ . '/../../models/traveler.php';
+
+// Función para enviar el correo con el localizador
+function enviarEmailConLocalizador($email, $localizador, $datosReserva) {
+    $mail = new PHPMailer(true);
+    try {
+        // Configuración de servidor SMTP
+        $mail->isSMTP();
+        $mail->Host = 'sandbox.smtp.mailtrap.io';  // Host de Mailtrap
+        $mail->SMTPAuth = true;
+        $mail->Port = 2525;  // Puerto proporcionado por Mailtrap
+        $mail->Username = 'fbe99269247407';  // Usuario de Mailtrap
+        $mail->Password = 'fea08499e7cfa6';  // Contraseña de Mailtrap
+
+        $mail->setFrom('reservas@islatransfer.com', 'Isla Transfer');
+        $mail->addAddress($email);
+
+        $mail->CharSet = 'UTF-8';
+
+        $mail->isHTML(true);
+        $mail->Subject = 'Confirmación de su reserva';
+
+        // Incrusta el logo como imagen embebida
+        $mail->addEmbeddedImage(__DIR__ . '/../../assets/img/logo-email.png', 'logo_img');
+
+        // Selecciona la fecha y hora según el tipo de reserva
+        if ($datosReserva['id_tipo_reserva'] == 1) {
+            $fecha = $datosReserva['fecha_entrada'];
+            $hora = $datosReserva['hora_entrada'];
+            $tipoReservaTexto = "Aeropuerto-Hotel";
+        } elseif ($datosReserva['id_tipo_reserva'] == 2) {
+            $fecha = $datosReserva['fecha_vuelo_salida'];
+            $hora = $datosReserva['hora_vuelo_salida'];
+            $tipoReservaTexto = "Hotel-Aeropuerto";
+        } else {
+            // Opcionalmente, maneja otros tipos de reserva si existen
+            $fecha = "No especificada";
+            $hora = "No especificada";
+            $tipoReservaTexto = "Tipo de reserva desconocido";
+        }
+
+        $mail->Body = '
+        <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eaeaea; border-radius: 8px;">
+            <table width="100%" style="border-collapse: collapse;">
+                <tr>
+                    <td style="text-align: center; padding-bottom: 5px;">
+                        <img src="cid:logo_img" alt="Isla Transfer Logo" style="max-width: 120px; border-radius: 8px;">                       
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h1 style="color: #333; font-size: 22px; margin-bottom: 20px; text-align: center;">Detalles de su Reserva</h1>
+                        <p style="font-size: 16px; color: #555; margin-bottom: 10px; text-align: center;">¡Gracias por reservar con Isla Transfer! A continuación le presentamos los detalles de su reserva:</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 20px; background-color: #f9f9f9; border: 1px solid #eaeaea; border-radius: 8px;">
+                        <p><strong style="color: #333;">Localizador:</strong> <span style="color: #555;">' . $localizador . '</span></p>
+                        <p><strong style="color: #333;">Trayecto:</strong> <span style="color: #555;">' . $tipoReservaTexto . '</span></p>
+                        <p><strong style="color: #333;">Hotel:</strong> <span style="color: #555;">' . $datosReserva['id_hotel'] . '</span></p>
+                        <p><strong style="color: #333;">Fecha:</strong> <span style="color: #555;">' . $fecha . '</span></p>
+                        <p><strong style="color: #333;">Hora:</strong> <span style="color: #555;">' . $hora . '</span></p>
+                        <p><strong style="color: #333;">Origen de vuelo:</strong> <span style="color: #555;">' . $datosReserva['origen_vuelo_entrada'] . '</span></p>
+                        <p><strong style="color: #333;">Número de vuelo:</strong> <span style="color: #555;">' . $datosReserva['numero_vuelo_entrada'] . '</span></p>
+                        <p><strong style="color: #333;">Número de viajeros:</strong> <span style="color: #555;">' . $datosReserva['num_viajeros'] . '</span></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding-top: 20px; text-align: center;">
+                        <p style="font-size: 14px; color: #555;">Gracias por confiar en Isla Transfer. Si tiene alguna pregunta o necesita ayuda, no dude en contactarnos.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center; padding-top: 20px; font-size: 12px; color: #999;">
+                        © 2024 Isla Transfer. Todos los derechos reservados.
+                    </td>
+                </tr>
+            </table>
+        </div>';
+
+        $mail->send();
+    } catch (Exception $e) {
+        error_log('Error al enviar el correo: ' . $mail->ErrorInfo);
+    }
+}
+
 
 // Conectar con la base de datos
 $db = db_connect();
@@ -110,12 +201,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data['localizador'] = generateLocator();
         $createResult = $booking->addBooking($data);
 
+        // Enviar correo con el localizador
+        enviarEmailConLocalizador($data['email_cliente'], $data['localizador'], $data);
+
         $data['id_tipo_reserva'] = 2;
         $data['localizador'] = generateLocator();
         $createResult = $createResult && $booking->addBooking($data);
+
+        // Enviar correo con el localizador
+        enviarEmailConLocalizador($data['email_cliente'], $data['localizador'], $data);
     } else {
         $data['localizador'] = generateLocator();
         $createResult = $booking->addBooking($data);
+
+        // Enviar correo con el localizador
+        enviarEmailConLocalizador($data['email_cliente'], $data['localizador'], $data);
     }
 
     if ($createResult) {
@@ -129,3 +229,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 ?>
+
