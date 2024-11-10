@@ -194,6 +194,10 @@ if (!isset($_SESSION['admin'])) {
                         <li class="nav-item p-3 py-md-1">
                             <a href="vehicle.php" class="nav-link text-white text-center">VEHÍCULOS</a>
                         </li>
+                        <div class="vr bg-light"></div>
+                        <li class="nav-item p-3 py-md-1">
+                            <a href="tour.php" class="nav-link text-white text-center">EXCURSIONES</a>
+                        </li>
                     </ul>
                     <div class="d-lg-none align-self-center py-3">
                         <!-- logout -->
