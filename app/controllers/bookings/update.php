@@ -2,6 +2,7 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
 // Declaraciones de inclusión
 require_once(__DIR__ . '/../../models/db.php');
 require_once(__DIR__ . '/../../models/booking.php');
@@ -9,13 +10,13 @@ require_once(__DIR__ . '/../../models/booking.php');
 // Conectar a la base de datos
 $db = db_connect();
 if (!$db) {
-    die("Error al conectar con la base de datos."); // Detener ejecución si falla la conexión
+    $_SESSION['update_error'] = "Error al conectar con la base de datos.";
+    header("Location: " . $_SERVER['HTTP_REFERER']);
+    exit;
 }
 
-// Crear instancia del modelo
 $booking = new Booking($db);
 
-// Verificar si la solicitud es de tipo POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_destino = $_POST['id_destino'] ?? null;
     $id_reserva = $_POST['id_reserva'];
@@ -26,46 +27,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $isValidHotel = $validHotelStmt->fetchColumn() > 0;
 
     if (!$isValidHotel) {
-        $_SESSION['update_error'] = "Error: El id_destino no es válido. Debe ser un id_hotel existente.";
+        $_SESSION['update_error'] = "Error: El id_destino no es válido.";
         header("Location: " . $_SERVER['HTTP_REFERER']);
         exit;
     }
 
-    // Obtener el valor original de tipo_creador_reserva de la base de datos
-    $stmt = $db->prepare("SELECT tipo_creador_reserva FROM transfer_reservas WHERE id_reserva = :id_reserva");
+    // Obtener detalles de la reserva original
+    $stmt = $db->prepare("SELECT id_tipo_reserva, fecha_entrada, fecha_vuelo_salida, tipo_creador_reserva FROM transfer_reservas WHERE id_reserva = :id_reserva");
     $stmt->execute([':id_reserva' => $id_reserva]);
-    $originalTipoCreador = $stmt->fetchColumn();
+    $reservaData = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($originalTipoCreador === false) {
+    if (!$reservaData) {
         $_SESSION['update_error'] = "Error: La reserva no existe.";
         header("Location: " . $_SERVER['HTTP_REFERER']);
         exit;
     }
 
-    // Validación para usuarios tipo traveler: no permitir modificar reservas con menos de 48 horas de antelación
+    // Si el usuario es traveler, aplicar la restricción de 48 horas
     if (isset($_SESSION['travelerUser'])) {
-        $fechaMinima = (new DateTime())->modify('+2 days')->format('Y-m-d');
+        $fechaMinima = (new DateTime())->modify('+2 days')->format('Y-m-d H:i:s');
 
-        $fechaEntrada = $_POST['fecha_entrada'] ?? null;
-        $fechaVueloSalida = $_POST['fecha_vuelo_salida'] ?? null;
-
-        if ($fechaEntrada && $fechaEntrada < $fechaMinima) {
-            $_SESSION['update_48_error'] = "No puede modificar reservas con menos de 48 horas de antelación.";
-            header("Location: " . $_SERVER['HTTP_REFERER']);
-            exit;
-        }
-        
-        if ($fechaVueloSalida && $fechaVueloSalida < $fechaMinima) {
+        // Verificar si la reserva está dentro del período restringido de 48 horas
+        if (($reservaData['id_tipo_reserva'] == 1 && $reservaData['fecha_entrada'] < $fechaMinima) ||
+            ($reservaData['id_tipo_reserva'] == 2 && $reservaData['fecha_vuelo_salida'] < $fechaMinima)) {
             $_SESSION['update_48_error'] = "No puede modificar reservas con menos de 48 horas de antelación.";
             header("Location: " . $_SERVER['HTTP_REFERER']);
             exit;
         }
     }
 
-    // Asignar id_hotel. Usar id_destino si id_hotel no está presente
+    // Preparar los datos para la actualización
     $id_hotel = !empty($_POST['id_hotel']) ? $_POST['id_hotel'] : $id_destino;
-
-    // Preparar los datos para la actualización, usando el tipo_creador_reserva original
     $data = [
         'id_reserva' => $id_reserva,
         'localizador' => $_POST['localizador'],
@@ -76,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'id_destino' => $id_destino,
         'num_viajeros' => $_POST['num_viajeros'],
         'id_vehiculo' => $_POST['id_vehiculo'] ?? 1,
-        'tipo_creador_reserva' => $originalTipoCreador
+        'tipo_creador_reserva' => $reservaData['tipo_creador_reserva']
     ];
 
     // Agregar campos adicionales según el tipo de reserva

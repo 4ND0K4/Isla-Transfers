@@ -21,30 +21,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id_booking'])) {
     // Crear instancia del modelo Booking
     $booking = new Booking($db);
 
-    // Obtener los detalles de la reserva
-    $reservationDetails = $booking->getBookingById($id_booking);
-    if (!$reservationDetails) {
+    // Obtener detalles de la reserva
+    $stmt = $db->prepare("SELECT id_tipo_reserva, fecha_entrada, fecha_vuelo_salida FROM transfer_reservas WHERE id_reserva = :id_reserva");
+    $stmt->execute([':id_reserva' => $id_booking]);
+    $reservaData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$reservaData) {
         $_SESSION['delete_error'] = "Error: La reserva no existe.";
         header("Location: " . $_SERVER['HTTP_REFERER']);
         exit;
     }
 
-    // Verificación de 48 horas para usuarios tipo traveler
+    // Si el usuario es traveler, aplicar la restricción de 48 horas
     if (isset($_SESSION['travelerUser'])) {
-        $fechaMinima = (new DateTime())->modify('+2 days')->format('Y-m-d');
+        $fechaMinima = (new DateTime())->modify('+2 days')->format('Y-m-d H:i:s');
 
-        // Verificar si la fecha de entrada o la fecha de vuelo de salida están dentro de las 48 horas
-        $fechaEntrada = $reservationDetails['fecha_entrada'] ?? null;
-        $fechaVueloSalida = $reservationDetails['fecha_vuelo_salida'] ?? null;
-
-        if (($fechaEntrada && $fechaEntrada < $fechaMinima) || ($fechaVueloSalida && $fechaVueloSalida < $fechaMinima)) {
+        // Verificar si la reserva está dentro del período restringido de 48 horas
+        if (($reservaData['id_tipo_reserva'] == 1 && $reservaData['fecha_entrada'] < $fechaMinima) ||
+            ($reservaData['id_tipo_reserva'] == 2 && $reservaData['fecha_vuelo_salida'] < $fechaMinima)) {
             $_SESSION['delete_48_error'] = "No puede eliminar reservas con menos de 48 horas de antelación.";
             header("Location: " . $_SERVER['HTTP_REFERER']);
             exit;
         }
     }
 
-    // Intentar eliminar la reserva con el ID proporcionado
+    // Intentar eliminar la reserva si no está en el período restringido o si el usuario es admin
     if ($booking->deleteBooking($id_booking)) {
         $_SESSION['delete_booking_success'] = "Reserva eliminada correctamente.";
     } else {
@@ -56,4 +57,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id_booking'])) {
     exit;
 }
 ?>
-

@@ -253,9 +253,9 @@ $_SESSION['travelerName'] = $travelerData['name'];
     
     <!-- ///////////////////////////////////////////// MENSAJES DE SUCCESS / ERROR ///////////////////////////////////////////// -->
     
-    <!-- Mensajes de actualización Perfil success / error -->
-    <div class="d-flex justify-content-end">
-        <div class="col-4 text-center">
+     <!-- Mensajes de actualización Perfil success / error -->
+     <div class="d-flex justify-content-end">
+        <div class="col-2 text-center">
             <?php if (isset($_SESSION['update_traveler_success'])): ?>
                 <div id="updateTravelerSuccess" class="alert alert-success fs-6" role="alert">
                     <?php echo $_SESSION['update_traveler_success']; ?>
@@ -270,106 +270,16 @@ $_SESSION['travelerName'] = $travelerData['name'];
         </div>
     </div>
 
-    <!-- Mensajes de creación de reserva success / error -->
-    <div class="d-flex justify-content-end">
-        <div class="col-4 text-center">
-            <?php if (isset($_SESSION['create_booking_success'])): ?>
-                <div id="createBookingSuccess" class="alert alert-success fs-6" role="alert">
-                    <?php echo $_SESSION['create_booking_success']; ?>
-                </div>
-                <?php unset($_SESSION['create_booking_success']); ?>
-            <?php elseif (isset($_SESSION['create_booking_error'])): ?>
-                <div id="createBookingError" class="alert alert-danger fs-6" role="alert">
-                    <?php echo $_SESSION['create_booking_error']; ?>
-                </div>
-                <?php unset($_SESSION['create_booking_error']); ?>
-            <?php endif; ?>
-        </div>
-    </div>
 
-
-    <!-- Mensajes de actualización Reserva success / error -->
-    <div class="d-flex justify-content-end">
-        <div class="col-4 text-center">
-            <?php if (isset($_SESSION['update_booking_success'])): ?>
-                <div id="updateBookingSuccess" class="alert alert-success fs-6" role="alert">
-                    <?php echo $_SESSION['update_booking_success']; ?>
-                </div>
-                <?php unset($_SESSION['update_booking_success']); ?>
-            <?php elseif (isset($_SESSION['update_booking_error'])): ?>
-                <div id="updateBookingError" class="alert alert-danger fs-6" role="alert">
-                    <?php echo $_SESSION['update_booking_error']; ?>
-                </div>
-                <?php unset($_SESSION['update_booking_error']); ?>
-            <?php endif; ?>
-        </div>
-    </div>
-
-    <!-- Mensajes de eliminación success / error -->
-    <div class="d-flex justify-content-end">
-        <div class="col-4 text-center">
-            <?php if (isset($_SESSION['delete_booking_success'])): ?>
-                <div id="deleteBookingSuccess" class="alert alert-success fs-6" role="alert">
-                    <?php echo $_SESSION['delete_booking_success']; ?>
-                </div>
-                <?php unset($_SESSION['delete_booking_success']); ?>
-            <?php elseif (isset($_SESSION['delete_booking_error'])): ?>
-                <div id="deleteBookingError" class="alert alert-danger fs-6" role="alert">
-                    <?php echo $_SESSION['delete_booking_error']; ?>
-                </div>
-                <?php unset($_SESSION['delete_booking_error']); ?>
-            <?php endif; ?>
-        </div>
-    </div>
-
-    <!-- Mensaje de error si se intenta crear con menos de 48 horas der antelacion -->
-    <div class="d-flex justify-content-end">
-        <div class="col-4 text-center">
-            <?php if (isset($_SESSION['create_48_error'])): ?>
-                <div id="create48Error" class="alert alert-danger fs-6" role="alert">
-                    <?php echo $_SESSION['create_48_error']; ?>
-                </div>
-                <?php unset($_SESSION['create_48_error']); ?>
-            <?php endif; ?>
-        </div>
-    </div>
-
-    <!-- Mensaje de error si se intenta modificar con menos de 48 horas der antelacion -->
-    <div class="d-flex justify-content-end">
-        <div class="col-4 text-center">
-            <?php if (isset($_SESSION['update_48_error'])): ?>
-                <div id="update48Error" class="alert alert-danger fs-6" role="alert">
-                    <?php echo $_SESSION['update_48_error']; ?>
-                </div>
-                <?php unset($_SESSION['update_48_error']); ?>
-            <?php endif; ?>
-        </div>
-    </div>
-
-    <!-- Mensaje de error si se intenta eliminar con menos de 48 horas der antelacion -->
-    <div class="d-flex justify-content-end">
-        <div class="col-4 text-center">
-            <?php if (isset($_SESSION['delete_48_error'])): ?>
-                <div id="delete48Error" class="alert alert-danger fs-6" role="alert">
-                    <?php echo $_SESSION['delete_48_error']; ?>
-                </div>
-                <?php unset($_SESSION['delete_48_error']); ?>
-            <?php endif; ?>
-        </div>
-    </div>
-
-    <!-- //////////////////////////////////////////////// BLOQUE PRINCIPAL //////////////////////////////////////////////// -->
-    
     <div class="container">
+
+        <!-- //////////////////////////////////////////////// BLOQUE PRINCIPAL //////////////////////////////////////////////// -->
         
         <!-- Título -->
         <h1 class="text-center pt-3 fw-light text-success">¡Hola, <?php echo htmlspecialchars($_SESSION['travelerName']); ?>!</h1>
         
         <!-- Subtítulo -->
-        <h2 class="text-center text-secondary fw-bold pt-3">Añade, modifica y elimina tus reservas.</h2>
-        
-        <!-- Párrafo de alerta -->
-        <p class="text-center text-secondary pb-3">¡Pero recuerda! No puedes crear, modificar ni cancelar tus reservas con menos de 48 horas de antelación.</p>
+        <h2 class="text-center text-secondary fw-bold pt-3">Añade, modifica y elimina tus reservas.</h2> 
         
         <!-- Botón de crear -->
         <div class="col text-center fw-bold">
@@ -378,12 +288,102 @@ $_SESSION['travelerName'] = $travelerData['name'];
             </button>
         </div>
 
+         <!-- ///////////////////////////////////////////// MENSAJES DE SUCCESS / ERROR ///////////////////////////////////////////// -->
+
+        <!-- Mensajes de creación de reserva success / error -->
+        <div class="d-flex justify-content-center">
+            <div class="col-4 text-center">
+                <?php if (isset($_SESSION['create_booking_success'])): ?>
+                    <div id="createBookingSuccess" class="alert alert-success fs-6" role="alert">
+                        <?php echo $_SESSION['create_booking_success']; ?>
+                    </div>
+                    <?php unset($_SESSION['create_booking_success']); ?>
+                <?php elseif (isset($_SESSION['create_booking_error'])): ?>
+                    <div id="createBookingError" class="alert alert-danger fs-6" role="alert">
+                        <?php echo $_SESSION['create_booking_error']; ?>
+                    </div>
+                    <?php unset($_SESSION['create_booking_error']); ?>
+                <?php endif; ?>
+            </div>
+        </div>
+
+
+        <!-- Mensajes de actualización Reserva success / error -->
+        <div class="d-flex justify-content-center">
+            <div class="col-4 text-center">
+                <?php if (isset($_SESSION['update_booking_success'])): ?>
+                    <div id="updateBookingSuccess" class="alert alert-success fs-6" role="alert">
+                        <?php echo $_SESSION['update_booking_success']; ?>
+                    </div>
+                    <?php unset($_SESSION['update_booking_success']); ?>
+                <?php elseif (isset($_SESSION['update_booking_error'])): ?>
+                    <div id="updateBookingError" class="alert alert-danger fs-6" role="alert">
+                        <?php echo $_SESSION['update_booking_error']; ?>
+                    </div>
+                    <?php unset($_SESSION['update_booking_error']); ?>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- Mensajes de eliminación success / error -->
+        <div class="d-flex justify-content-center">
+            <div class="col-4 text-center">
+                <?php if (isset($_SESSION['delete_booking_success'])): ?>
+                    <div id="deleteBookingSuccess" class="alert alert-success fs-6" role="alert">
+                        <?php echo $_SESSION['delete_booking_success']; ?>
+                    </div>
+                    <?php unset($_SESSION['delete_booking_success']); ?>
+                <?php elseif (isset($_SESSION['delete_booking_error'])): ?>
+                    <div id="deleteBookingError" class="alert alert-danger fs-6" role="alert">
+                        <?php echo $_SESSION['delete_booking_error']; ?>
+                    </div>
+                    <?php unset($_SESSION['delete_booking_error']); ?>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- Mensaje de error si se intenta crear con menos de 48 horas der antelacion -->
+        <div class="d-flex justify-content-center">
+            <div class="col-4 text-center">
+                <?php if (isset($_SESSION['create_48_error'])): ?>
+                    <div id="create48Error" class="alert alert-danger fs-6" role="alert">
+                        <?php echo $_SESSION['create_48_error']; ?>
+                    </div>
+                    <?php unset($_SESSION['create_48_error']); ?>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- Mensaje de error si se intenta modificar con menos de 48 horas der antelacion -->
+        <div class="d-flex justify-content-center">
+            <div class="col-4 text-center">
+                <?php if (isset($_SESSION['update_48_error'])): ?>
+                    <div id="update48Error" class="alert alert-danger fs-6" role="alert">
+                        <?php echo $_SESSION['update_48_error']; ?>
+                    </div>
+                    <?php unset($_SESSION['update_48_error']); ?>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- Mensaje de error si se intenta eliminar con menos de 48 horas der antelacion -->
+        <div class="d-flex justify-content-center">
+            <div class="col-4 text-center">
+                <?php if (isset($_SESSION['delete_48_error'])): ?>
+                    <div id="delete48Error" class="alert alert-danger fs-6" role="alert">
+                        <?php echo $_SESSION['delete_48_error']; ?>
+                    </div>
+                    <?php unset($_SESSION['delete_48_error']); ?>
+                <?php endif; ?>
+            </div>
+        </div>
+
     </div>
-    
+
     <!-- //////////////////////////////////////////////// CALENDARIO //////////////////////////////////////////////// -->
     
     <div class="container">
-        <div class="col-xl">
+        <div class="col-xl py-3">
             <div id="calendar"></div>
         </div>
     </div>
