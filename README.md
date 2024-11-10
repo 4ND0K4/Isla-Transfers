@@ -1,5 +1,16 @@
 # Isla Transfers
 App Web sobre gestión de transfers desarrollada por PHPower(UOCX4).
+
+PREV. 
+
+  Paso 1. En la terminal instalar composer dentro de la carpeta app composer install --> Crea   vendor/  composer
+                                                                                                         phpmailer 
+
+  Paso 2. Inicializar el contenedor docker  docker-compose up -d --build --> Hace correr un stack de 3 contendores 
+
+  Paso 3. Se aconseja restaurar la base de datos mydb_transfers.dump en tu administrador de base de datos local. Algunas tablas deben tener valores previos para el optimo funcionamiento de la aplicación
+
+
 1. Introducción
 
   Este proyecto consiste en el desarrollo de una aplicación web para la reserva y gestión de transfers entre el aeropuerto y los hoteles de una isla. La aplicación está diseñada para facilitar la coordinación de transfers, mejorando la experiencia tanto para los clientes particulares como para la administración de Isla Transfers.
@@ -26,7 +37,7 @@ App Web sobre gestión de transfers desarrollada por PHPower(UOCX4).
        
       El panel de hoteles aún no tiene funcionalidad activa, pero permite a los clientes corporativos loguearse. Se prevé un desarrollo futuro en el que los hoteles podrán gestionar las reservas de sus clientes directamente desde su panel.
     
-4. Ambiente de desarrollo y configuración
+3. Ambiente de desarrollo y configuración
   3.1 Herramientas 
     - Docker: Empleado para crear un entorno de servidor completo con Apache, MySQL y PHPMyAdmin, facilitando el despliegue y pruebas de la aplicación en diferentes entornos.
 

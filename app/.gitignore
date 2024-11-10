@@ -1,0 +1,12 @@
+# Ignorar archivos de entorno
+.env
+
+# Ignorar logs
+*.log
+
+# Ignorar compser & phpmailer
+/vendor
+
+# Ignorar configuraciones de IDE
+.idea/
+.vscode/
