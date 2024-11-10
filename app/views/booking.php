@@ -43,148 +43,185 @@ $hotelNames = [
     <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
 <body>
-<div class="container-fluid mt-4">
-    <!-- Icono de flecha de vuelta -->
-    <nav class="navbar navbar-expand-xl bg-transparent">
-        <a href="dashboard-admin.php" class=" text-secondary text-decoration-none fw-bold fs-3"><i class="bi bi-arrow-return-left"></i></a>
+<!-- ///////////////////////////////////////////// NAV ///////////////////////////////////////////// -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">       
+    <!-- Icono de flecha de vuelta al dashboard-admin -->
+        <div class="container-fluid my-4">
+            <a href="dashboard-admin.php" class=" text-secondary text-decoration-none fw-bold fs-3"><i class="bi bi-arrow-return-left"></i></a>
+        </div>
+    <!-- ///////////////////////////////////////////// MENSAJES DE SUCCESS / ERROR ///////////////////////////////////////////// -->
+        <div class="container-fluid">
+            <ul class="navbar-nav ms-auto"> 
+                <li> 
+                    <!-- Mensajes de creación de reserva success / error -->
+                    <div class="d-flex justify-content-end">
+                        <div class="col text-center">
+                            <?php if (isset($_SESSION['create_booking_success'])): ?>
+                                <div id="createBookingSuccess" class="alert alert-success fs-6" role="alert">
+                                    <?php echo $_SESSION['create_booking_success']; ?>
+                                </div>
+                                <?php unset($_SESSION['create_booking_success']); ?>
+                            <?php elseif (isset($_SESSION['create_booking_error'])): ?>
+                                <div id="createBookingError" class="alert alert-danger fs-6" role="alert">
+                                    <?php echo $_SESSION['create_booking_error']; ?>
+                                </div>
+                                <?php unset($_SESSION['create_booking_error']); ?>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <!-- Mensajes de modificación de reserva success / error -->
+                    <div class="d-flex justify-content-end">
+                        <div class="col text-center">
+                            <?php if (isset($_SESSION['update_booking_success'])): ?>
+                                <div id="updateBookingSuccess" class="alert alert-success fs-6" role="alert">
+                                    <?php echo $_SESSION['update_booking_success']; ?>
+                                </div>
+                                <?php unset($_SESSION['update_booking_success']); ?>
+                            <?php elseif (isset($_SESSION['update_booking_error'])): ?>
+                                <div id="updateBookingError" class="alert alert-danger fs-6" role="alert">
+                                    <?php echo $_SESSION['update_booking_error']; ?>
+                                </div>
+                                <?php unset($_SESSION['update_booking_error']); ?>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                
+                    <!-- Mensajes de eliminación de reserva success / error -->
+                    <div class="d-flex justify-content-end">
+                        <div class="col text-center">
+                            <?php if (isset($_SESSION['delete_booking_success'])): ?>
+                                <div id="deleteBookingSuccess" class="alert alert-success fs-6" role="alert">
+                                    <?php echo $_SESSION['delete_booking_success']; ?>
+                                </div>
+                                <?php unset($_SESSION['delete_booking_success']); ?>
+                            <?php elseif (isset($_SESSION['delete_booking_error'])): ?>
+                                <div id="deleteBookingError" class="alert alert-danger fs-6" role="alert">
+                                    <?php echo $_SESSION['delete_booking_error']; ?>
+                                </div>
+                                <?php unset($_SESSION['delete_booking_error']); ?>
+                            <?php endif; ?>
+                        </div>
+                    </div>    
+
+                    <!-- Mensaje de error si se intenta crear una reserva con el e-mail de un usuario que no está registrado -->
+                    <div class="d-flex justify-content-end">
+                        <div class="col text-center">
+                            <?php if (isset($_SESSION['create_email_error'])): ?>
+                                <div id="createEmailError" class="alert alert-danger fs-6" role="alert">
+                                    <?php echo $_SESSION['create_email_error']; ?>
+                                </div>
+                                <?php unset($_SESSION['create_email_error']); ?>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <!-- Mensaje de error si se intenta crear una reserva con el e-mail de un usuario que no está registrado -->
+                    <div class="d-flex justify-content-end">
+                        <div class="col text-center">
+                            <?php if (isset($_SESSION['create_hotel_error'])): ?>
+                                <div id="createHotelError" class="alert alert-danger fs-6" role="alert">
+                                    <?php echo $_SESSION['create_hotel_error']; ?>
+                                </div>
+                                <?php unset($_SESSION['create_hotel_error']); ?>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </nav>
-    <!-- Título -->
-    <div class="container-fluid">
-        <h1 class="text-center fw-bold text-secondary">Gestión de Reservas</h1>
-    </div>
-    <div class="row">
+<!-- ///////////////////////////////////////////// BLOQUE PRINCIPAL ///////////////////////////////////////////// -->
+    <div class="container-fluid pt-4">
+        <!-- Título -->
+        <div class="container-fluid">
+            <h1 class="text-center fw-bold text-secondary">Gestión de Reservas</h1>
+        </div>
         <!-- Botón creación de reservas -->
-        <div class="col text-start pt-4 pb-2">
-            <button type="button" class="btn btn-outline-dark fw-bold" data-bs-toggle="modal" data-bs-target="#addBookingModal">Nueva reserva</button>
+        <div class="row">
+            <div class="col text-start pt-4 pb-2">
+                <button type="button" class="btn btn-outline-dark fw-bold" data-bs-toggle="modal" data-bs-target="#addBookingModal">Nueva reserva</button>
+            </div>
+            <!-- Filtro por tipo de reserva -->
+            <div class="col text-end pt-4 pb-2">
+                <form method="GET" action="">
+                    <label for="id_tipo_reserva">Filtrar:</label>
+                    <select name="id_tipo_reserva" id="id_tipo_reserva">
+                        <option value="">Todos</option>
+                        <option value="1" <?php if ($Id_tipo_reserva == 1) echo 'selected'; ?>>Aeropuerto - Hotel</option>
+                        <option value="2" <?php if ($Id_tipo_reserva == 2) echo 'selected'; ?>>Hotel - Aeropuerto</option>
+                    </select>
+                    <button type="submit">Filtrar</button>
+                </form>
+            </div>
         </div>
-
-        <!-- ///////////////////////////////////////////// MENSAJES DE SUCCESS / ERROR ///////////////////////////////////////////// -->
-
-        <!-- Mensajes de creación de reserva success / error -->
-        <div class="col text-center pt-4 pb-2">
-            <?php if (isset($_SESSION['create_booking_success'])): ?>
-                <div id="createBookingSuccess" class="alert alert-success fs-6" role="alert">
-                    <?php echo $_SESSION['create_booking_success']; ?>
-                </div>
-                <?php unset($_SESSION['create_booking_success']); ?>
-            <?php elseif (isset($_SESSION['create_booking_error'])): ?>
-                <div id="createBookingError" class="alert alert-danger fs-6" role="alert">
-                    <?php echo $_SESSION['create_booking_error']; ?>
-                </div>
-                <?php unset($_SESSION['create_booking_error']); ?>
-            <?php endif; ?>
-        </div>
-
-        <!-- Mensajes de modificación de reserva success / error -->
-        <div class="col text-center pt-4 pb-2">
-            <?php if (isset($_SESSION['update_booking_success'])): ?>
-                <div id="updateBookingSuccess" class="alert alert-success fs-6" role="alert">
-                    <?php echo $_SESSION['update_booking_success']; ?>
-                </div>
-                <?php unset($_SESSION['update_booking_success']); ?>
-            <?php elseif (isset($_SESSION['update_booking_error'])): ?>
-                <div id="updateBookingError" class="alert alert-danger fs-6" role="alert">
-                    <?php echo $_SESSION['update_booking_error']; ?>
-                </div>
-                <?php unset($_SESSION['update_booking_error']); ?>
-            <?php endif; ?>
-        </div>
-    
-        <!-- Mensajes de eliminación de reserva success / error -->
-        <div class="col text-center pt-4 pb-2">
-            <?php if (isset($_SESSION['delete_booking_success'])): ?>
-                <div id="deleteBookingSuccess" class="alert alert-success fs-6" role="alert">
-                    <?php echo $_SESSION['delete_booking_success']; ?>
-                </div>
-                <?php unset($_SESSION['delete_booking_success']); ?>
-            <?php elseif (isset($_SESSION['delete_booking_error'])): ?>
-                <div id="deleteBookingError" class="alert alert-danger fs-6" role="alert">
-                    <?php echo $_SESSION['delete_booking_error']; ?>
-                </div>
-                <?php unset($_SESSION['delete_booking_error']); ?>
-            <?php endif; ?>
-        </div>
-
-        <!-- Filtro por tipo de reserva -->
-        <div class="col text-end pt-4 pb-2">
-            <form method="GET" action="">
-                <label for="id_tipo_reserva">Filtrar:</label>
-                <select name="id_tipo_reserva" id="id_tipo_reserva">
-                    <option value="">Todos</option>
-                    <option value="1" <?php if ($Id_tipo_reserva == 1) echo 'selected'; ?>>Aeropuerto - Hotel</option>
-                    <option value="2" <?php if ($Id_tipo_reserva == 2) echo 'selected'; ?>>Hotel - Aeropuerto</option>
-                </select>
-                <button type="submit">Filtrar</button>
-            </form>
-        </div>
-    </div>
-    <!-- Tabla -->
-    <div class="row">
-        <div class="col">
-            <div class="table-responsive">
-                <table class="table table-secondary table-striped table-hover w-100 h-100">
-                    <thead>
-                    <tr>
-                        <th scope="col">Id reserva</th>
-                        <th scope="col">Localizador</th>
-                        <th scope="col">Hotel</th>
-                        <th scope="col">Tipo de Reserva</th>
-                        <th scope="col">Email Cliente</th>
-                        <th scope="col">Fecha de Reserva</th>
-                        <th scope="col">Número de Viajeros</th>
-                        <?php if ($Id_tipo_reserva == 1 || !$Id_tipo_reserva): ?>
-                            <th scope="col">Fecha Llegada</th>
-                            <th scope="col">Hora Llegada</th>
-                            <th scope="col">Número Vuelo Llegada</th>
-                            <th scope="col">Origen Vuelo</th>
-                        <?php endif; ?>
-                        <?php if ($Id_tipo_reserva == 2 || !$Id_tipo_reserva): ?>
-                            <th scope="col">Hora Vuelo Salida</th>
-                            <th scope="col">Fecha Vuelo Salida</th>
-                        <?php endif; ?>
-                        <th scope="col"><!--Botones--></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php foreach ($bookings as $booking): ?>
+        <!-- Tabla -->
+        <div class="row">
+            <div class="col">
+                <div class="table-responsive">
+                    <table class="table table-secondary table-striped table-hover w-100 h-100">
+                        <thead>
                         <tr>
-                            <td><?php echo $booking['id_reserva']; ?></td>
-                            <td><?php echo $booking['localizador']; ?></td>
-                            <td><?php echo $booking['id_hotel']; ?></td>
-                            <td><?php echo $booking['id_tipo_reserva'] == 1 ? 'Aeropuerto - Hotel' : 'Hotel - Aeropuerto'; ?></td>
-                            <td><?php echo $booking['email_cliente']; ?></td>
-                            <td><?php echo $booking['fecha_reserva']; ?></td>
-                            <td><?php echo $booking['num_viajeros']; ?></td>
-                            <?php if ($booking['id_tipo_reserva'] == 1 || !$Id_tipo_reserva): ?>
-                                <td><?php echo $booking['fecha_entrada']; ?></td>
-                                <td><?php echo $booking['hora_entrada']; ?></td>
-                                <td><?php echo $booking['numero_vuelo_entrada']; ?></td>
-                                <td><?php echo $booking['origen_vuelo_entrada']; ?></td>
+                            <th scope="col">Id reserva</th>
+                            <th scope="col">Localizador</th>
+                            <th scope="col">Hotel</th>
+                            <th scope="col">Tipo de Reserva</th>
+                            <th scope="col">Email Cliente</th>
+                            <th scope="col">Fecha de Reserva</th>
+                            <th scope="col">Número de Viajeros</th>
+                            <?php if ($Id_tipo_reserva == 1 || !$Id_tipo_reserva): ?>
+                                <th scope="col">Fecha Llegada</th>
+                                <th scope="col">Hora Llegada</th>
+                                <th scope="col">Número Vuelo Llegada</th>
+                                <th scope="col">Origen Vuelo</th>
                             <?php endif; ?>
-                            <?php if ($booking['id_tipo_reserva'] == 2 || !$Id_tipo_reserva): ?>
-                                <td><?php echo $booking['hora_vuelo_salida']; ?></td>
-                                <td><?php echo $booking['fecha_vuelo_salida']; ?></td>
+                            <?php if ($Id_tipo_reserva == 2 || !$Id_tipo_reserva): ?>
+                                <th scope="col">Hora Vuelo Salida</th>
+                                <th scope="col">Fecha Vuelo Salida</th>
                             <?php endif; ?>
-                            <td>
-                                <!-- Botón actualizar -->
-                                <div class="btn-group py-1" role="group">
-                                    <button onclick="abrirModalActualizar(<?php echo htmlspecialchars(json_encode($booking)); ?>)" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil-square"></i></button>
-                                </div>
-                                <!-- Botón eliminar -->
-                                <div class="btn-group py-1" role="group">
-                                    <a role="button" class="btn btn-sm btn-outline-danger" href="#" onclick="confirmarEliminacion('../controllers/bookings/delete.php?id_booking=<?php echo $booking['id_reserva']; ?>')">
-                                        <i class="bi bi-trash-fill"></i>
-                                    </a>
-                                </div>
-                            </td>
+                            <th scope="col"><!--Botones--></th>
                         </tr>
-                    <?php endforeach; ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($bookings as $booking): ?>
+                            <tr>
+                                <td><?php echo $booking['id_reserva']; ?></td>
+                                <td><?php echo $booking['localizador']; ?></td>
+                                <td><?php echo $booking['id_hotel']; ?></td>
+                                <td><?php echo $booking['id_tipo_reserva'] == 1 ? 'Aeropuerto - Hotel' : 'Hotel - Aeropuerto'; ?></td>
+                                <td><?php echo $booking['email_cliente']; ?></td>
+                                <td><?php echo $booking['fecha_reserva']; ?></td>
+                                <td><?php echo $booking['num_viajeros']; ?></td>
+                                <?php if ($booking['id_tipo_reserva'] == 1 || !$Id_tipo_reserva): ?>
+                                    <td><?php echo $booking['fecha_entrada']; ?></td>
+                                    <td><?php echo $booking['hora_entrada']; ?></td>
+                                    <td><?php echo $booking['numero_vuelo_entrada']; ?></td>
+                                    <td><?php echo $booking['origen_vuelo_entrada']; ?></td>
+                                <?php endif; ?>
+                                <?php if ($booking['id_tipo_reserva'] == 2 || !$Id_tipo_reserva): ?>
+                                    <td><?php echo $booking['hora_vuelo_salida']; ?></td>
+                                    <td><?php echo $booking['fecha_vuelo_salida']; ?></td>
+                                <?php endif; ?>
+                                <td>
+                                    <!-- Botón actualizar -->
+                                    <div class="btn-group py-1" role="group">
+                                        <button onclick="abrirModalActualizar(<?php echo htmlspecialchars(json_encode($booking)); ?>)" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil-square"></i></button>
+                                    </div>
+                                    <!-- Botón eliminar -->
+                                    <div class="btn-group py-1" role="group">
+                                        <a role="button" class="btn btn-sm btn-outline-danger" href="#" onclick="confirmarEliminacion('../controllers/bookings/delete.php?id_booking=<?php echo $booking['id_reserva']; ?>')">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////// MODALS //////////////////////////////////////////////////////////
@@ -425,6 +462,8 @@ $hotelNames = [
 hideMessage("createBookingSuccess", "createBookingError");
 hideMessage("updateBookingSuccess", "updateBookingError");
 hideMessage("deleteBookingSuccess", "deleteBookingError");
+hideMessage("createEmailError");
+hideMessage("createHotelError");
 
 
     document.addEventListener('DOMContentLoaded', function () {

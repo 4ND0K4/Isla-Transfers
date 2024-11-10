@@ -34,116 +34,127 @@ $zoneNames = [
     <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
 <body>
-<div class="container-fluid mt-4">
-    <!-- Icono de flecha de vuelta al dashboard-Admin -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a href="dashboard-admin.php" class=" text-secondary text-decoration-none fw-bold fs-3"><i class="bi bi-arrow-return-left"></i></a>
+
+<!-- ///////////////////////////////////////////// NAV ///////////////////////////////////////////// -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">       
+    <!-- Icono de flecha de vuelta al dashboard-admin -->
+        <div class="container-fluid my-4">
+            <a href="dashboard-admin.php" class=" text-secondary text-decoration-none fw-bold fs-3"><i class="bi bi-arrow-return-left"></i></a>
+        </div>
+    <!-- ///////////////////////////////////////////// MENSAJES DE SUCCESS / ERROR ///////////////////////////////////////////// -->
+        <div class="container-fluid">
+            <ul class="navbar-nav ms-auto"> 
+                <li> 
+                    <!-- Mensajes creación de hotel --> 
+                    <div class="d-flex justify-content-end">
+                        <div class="col text-center">
+                            <?php if (isset($_SESSION['create_hotel_success'])): ?>
+                                <div id="createHotelSuccess" class="alert alert-success fs-6" role="alert">
+                                    <?php echo $_SESSION['create_hotel_success']; ?>
+                                </div>
+                                <?php unset($_SESSION['create_hotel_success']); ?>
+                            <?php elseif (isset($_SESSION['create_hotel_error'])): ?>
+                                <div id="createHotelError" class="alert alert-danger fs-6" role="alert">
+                                    <?php echo $_SESSION['create_hotel_error']; ?>
+                                </div>
+                                <?php unset($_SESSION['create_hotel_error']); ?>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                
+                    <!-- Mensajes modificación de hotel -->    
+                    <div class="d-flex justify-content-end">
+                        <div class="col text-center">
+                            <?php if (isset($_SESSION['update_hotel_success'])): ?>
+                                <div id="updateHotelSuccess" class="alert alert-success fs-6" role="alert">
+                                    <?php echo $_SESSION['update_hotel_success']; ?>
+                                </div>
+                                <?php unset($_SESSION['update_hotel_success']); ?>
+                            <?php elseif (isset($_SESSION['update_hotel_error'])): ?>
+                                <div id="updateHotelError" class="alert alert-danger fs-6" role="alert">
+                                    <?php echo $_SESSION['update_hotel_error']; ?>
+                                </div>
+                                <?php unset($_SESSION['update_hotel_error']); ?>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                
+
+                    <!-- Mensajes borrado de hotel -->   
+                    <div class="d-flex justify-content-end">
+                        <div class="col text-center">
+                            <?php if (isset($_SESSION['delete_hotel_success'])): ?>
+                                <div id="deleteHotelSuccess" class="alert alert-success fs-6" role="alert">
+                                    <?php echo $_SESSION['delete_hotel_success']; ?>
+                                </div>
+                                <?php unset($_SESSION['delete_hotel_success']); ?>
+                            <?php elseif (isset($_SESSION['delete_hotel_error'])): ?>
+                                <div id="deleteHotelError" class="alert alert-danger fs-6" role="alert">
+                                    <?php echo $_SESSION['delete_hotel_error']; ?>
+                                </div>
+                                <?php unset($_SESSION['delete_hotel_error']); ?>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </nav>
-
-    <!-- Título -->
-    <div class="container-fluid">
-        <h1 class="text-center fw-bold text-secondary">Gestión de Hoteles</h1>
-    </div>
-    <div class="row">
+<!-- ///////////////////////////////////////////// BLOQUE PRINCIPAL ///////////////////////////////////////////// -->
+    <div class="container-fluid pt-4">
+        <!-- Título -->
+        <div class="container-fluid">
+            <h1 class="text-center fw-bold text-secondary">Gestión de Hoteles</h1>
+        </div>
         <!-- Botón creación --> 
-        <div class="col text-start pt-4 pb-2">
-            <button type="button" class="btn btn-outline-success fw-bold" data-bs-toggle="modal" data-bs-target="#addHotelModal">Nuevo Hotel</button>
-        </div>  
-           
-            
-        <!-- ///////////////////////////////////////////// MENSAJES DE SUCCESS / ERROR ///////////////////////////////////////////// -->
-            
-        <!-- Mensajes de error de creación de hotel --> 
-        <div class="col text-end pt-4 pb-2">
-            <?php if (isset($_SESSION['create_hotel_success'])): ?>
-                <div id="createHotelSuccess" class="alert alert-success fs-6" role="alert">
-                    <?php echo $_SESSION['create_hotel_success']; ?>
-                </div>
-                <?php unset($_SESSION['create_hotel_success']); ?>
-            <?php elseif (isset($_SESSION['create_hotel_error'])): ?>
-                <div id="createHotelError" class="alert alert-danger fs-6" role="alert">
-                    <?php echo $_SESSION['create_hotel_error']; ?>
-                </div>
-                <?php unset($_SESSION['create_hotel_error']); ?>
-            <?php endif; ?>
-        </div>
-    
-        <!-- Mensajes de error de modificación de hotel -->    
-        <div class="col text-end pt-4 pb-2">
-            <?php if (isset($_SESSION['update_hotel_success'])): ?>
-                <div id="updateHotelSuccess" class="alert alert-success fs-6" role="alert">
-                    <?php echo $_SESSION['update_hotel_success']; ?>
-                </div>
-                <?php unset($_SESSION['update_hotel_success']); ?>
-            <?php elseif (isset($_SESSION['update_hotel_error'])): ?>
-                <div id="updateHotelError" class="alert alert-danger fs-6" role="alert">
-                    <?php echo $_SESSION['update_hotel_error']; ?>
-                </div>
-                <?php unset($_SESSION['update_hotel_error']); ?>
-            <?php endif; ?>
-        </div>
-    
-
-        <!-- Mensajes de error de borrado de hotel -->   
-        <div class="col text-end pt-4 pb-2">
-            <?php if (isset($_SESSION['delete_hotel_success'])): ?>
-                <div id="deleteHotelSuccess" class="alert alert-success fs-6" role="alert">
-                    <?php echo $_SESSION['delete_hotel_success']; ?>
-                </div>
-                <?php unset($_SESSION['delete_hotel_success']); ?>
-            <?php elseif (isset($_SESSION['delete_hotel_error'])): ?>
-                <div id="deleteHotelError" class="alert alert-danger fs-6" role="alert">
-                    <?php echo $_SESSION['delete_hotel_error']; ?>
-                </div>
-                <?php unset($_SESSION['delete_hotel_error']); ?>
-            <?php endif; ?>
-        </div>
-
-    </div>
-                           
-    <!-- Tabla -->
-    <div class="row">
-        <div class="col">
-            <div class="table-responsive">
-                <table class="table table-success table-striped table-hover w-100 h-100">
-                    <thead>
-                    <tr>
-                        <th scope="col">Hotel</th>
-                        <th scope="col">Zona</th>
-                        <th scope="col">Comisión</th>
-                        <th scope="col">Usuario</th>
-                        <th scope="col">Password</th>
-                        <th scope="col"><!--Botones--></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php foreach ($hotels as $hotel) : ?>
-                        <tr id="hotel-<?php echo $hotel['idHotel']; ?>">
-                            <td><?php echo $hotel['idHotel']; ?></td>
-                            <td><?php echo $hotel['idZone']; ?></td>
-                            <td><?php echo $hotel['commission']; ?></td>
-                            <td><?php echo $hotel['user']; ?></td>
-                            <td><?php echo $hotel['pass']; ?></td>
-
-                            <td>
-                                <!-- BOTÓN ACTUALIZAR -->
-                                <div class="btn-group" role="group">
-                                    <button onclick="abrirModalActualizar(<?php echo htmlspecialchars(json_encode($hotel)); ?>)" class="btn btn-sm btn-outline-secondary">Modificar</button>
-                                </div>
-                                <!-- Botón eliminar -->
-                                <div class="btn-group" role="group">
-                                    <a role="button" class="btn btn-sm btn-outline-danger" href="#" onclick="confirmarEliminacion('../controllers/hotels/delete.php?idHotel=<?php echo $hotel['idHotel']; ?>')">Borrar</a>
-                                </div>
-
-                            </td>
+        <div class="row">
+            <div class="col text-start pt-4 pb-2">
+                <button type="button" class="btn btn-outline-success fw-bold" data-bs-toggle="modal" data-bs-target="#addHotelModal">Nuevo Hotel</button>
+            </div>  
+        </div>          
+        <!-- Tabla -->
+        <div class="row">
+            <div class="col">
+                <div class="table-responsive">
+                    <table class="table table-success table-striped table-hover w-100 h-100">
+                        <thead>
+                        <tr>
+                            <th scope="col">Hotel</th>
+                            <th scope="col">Zona</th>
+                            <th scope="col">Comisión</th>
+                            <th scope="col">Usuario</th>
+                            <th scope="col">Password</th>
+                            <th scope="col"><!--Botones--></th>
                         </tr>
-                    <?php endforeach ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($hotels as $hotel) : ?>
+                            <tr id="hotel-<?php echo $hotel['idHotel']; ?>">
+                                <td><?php echo $hotel['idHotel']; ?></td>
+                                <td><?php echo $hotel['idZone']; ?></td>
+                                <td><?php echo $hotel['commission']; ?></td>
+                                <td><?php echo $hotel['user']; ?></td>
+                                <td><?php echo $hotel['pass']; ?></td>
+
+                                <td>
+                                    <!-- BOTÓN ACTUALIZAR -->
+                                    <div class="btn-group" role="group">
+                                        <button onclick="abrirModalActualizar(<?php echo htmlspecialchars(json_encode($hotel)); ?>)" class="btn btn-sm btn-outline-secondary">Modificar</button>
+                                    </div>
+                                    <!-- Botón eliminar -->
+                                    <div class="btn-group" role="group">
+                                        <a role="button" class="btn btn-sm btn-outline-danger" href="#" onclick="confirmarEliminacion('../controllers/hotels/delete.php?idHotel=<?php echo $hotel['idHotel']; ?>')">Borrar</a>
+                                    </div>
+
+                                </td>
+                            </tr>
+                        <?php endforeach ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////// MODALS //////////////////////////////////////////////////////////

@@ -25,113 +25,122 @@ include '../controllers/vehicles/update.php';
     <link rel="stylesheet" href="../assets/css/admin.css">
 </head>
 <body>
-<div class="container-fluid mt-4">
-    <!-- Icono de flecha de vuelta -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a href="dashboard-admin.php" class=" text-secondary text-decoration-none fw-bold fs-3"><i class="bi bi-arrow-return-left"></i></a>
-    </nav>
-    <!-- Título -->
-    <div class="container-fluid">
-        <h1 class="text-center fw-bold text-secondary">Gestión de Vehículos</h1>
-    </div>
-    <!-- Botón creación vehículo -->
-    <div class="row">
-        <div class="col text-start pt-4 pb-2">
-            <button type="button" class="btn btn-outline-info fw-bold" data-bs-toggle="modal" data-bs-target="#addVehicleModal">
-                Nuevo Vehiculo
-            </button>
-        </div>
-    </div>
 
+<!-- ///////////////////////////////////////////// NAV ///////////////////////////////////////////// -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">       
+    <!-- Icono de flecha de vuelta al dashboard-admin -->
+        <div class="container-fluid my-4">
+            <a href="dashboard-admin.php" class=" text-secondary text-decoration-none fw-bold fs-3"><i class="bi bi-arrow-return-left"></i></a>
+        </div>
     <!-- ///////////////////////////////////////////// MENSAJES DE SUCCESS / ERROR ///////////////////////////////////////////// -->
-            
-    <div class="d-flex justify-content-end">
-        <div class="col-4 text-center">
-            <?php if (isset($_SESSION['create_vehicle_success'])): ?>
-                <div id="createVehicleSuccess" class="alert alert-success fs-6" role="alert">
-                    <?php echo $_SESSION['create_vehicle_success']; ?>
-                </div>
-                <?php unset($_SESSION['create_vehicle_success']); ?>
-            <?php elseif (isset($_SESSION['create_cehicle_error'])): ?>
-                <div id="createVehicleError" class="alert alert-danger fs-6" role="alert">
-                    <?php echo $_SESSION['create_vehicle_error']; ?>
-                </div>
-                <?php unset($_SESSION['create_vehicle_error']); ?>
-            <?php endif; ?>
-        </div>
-    </div>
-    <!-- Mensajes de error de modificación de hotel -->
-    <div class="d-flex justify-content-end">
-        <div class="col-4 text-center">
-            <?php if (isset($_SESSION['update_vehicle_success'])): ?>
-                <div id="updateVehicleSuccess" class="alert alert-success fs-6" role="alert">
-                    <?php echo $_SESSION['update_vehicle_success']; ?>
-                </div>
-                <?php unset($_SESSION['update_vehicle_success']); ?>
-            <?php elseif (isset($_SESSION['update_vehicle_error'])): ?>
-                <div id="updateVehicleError" class="alert alert-danger fs-6" role="alert">
-                    <?php echo $_SESSION['update_vehicle_error']; ?>
-                </div>
-                <?php unset($_SESSION['update_vehicle_error']); ?>
-            <?php endif; ?>
-        </div>
-    </div>
-
-    <!-- Mensajes de error de borrado de hotel -->
-    <div class="d-flex justify-content-end">
-        <div class="col-4 text-center">
-            <?php if (isset($_SESSION['delete_vehicle_success'])): ?>
-                <div id="deleteVehicleSuccess" class="alert alert-success fs-6" role="alert">
-                    <?php echo $_SESSION['delete_vehicle_success']; ?>
-                </div>
-                <?php unset($_SESSION['delete_vehicle_success']); ?>
-            <?php elseif (isset($_SESSION['delete_vehicle_error'])): ?>
-                <div id="deleteVehicleError" class="alert alert-danger fs-6" role="alert">
-                    <?php echo $_SESSION['delete_vehicle_error']; ?>
-                </div>
-                <?php unset($_SESSION['delete_vehicle_error']); ?>
-            <?php endif; ?>
-        </div>
-    </div>
-
-    <!-- Tabla -->
-    <div class="row">
-        <div class="col">
-            <div class="table-responsive">
-                <table class="table table-info table-striped table-hover w-100 h-100">
-                    <thead>
-                    <tr>
-                        <th scope="col">ID Vehiculo</th>
-                        <th scope="col">Descripción</th>
-                        <th scope="col">Email conductor</th>
-                        <th scope="col">Password</th>
-                        <th scope="col"><!--Botones--></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php foreach ($vehicles as $vehicle) : ?>
-                        <tr id="vehicle-<?php echo $vehicle['id_vehicle']; ?>">
-                            <td><?php echo $vehicle['id_vehicle']; ?></td>
-                            <td><?php echo $vehicle['description']; ?></td>
-                            <td><?php echo $vehicle['email_rider']; ?></td>
-                            <td><?php echo $vehicle['pass']; ?></td>
-
-                            <td>
-                                <div class="btn-group" role="group">
-                                    <button onclick="abrirModalActualizar(<?php echo htmlspecialchars(json_encode($vehicle)); ?>)" class="btn btn-sm btn-outline-secondary">Modificar</button>
+        <div class="container-fluid">
+            <ul class="navbar-nav ms-auto"> 
+                <li> 
+                    <!-- Mensaje creación de veículo -->
+                    <div class="d-flex justify-content-end">
+                        <div class="col text-center">
+                            <?php if (isset($_SESSION['create_vehicle_success'])): ?>
+                                <div id="createVehicleSuccess" class="alert alert-success fs-6" role="alert">
+                                    <?php echo $_SESSION['create_vehicle_success']; ?>
                                 </div>
-                                <div class="btn-group" role="group">
-                                    <a role="button" class="btn btn-sm btn-outline-danger" href="#" onclick="confirmarEliminacion('../controllers/vehicles/delete.php?id_vehicle=<?php echo $vehicle['id_vehicle']; ?>')">Borrar</a>
+                                <?php unset($_SESSION['create_vehicle_success']); ?>
+                            <?php elseif (isset($_SESSION['create_cehicle_error'])): ?>
+                                <div id="createVehicleError" class="alert alert-danger fs-6" role="alert">
+                                    <?php echo $_SESSION['create_vehicle_error']; ?>
                                 </div>
-                            </td>
+                                <?php unset($_SESSION['create_vehicle_error']); ?>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <!-- Mensajes modificación de vehículo -->
+                    <div class="d-flex justify-content-end">
+                        <div class="col text-center">
+                            <?php if (isset($_SESSION['update_vehicle_success'])): ?>
+                                <div id="updateVehicleSuccess" class="alert alert-success fs-6" role="alert">
+                                    <?php echo $_SESSION['update_vehicle_success']; ?>
+                                </div>
+                                <?php unset($_SESSION['update_vehicle_success']); ?>
+                            <?php elseif (isset($_SESSION['update_vehicle_error'])): ?>
+                                <div id="updateVehicleError" class="alert alert-danger fs-6" role="alert">
+                                    <?php echo $_SESSION['update_vehicle_error']; ?>
+                                </div>
+                                <?php unset($_SESSION['update_vehicle_error']); ?>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <!-- Mensajes eliminación de vehículo -->
+                    <div class="d-flex justify-content-center">
+                        <div class="col text-center">
+                            <?php if (isset($_SESSION['delete_vehicle_success'])): ?>
+                                <div id="deleteVehicleSuccess" class="alert alert-success fs-6" role="alert">
+                                    <?php echo $_SESSION['delete_vehicle_success']; ?>
+                                </div>
+                                <?php unset($_SESSION['delete_vehicle_success']); ?>
+                            <?php elseif (isset($_SESSION['delete_vehicle_error'])): ?>
+                                <div id="deleteVehicleError" class="alert alert-danger fs-6" role="alert">
+                                    <?php echo $_SESSION['delete_vehicle_error']; ?>
+                                </div>
+                                <?php unset($_SESSION['delete_vehicle_error']); ?>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </li>  
+            </ul>
+        </div>
+    </nav>
+
+<!-- ///////////////////////////////////////////// BLOQUE PRINCIPAL ///////////////////////////////////////////// -->
+    <div class="container-fluid pt-4">
+        <!-- Título -->
+        <div class="container-fluid">
+            <h1 class="text-center fw-bold text-secondary">Gestión de Vehículos</h1>
+        </div>
+        <!-- Botón creación vehículo -->
+        <div class="row">
+            <div class="col text-start pt-4 pb-2">
+                <button type="button" class="btn btn-outline-info fw-bold" data-bs-toggle="modal" data-bs-target="#addVehicleModal">
+                    Nuevo Vehiculo
+                </button>
+            </div>
+        </div>
+        <!-- Tabla -->
+        <div class="row">
+            <div class="col">
+                <div class="table-responsive">
+                    <table class="table table-info table-striped table-hover w-100 h-100">
+                        <thead>
+                        <tr>
+                            <th scope="col">ID Vehiculo</th>
+                            <th scope="col">Descripción</th>
+                            <th scope="col">Email conductor</th>
+                            <th scope="col">Password</th>
+                            <th scope="col"><!--Botones--></th>
                         </tr>
-                    <?php endforeach ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                        <?php foreach ($vehicles as $vehicle) : ?>
+                            <tr id="vehicle-<?php echo $vehicle['id_vehicle']; ?>">
+                                <td><?php echo $vehicle['id_vehicle']; ?></td>
+                                <td><?php echo $vehicle['description']; ?></td>
+                                <td><?php echo $vehicle['email_rider']; ?></td>
+                                <td><?php echo $vehicle['pass']; ?></td>
+
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button onclick="abrirModalActualizar(<?php echo htmlspecialchars(json_encode($vehicle)); ?>)" class="btn btn-sm btn-outline-secondary">Modificar</button>
+                                    </div>
+                                    <div class="btn-group" role="group">
+                                        <a role="button" class="btn btn-sm btn-outline-danger" href="#" onclick="confirmarEliminacion('../controllers/vehicles/delete.php?id_vehicle=<?php echo $vehicle['id_vehicle']; ?>')">Borrar</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php endforeach ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 <!-- ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////// MODALS //////////////////////////////////////////////////////////

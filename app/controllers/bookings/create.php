@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validar si el email del cliente de la reserva existe en la base de datos
     $traveler = $travelerModel->findByEmail($email_cliente);
     if (!$traveler) {
-        $_SESSION['create_error'] = "Error: El email ingresado no corresponde a ningún viajero en la base de datos.";
+        $_SESSION['create_email_error'] = "El email ingresado no corresponde a ningún viajero en la base de datos.";
         header("Location: " . $_SERVER['HTTP_REFERER']);
         exit;
     }
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $isValidHotel = $validHotelStmt->fetchColumn() > 0;
 
     if (!$isValidHotel) {
-        $_SESSION['create_error'] = "Error: El id_destino no es válido. Debe ser un id_hotel existente.";
+        $_SESSION['create_hotel_error'] = "El hotel ingresado no corresponde a ningún hotel en la base de datos.";
         header("Location: " . $_SERVER['HTTP_REFERER']);
         exit;
     }
