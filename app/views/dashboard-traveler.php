@@ -487,10 +487,15 @@ $_SESSION['travelerName'] = $travelerData['name'];
                             </div>
 
                         </div>
-
+                        <!-- Spinner de carga y botón de creación -->
+                        <div class="text-center my-3" id="loadingSpinner" style="display: none;">
+                            <div class="spinner-border text-warning" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
                         <!-- Botones de envio y cierre -->
                         <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-warning fw-bold text-white" name="addBooking">Crear</button>
+                            <button type="submit" class="btn btn-warning border-warning-subtle fw-bold text-white" name="addBooking" id="createBookingButton">Crear</button>
                         </div>
                         <div class="modal-footer"></div>
                     </form>
@@ -764,9 +769,20 @@ hideMessage("create48Error");
 hideMessage("update48Error");
 hideMessage("delete48Error");
 
-    /* Creación de reserva */
-    document.addEventListener('DOMContentLoaded', function () {
-        // Configuración para el modal de creación
+
+document.addEventListener('DOMContentLoaded', function () {
+        // Configuración del formulario de creación de reservas
+        const addBookingForm = document.querySelector('#addBookingModal form');
+        const createBookingButton = document.getElementById('createBookingButton');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+
+        // Mostrar spinner y desactivar el botón al enviar el formulario
+        addBookingForm.addEventListener('submit', function () {
+            loadingSpinner.style.display = 'block';
+            createBookingButton.disabled = true;
+        });
+
+        // Mostrar campos según el tipo de reserva
         document.getElementById("tipo_reserva").addEventListener('change', function () {
             mostrarCampos("add");
         });

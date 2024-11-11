@@ -168,9 +168,9 @@ $hotelNames = [
         <div class="modal-content">
             <div class="modal-header bg-dark text-white">
                 <h2 class="modal-title">Añade una nueva excursión</h2>
-                <button type="button" class="btn-close bg-secondary" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body bg-light">
                 <form action="../controllers/tours/create.php" method="POST">
                     <div class="container mt-4">
                         <!-- Campos de la excursión -->
@@ -239,7 +239,7 @@ $hotelNames = [
         <div class="modal-content">
             <div class="modal-header bg-dark text-white">
                 <h2 class="modal-title">Actualizar Excursión</h2>
-                <button type="button" class="btn-close bg-secondary" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form action="../controllers/tours/update.php" method="POST">
@@ -322,7 +322,7 @@ $hotelNames = [
         <div class="modal-content">
             <div class="modal-header bg-dark text-white">
                 <h2 class="modal-title" id="confirmarEliminacionModalLabel">Confirmar Eliminación</h2>
-                <button type="button" class="btn-close bg-secondary" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 ¿Estás seguro de que deseas eliminar esta excursión?
