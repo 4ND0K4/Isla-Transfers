@@ -167,32 +167,33 @@ $_SESSION['travelerName'] = $travelerData['name'];
                             <strong>Localizador:</strong> ${info.event.extendedProps.localizador}
                         </p>
                             <div class="mt-3">
-                                <button onclick="editarReserva(${info.event.id})" class="btn btn-success">Editar</button>
+                                <button onclick="editarReserva(${info.event.id})" class="btn btn-warning">Editar</button>
                                 <button onclick="eliminarReserva('${info.event.id}')" class="btn btn-danger">Eliminar</button>
                             </div>`,
                         icon: 'info',
-                        confirmButtonText: '<i class="bi bi-x text-dark"></i>',
+                        showCloseButton: true,
+                        confirmButtonText: false,
                         customClass: {
                             popup: 'swal-wide' // Clase personalizada para ajustar el ancho
                         },
                         didOpen: () => {
                             // Estilo de fondo de la card
                             const swalPopup = Swal.getPopup();
-                            swalPopup.style.backgroundColor = '#fff3cd';  // Color de fondo
+                            swalPopup.style.backgroundColor = '#d4edda';  // Color de fondo
                             swalPopup.style.borderRadius = '10px';        // Bordes redondeados
                             swalPopup.style.color = '#343a40';            // Color del texto
                             swalPopup.style.boxShadow = '0px 4px 10px rgba(0, 0, 0, 0.2)'; // Sombra de la tarjeta
                             //Estilo botón Cerrar
                             const confirmButton = Swal.getConfirmButton();
-                            confirmButton.style.backgroundColor = '#fff3cd'; // Color fondo
+                            confirmButton.style.backgroundColor = '#d4edda'; // Color fondo
                             confirmButton.style.color = 'white'; // Color texto
                             confirmButton.style.fontSize = '16px'; // Tamaño de fuente
                             confirmButton.style.fontWeight = 'bold'; // Negrita
                             confirmButton.style.fontFamily = 'Arial, sans-serif'; // Fuente
-                            confirmButton.style.padding = '1px'; // Padding
-                            confirmButton.style.borderRadius = '8px'; // Bordes redondeados
+                            confirmButton.style.padding = '0px'; // Padding
+                            confirmButton.style.borderRadius = '0px'; // Bordes redondeados
                             confirmButton.style.border = '0px'; // Color borde
-                            confirmButton.style.boxShadow = '0px 4px 10px rgba(0, 0, 0, 0.2)'; // Sombra
+                            confirmButton.style.boxShadow = '0px'; // Sombra
                             confirmButton.style.transition = 'all 0.3s ease'; // Transición
                             confirmButton.style.margin = '10px'; // Espacio externo
 
