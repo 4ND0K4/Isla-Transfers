@@ -196,7 +196,7 @@ $zoneNames = [
 
                         <!-- Password -->
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="pass" id="passInput" placeholder="Password" required>
+                            <input type="password" class="form-control" name="pass" id="passInput" placeholder="Password" required>
                             <label for="hotelPassInput">Password</label>
                         </div>
                     </div>
@@ -243,7 +243,7 @@ $zoneNames = [
                         </div>
                         <!-- Password -->
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" name="pass" id="updatePassInput" placeholder="Password">
+                            <input type="password" class="form-control" name="pass" id="updatePassInput" placeholder="Password">
                             <label for="updatePassInput">Password</label>
                         </div>
                     </div>

@@ -173,7 +173,7 @@ include '../controllers/vehicles/update.php';
                         </div>
                         <!-- Password -->
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="passwordInput" name="pass" placeholder="Password">
+                            <input type="password" class="form-control" id="passwordInput" name="pass" placeholder="Password">
                             <label for="passwordInput">Password</label>
                         </div>
                     </div>
@@ -215,7 +215,7 @@ include '../controllers/vehicles/update.php';
                         </div>
                         <!-- Password -->
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="updatePasswordInput" name="pass" placeholder="Password">
+                            <input type="password" class="form-control" id="updatePasswordInput" name="pass" placeholder="Password">
                             <label for="updatePasswordInput">Password</label>
                         </div>
                     </div>
