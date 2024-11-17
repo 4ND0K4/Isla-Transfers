@@ -64,7 +64,7 @@ CREATE TABLE `transfer_excursion` (
   PRIMARY KEY (`id_excursion`),
   KEY `FK_RESERVAS_HOTEL` (`id_hotel`),
   KEY `FK_RESERVAS_VEHICULO` (`id_vehiculo`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -73,7 +73,7 @@ CREATE TABLE `transfer_excursion` (
 
 LOCK TABLES `transfer_excursion` WRITE;
 /*!40000 ALTER TABLE `transfer_excursion` DISABLE KEYS */;
-INSERT INTO `transfer_excursion` VALUES (1,'Tour Cultural',6,'traveler5@mail.com','2024-11-15','11:30:00','19:30:00',2,1);
+INSERT INTO `transfer_excursion` VALUES (1,'Tour Cultural',6,'traveler5@mail.com','2024-11-15','11:30:00','19:30:00',2,1),(2,'Paseo en Barco',4,'traveler3@mail.com','2024-11-22','11:30:00','18:30:00',3,1),(3,'Aventura en la Selva',5,'traveler1@mail.com','2024-11-27','09:30:00','17:30:00',2,1);
 /*!40000 ALTER TABLE `transfer_excursion` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -139,7 +139,7 @@ CREATE TABLE `transfer_reservas` (
   CONSTRAINT `FK_RESERVAS_HOTEL` FOREIGN KEY (`id_hotel`) REFERENCES `tranfer_hotel` (`id_hotel`),
   CONSTRAINT `FK_RESERVAS_TIPO` FOREIGN KEY (`id_tipo_reserva`) REFERENCES `transfer_tipo_reserva` (`id_tipo_reserva`),
   CONSTRAINT `FK_RESERVAS_VEHICULO` FOREIGN KEY (`id_vehiculo`) REFERENCES `transfer_vehiculo` (`id_vehiculo`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -148,7 +148,7 @@ CREATE TABLE `transfer_reservas` (
 
 LOCK TABLES `transfer_reservas` WRITE;
 /*!40000 ALTER TABLE `transfer_reservas` DISABLE KEYS */;
-INSERT INTO `transfer_reservas` VALUES (1,'ZGXJUEO63Q',2,1,'traveler1@mail.com','2024-11-08 06:03:56','2024-11-08 06:04:35',2,'2024-11-08','14:00:00','DUS7325','DÃ¼sseldorf','00:00:00','0000-00-00',2,1,1),(2,'B3G0SUTVWF',2,2,'traveler1@mail.com','2024-11-08 06:03:56','2024-11-08 06:04:59',2,'0000-00-00','00:00:00','','','07:30:00','2024-11-12',2,1,1),(3,'0EXLK5ZQFP',1,1,'traveler1@mail.com','2024-11-08 06:08:12','2024-11-08 06:08:12',1,'2024-11-27','17:30:00','DUS5743','DÃ¼sseldorf','09:15:00','2024-12-03',4,1,2),(4,'3LO9YDMKVN',1,2,'traveler1@mail.com','2024-11-08 06:08:12','2024-11-08 06:08:12',1,'2024-11-27','17:30:00','DUS5743','DÃ¼sseldorf','09:15:00','2024-12-03',4,1,2),(5,'DW4BZ3PC62',3,1,'traveler2@mail.com','2024-11-08 06:12:35','2024-11-08 06:12:35',3,'2024-11-14','16:00:00','BOD7205','Burdeos','08:30:00','2024-11-19',3,1,2),(6,'OQ7XDFU6MI',3,2,'traveler2@mail.com','2024-11-08 06:12:35','2024-11-08 06:12:35',3,'2024-11-14','16:00:00','BOD7205','Burdeos','08:30:00','2024-11-19',3,1,2),(7,'9VSKMDU3WO',5,1,'traveler3@mail.com','2024-11-08 06:15:17','2024-11-08 06:15:17',5,'2024-11-20','13:30:00','BHX6412','Birmingham','00:00:00','0000-00-00',1,1,2),(8,'TGXYNFQCM1',4,1,'traveler4@mail.com','2024-11-08 06:18:26','2024-11-08 06:18:26',4,'2024-11-28','12:30:00','BLQ5388','Bolonia','04:30:00','2024-12-02',5,1,2),(9,'TLF8VE24J7',4,2,'traveler4@mail.com','2024-11-08 06:18:26','2024-11-08 06:18:26',4,'2024-11-28','12:30:00','BLQ5388','Bolonia','04:30:00','2024-12-02',5,1,2),(10,'M6WEFQBJSI',3,1,'traveler5@mail.com','2024-11-08 06:22:56','2024-11-08 06:22:56',3,'2024-11-12','16:15:00','OVD4739','Asturias','09:15:00','2024-11-19',2,1,1),(11,'XKE019QMH4',3,2,'traveler5@mail.com','2024-11-08 06:22:56','2024-11-08 06:22:56',3,'2024-11-12','16:15:00','OVD4739','Asturias','09:15:00','2024-11-19',2,1,1),(12,'6KRYALQ478',5,2,'traveler6@mail.com','2024-11-11 07:55:18','2024-11-11 07:55:18',5,'0000-00-00','00:00:00','','','10:00:00','2024-11-12',1,1,1),(13,'FTN1LXSRAB',1,1,'traveler5@mail.com','2024-11-11 08:21:42','2024-11-11 08:21:42',1,'2024-11-28','13:15:00','OV6294','Oviedo','09:30:00','2024-12-04',3,1,2),(14,'FLS7ZPQI3E',1,2,'traveler5@mail.com','2024-11-11 08:21:42','2024-11-11 08:21:42',1,'2024-11-28','13:15:00','OV6294','Oviedo','09:30:00','2024-12-04',3,1,2);
+INSERT INTO `transfer_reservas` VALUES (1,'ZGXJUEO63Q',2,1,'traveler1@mail.com','2024-11-08 06:03:56','2024-11-08 06:04:35',2,'2024-11-08','14:00:00','DUS7325','DÃ¼sseldorf','00:00:00','0000-00-00',2,1,1),(2,'B3G0SUTVWF',2,2,'traveler1@mail.com','2024-11-08 06:03:56','2024-11-08 06:04:59',2,'0000-00-00','00:00:00','','','07:30:00','2024-11-12',2,1,1),(3,'0EXLK5ZQFP',1,1,'traveler1@mail.com','2024-11-08 06:08:12','2024-11-08 06:08:12',1,'2024-11-27','17:30:00','DUS5743','DÃ¼sseldorf','09:15:00','2024-12-03',4,1,2),(4,'3LO9YDMKVN',1,2,'traveler1@mail.com','2024-11-08 06:08:12','2024-11-08 06:08:12',1,'2024-11-27','17:30:00','DUS5743','DÃ¼sseldorf','09:15:00','2024-12-03',4,1,2),(5,'DW4BZ3PC62',3,1,'traveler2@mail.com','2024-11-08 06:12:35','2024-11-08 06:12:35',3,'2024-11-14','16:00:00','BOD7205','Burdeos','08:30:00','2024-11-19',3,1,2),(6,'OQ7XDFU6MI',3,2,'traveler2@mail.com','2024-11-08 06:12:35','2024-11-08 06:12:35',3,'2024-11-14','16:00:00','BOD7205','Burdeos','08:30:00','2024-11-19',3,1,2),(7,'9VSKMDU3WO',5,1,'traveler3@mail.com','2024-11-08 06:15:17','2024-11-08 06:15:17',5,'2024-11-20','13:30:00','BHX6412','Birmingham','00:00:00','0000-00-00',1,1,2),(8,'TGXYNFQCM1',4,1,'traveler4@mail.com','2024-11-08 06:18:26','2024-11-08 06:18:26',4,'2024-11-28','12:30:00','BLQ5388','Bolonia','04:30:00','2024-12-02',5,1,2),(9,'TLF8VE24J7',4,2,'traveler4@mail.com','2024-11-08 06:18:26','2024-11-08 06:18:26',4,'2024-11-28','12:30:00','BLQ5388','Bolonia','04:30:00','2024-12-02',5,1,2),(10,'M6WEFQBJSI',3,1,'traveler5@mail.com','2024-11-08 06:22:56','2024-11-08 06:22:56',3,'2024-11-12','16:15:00','OVD4739','Asturias','09:15:00','2024-11-19',2,1,1),(11,'XKE019QMH4',3,2,'traveler5@mail.com','2024-11-08 06:22:56','2024-11-08 06:22:56',3,'2024-11-12','16:15:00','OVD4739','Asturias','09:15:00','2024-11-19',2,1,1),(12,'6KRYALQ478',5,2,'traveler6@mail.com','2024-11-11 07:55:18','2024-11-11 07:55:18',5,'0000-00-00','00:00:00','','','10:00:00','2024-11-12',1,1,1),(13,'FTN1LXSRAB',1,1,'traveler5@mail.com','2024-11-11 08:21:42','2024-11-11 08:21:42',1,'2024-11-28','13:15:00','OV6294','Oviedo','09:30:00','2024-12-04',3,1,2),(14,'FLS7ZPQI3E',1,2,'traveler5@mail.com','2024-11-11 08:21:42','2024-11-11 08:21:42',1,'2024-11-28','13:15:00','OV6294','Oviedo','09:30:00','2024-12-04',3,1,2),(15,'OQUHVEPWCR',6,1,'traveler3@mail.com','2024-11-17 12:31:34','2024-11-17 12:31:34',6,'2025-03-12','15:30:00','BIR4596','Birmingham','00:00:00','2025-03-18',2,1,1),(16,'SFL8Y6GEJB',6,2,'traveler3@mail.com','2024-11-17 12:31:34','2024-11-17 12:31:34',6,'2025-03-12','15:30:00','BIR4596','Birmingham','00:00:00','2025-03-18',2,1,1),(17,'PXBVQWHFIC',1,1,'traveler5@mail.com','2024-11-17 12:32:45','2024-11-17 12:32:45',1,'2025-04-21','15:30:00','OVD4896','Oviedo','13:30:00','2025-04-28',2,1,1),(18,'ENML6419HO',1,2,'traveler5@mail.com','2024-11-17 12:32:45','2024-11-17 12:32:45',1,'2025-04-21','15:30:00','OVD4896','Oviedo','13:30:00','2025-04-28',2,1,1);
 /*!40000 ALTER TABLE `transfer_reservas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -271,4 +271,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-11 10:03:59
+-- Dump completed on 2024-11-17 18:59:10
